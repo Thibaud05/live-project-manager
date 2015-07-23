@@ -151,7 +151,7 @@ $(function() {
           delete tasksById[key];
           task.remove();
           delete selectedTasks[key];
-          removedTasksId.push(key);
+          removedTasksId.push({"id":key,"id_user":"","title":"","id_type":"","day":""});
       });
       $.ajax({
         url: "data.php",

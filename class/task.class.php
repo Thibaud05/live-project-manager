@@ -27,7 +27,6 @@ class task {
 					`id_type` = '".$this->id_type."',
 					`date_finish` = '".$this->day."'
 		 		WHERE `id` = ".$this->id;
-		 echo $sql;
 		$res = SQL::$mysqli->query($sql);
 
 	}
@@ -39,6 +38,10 @@ class task {
 		$res = SQL::$mysqli->query($sql);
 		$this->id = SQL::$mysqli->insert_id;
 		echo json_encode($this);
+	}
+	function del(){
+		$sql = "DELETE FROM `task` WHERE id = ".$this->id;
+		$res = SQL::$mysqli->query($sql);
 	}
 }
 ?>

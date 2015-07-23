@@ -31,7 +31,12 @@ class LPM {
 
 					$this->setRelease();
 					break;
-				
+
+				case 'delTask':
+
+					$this->delTask();
+					break;
+								
 				default:
 					# code...
 					break;
@@ -54,6 +59,14 @@ class LPM {
 		$obj = json_decode($_GET["obj"]);
 		$task = new task($obj);
 		$task->add();
+		exit;
+	}
+	function delTask(){
+		$objs = json_decode($_GET["obj"]);
+		foreach ($objs as $obj) {
+			$task = new task($obj);
+			$task->del();
+		}
 		exit;
 	}
 }
