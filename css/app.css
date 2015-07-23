@@ -1,0 +1,203 @@
+body{
+	margin: 0;
+}
+.head{
+	background-color: #3F51B5;
+	padding: 5px;
+}
+.stripHead{
+	background-color: #303F9F;
+	height: 10px;
+}
+.strip{
+	background-color: #E0E0E0;
+	height: 30px;
+}
+.LPMrond{
+	border-radius:50%;
+	width:50px;
+	height:50px;
+	border:2px solid #fff;
+	outline:none;
+	font-family: Arial;
+	color: #fff;
+	margin:5px;
+	font-weight: bold;
+	margin: 10px;
+	float: left;
+}
+.user{
+  float: right;
+  color: #fff;
+  height: 50px;
+  padding: 10px;
+  line-height: 50px;
+}
+.clear{
+	clear: both;
+}
+div.LPMrond{
+	text-align:center;
+}
+
+div.LPMrond span{
+	position:relative;
+	font-size:18px;
+	top:12px;
+}
+.right{
+	float: right;
+}
+.table{
+	text-align: center;
+	font-family: arial;
+	font-style: 14px;
+}
+.table td{ 
+	border-left: 1px solid #E0E0E0;
+	border-bottom: 1px solid #E0E0E0;
+	padding: 0px !important;
+	width: 100px;
+}
+td.firstCol{
+	width: 100%;
+}
+.ui-state-hover{
+	background-color: #E0E0E0;
+}
+
+.draggable { width: 100px; height: 100px;background-color: #9FA8DA;border:0;}
+.droppable { width: 100px; height: 100px;background-color: #fff;border:0;}
+.lot-1{
+		height: 100px;
+	background-color: #9FA8DA;
+}
+.abs{
+		height: 100px;
+	background-color: #FF4081;
+}
+.box{
+	margin: 10px;
+	min-height: 180px;
+	width:300px;
+	float: left;
+}
+
+  
+.connectedSortable {
+    width: 100px;
+    min-height: 100px;
+    list-style-type: none;
+    margin: 0;
+    float: left;
+    padding:0;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+  }
+  .box .connectedSortable {
+  	width: 300px;
+    min-height: 180px;
+    margin-right: 10px;
+    padding: 5px 0 0 0;
+  }
+ .connectedSortable li {
+ 	display: table;
+    margin: 0;
+    padding: 0px;
+    font-size: 1.2em;
+    width: 100px;
+    height: 100px;
+    float: left;
+    border: 0;
+    
+    text-align: center;
+    transition: background-color 0.5s;
+  }
+  .box .connectedSortable li {
+  	margin: 1px 1px;
+  }
+  .ui-state-default{
+  	background: none;
+  	color: #fff;
+  	background-color: #ccc;
+  }
+
+.releaseSlot{
+	width: 100px;
+    min-height: 30px;
+    list-style-type: none;
+    margin: 0;
+    float: left;
+    padding:0;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+}
+.releaseSlot span{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.releaseSlot .glyphicon{
+	font-size: 10px;
+}
+
+
+.pink{
+	background-color: #E91E63;
+	background: repeating-linear-gradient(
+    -45deg,
+    #E91E63,
+    #E91E63 10px,
+    #D81B60 10px,
+    #D81B60 20px
+  );
+}
+.indigo{
+	background-color: #3F51B5;
+}
+.blue{
+	background-color: #2196F3;
+}
+.cyan{
+	background-color: #0097A7;
+}
+.teal{
+	background-color: #00968;
+}
+
+.table td.leftSep{
+	border-left: 4px solid #ccc;
+}
+.table .week td, .table .day td{
+	padding: 5px;
+	height: 20px;
+}
+.tooltip{
+	min-height: 200px;
+	min-width: 200px;
+	font-size: 12px;
+	color: #fff;
+	padding: 10px;
+}
+.tooltip h1{
+	color: #fff;
+	font-size: 16px;
+}
+
+.task span {
+  display: table-cell;
+  vertical-align: middle;     
+}
+.release{
+	color: #fff;
+	font-weight: bold;
+}
+
+.input-group-addon {
+	padding: 0;
+}
+
+.connectedSortable > li.selected {
+    background-color: #000;
+}
