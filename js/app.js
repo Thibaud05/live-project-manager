@@ -306,9 +306,46 @@ $(function() {
 
       // Task double click
       $( ".connectedSortable > li" ).dblclick(function() {
-        log("ok");
-      });
+        var id = $(this).attr("tid");
+        var task =  tasksById[id];
 
+        if(! task.open){
+          $(this).css("position","absolute");
+          var p = $(this).position();
+          task.initPosition = p;
+          
+          $(this).css({
+            "z-index":1000,
+            "left":p.left,
+            "top":p.top
+          });
+          $(this).animate({
+            left:0,
+            top:0,
+            width:  "100%",
+            height:  "100%"  
+          }, 400);
+          log(task.open);
+          task.open = true;
+          log(task.open);
+        }else{
+          log("ok");
+          var p = task.initPosition;
+
+          $(this).animate({
+            left:p.left,
+            top:p.top,
+            width:  100,
+            height:  100  
+          }, 400, function() {
+            $(this).css({
+              "position":"static",
+              "z-index":"auto",
+            });
+          });
+          task.open = false;
+        }
+      });
       // Task tooltip
       $( ".task" ).tooltip({
         items: "li",
