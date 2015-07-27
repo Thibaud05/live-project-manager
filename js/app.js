@@ -37,8 +37,22 @@ $(function() {
     }
   }
 
-  function tasksManager(){
+  function task(data){
+    var id = data.id;
+    var id_type = data.id_type;
+    var id_user = data.id_user;
+    var day = data.day;
+    var creationDate;
+    var creationUser;
+    var title = data.title;
+    var desctiption;
+    this.getCreationUser = function(){
+      return users[this.id_user];
+    }
+  }
 
+
+  function tasksManager(){
     var tasks = [];
     var tasksById = [];
     var users = [];
@@ -56,7 +70,6 @@ $(function() {
     var dates;
     var offset;
     var selectedTasks = {};
-
     /////////////////////
     // CONTROLLER
 
@@ -92,16 +105,18 @@ $(function() {
           releasesById[release.id] = release;
         });
 
-        $.each( data.tasks, function( key, task ) {
-          tasksById[task.id] = task;
-          var key = task.id_user + ":" + task.day;
+        $.each( data.tasks, function( key, data ) {
+          var t = new task(data);
+          tasksById[t.id] = t;
+          var key = t.id_user + ":" + t.day;
           if(tasks[key] != undefined ){
-            tasks[key].push(task);
+            tasks[key].push(t);
           }else{
-            tasks[key] = new Array(task);
+            tasks[key] = new Array(t);
           }
         });
       });
+      log(tasks);
       return getJSON;
     }
 
@@ -293,24 +308,29 @@ $(function() {
 
       // Task click
       $( ".connectedSortable > li" ).mousedown(function(e) {
-        if(!e.ctrlKey){
-          $.each(selectedTasks, function( key, task ) {
-            task.removeClass('selected');
-            delete selectedTasks[task.attr("tid")];
-          });
+        var id = $(this).attr("tid");
+        var task =  tasksById[id];
+        if(! task.open){
+          if(!e.ctrlKey){
+            $.each(selectedTasks, function( key, task ) {
+              task.removeClass('selected');
+              delete selectedTasks[task.attr("tid")];
+            });
+          }
+          selectedTask = $(this);
+          selectedTask.addClass('selected');
+          selectedTasks[selectedTask.attr("tid")] = selectedTask;
         }
-        selectedTask = $(this);
-        selectedTask.addClass('selected');
-        selectedTasks[selectedTask.attr("tid")] = selectedTask;
       });
 
       // Task double click
       $( ".connectedSortable > li" ).dblclick(function() {
         var id = $(this).attr("tid");
         var task =  tasksById[id];
-
+        $(this).removeClass('selected');
         if(! task.open){
           $(this).css("position","absolute");
+          
           var p = $(this).position();
           task.initPosition = p;
           
@@ -323,25 +343,44 @@ $(function() {
             left:0,
             top:0,
             width:  "100%",
-            height:  "100%"  
-          }, 400);
+            height:  "100%",
+          }, 400, function() {
+            $(this).css({"text-align":"left"});
+            $(this).children("span").css({"display":"block"});
+            $(this).append( '<div id="taskDetail"><p>Céer par Thibaud GRANIER aujourd’hui<p><p class="desc">Lors de l’import d’un fichier xls, si une date n’est pas au 1er du mois.Le jour de la date doit être focé à 01.<p></div>' );
+          });
           log(task.open);
           task.open = true;
           log(task.open);
+          $(this).children("span").css({
+            "vertical-align": "initial",
+            "text-align": "left"
+          });
+          $(this).children("span").animate({
+            "font-size": "60px"
+          });
+          
         }else{
           log("ok");
           var p = task.initPosition;
-
+            $(this).children("#taskDetail").remove();
           $(this).animate({
             left:p.left,
             top:p.top,
             width:  100,
-            height:  100  
+            height:  100
           }, 400, function() {
             $(this).css({
               "position":"static",
-              "z-index":"auto",
+              "z-index":"auto"
             });
+          });
+          $(this).children("span").css({
+            "vertical-align": "middle",
+            "text-align": "center"
+          });
+          $(this).children("span").animate({
+            "font-size": "16px"
           });
           task.open = false;
         }

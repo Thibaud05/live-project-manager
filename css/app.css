@@ -201,3 +201,12 @@ td.firstCol{
 .connectedSortable > li.selected {
     background-color: #000;
 }
+#taskDetail {
+    margin-left: 20px;
+}
+#taskDetail .desc{
+    font-size: 25px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    width: 700px;
+}
