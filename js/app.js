@@ -37,20 +37,126 @@ $(function() {
     }
   }
 
-  function task(data){
-    var id = data.id;
-    var id_type = data.id_type;
-    var id_user = data.id_user;
-    var day = data.day;
-    var creationDate;
-    var creationUser;
-    var title = data.title;
-    var desctiption;
-    this.getCreationUser = function(){
-      return users[this.id_user];
+
+  //////////////////////////////////////////
+  //
+  //  USER OBJECT
+  //
+  //////////////////////////////////////////
+
+  function user(data){
+    this.id = data.id;
+    this.firstname = data.firstname;
+    this.lastname = data.lastname;
+
+    /////////////////////
+    //  Nom complet 
+
+    this.getName = function(){
+      return this.firstname + " " + this.lastname;
     }
   }
 
+
+  //////////////////////////////////////////
+  //
+  //  TASK OBJECT
+  //
+  //////////////////////////////////////////
+
+  function task(data){
+
+    var self = this;
+    this.isOpen = false;
+    this.id = data.id;
+    this.id_type = data.id_type;
+    this.id_user = data.id_user;
+    this.day = data.day;
+    this.creationDate;
+    this.creationUser;
+    this.title = data.title;
+    this.description = data.description;
+
+    /////////////////////
+    //  affichage du detail d'une tache
+
+    this.open = function(htmlTask){
+      var description = this.description;
+      htmlTask.css("position","absolute");
+      var p = htmlTask.position();
+      this.initPosition = p;  
+      htmlTask.css({
+        "z-index":1000,
+        "left":p.left,
+        "top":p.top
+      });
+      htmlTask.animate({
+        left:0,
+        top:0,
+        width:  "100%",
+        height:  "100%",
+      }, 400, function() {
+        htmlTask.css({"text-align":"left"});
+        htmlTask.children("span").css({"display":"block"});
+        var html = '<div id="taskDetail">';
+        html += '<p>Céer par ' + self.getCreationUser() + ' aujourd’hui<p>';
+        html += '<p class="desc">' + description + '<p>';
+        html += '</div>';
+        htmlTask.append(html);
+      });
+      htmlTask.children("span").css({
+        "vertical-align": "initial",
+        "text-align": "left",
+         "margin-left":"20px"
+      });
+      htmlTask.children("span").animate({
+        "font-size": "60px"
+      });
+      this.isOpen = true;
+    }
+
+    /////////////////////
+    // masquage du details de la tache
+
+    this.close = function(htmlTask){
+      var p = this.initPosition;
+      htmlTask.children("#taskDetail").remove();
+      htmlTask.animate({
+        left:p.left,
+        top:p.top,
+        width:  100,
+        height:  100
+      }, 400, function() {
+        htmlTask.css({
+          "position":"static",
+          "z-index":"auto"
+        });
+      });
+      htmlTask.children("span").css({
+        "vertical-align": "middle",
+        "text-align": "center"
+      });
+      htmlTask.children("span").animate({
+        "font-size": "16px"
+      });
+      this.isOpen = false;
+    }
+
+    /////////////////////
+    // affichage du nom de l'utilisateur
+
+    this.getCreationUser = function(){
+      var user = tasksManager.getUser(this.id_user);
+      return user.getName();
+    }
+  }
+
+
+  //////////////////////////////////////////
+  //
+  //  TASKMANAGER OBJECT
+  //
+  //////////////////////////////////////////
 
   function tasksManager(){
     var tasks = [];
@@ -70,12 +176,12 @@ $(function() {
     var dates;
     var offset;
     var selectedTasks = {};
+
     /////////////////////
     // CONTROLLER
 
     this.init = function(){
       week = now.week();
-      log(week)
       firstDayWeek = now.day(1);
       dates = [];
       for (i = 0; i < nbdays; i++){
@@ -93,7 +199,10 @@ $(function() {
       var getJSON = $.getJSON( "data.php", function( data ) {
 
         tasks = [];
-        users = data.users;
+
+        $.each( data.users, function( key, data ) {
+          users[data.id] = new user(data);
+        });
 
         $.each( data.taskTypes, function( key, taskType ) {
           taskTypes[taskType.id] = taskType;
@@ -104,7 +213,7 @@ $(function() {
           releases[release.day] = release;
           releasesById[release.id] = release;
         });
-
+        log("start");
         $.each( data.tasks, function( key, data ) {
           var t = new task(data);
           tasksById[t.id] = t;
@@ -145,7 +254,11 @@ $(function() {
         }
       });
     }
-
+    this.getUser = function (id){
+      if(users[id] != undefined) {
+        return users[id];
+      }
+    }
     /////////////////////
     // ADD TASK 
 
@@ -264,16 +377,18 @@ $(function() {
 
       // Rows tasks
       $.each( users, function( key, user ) {
-        html += "<tr>";
-        html += '<td class="firstCol" >' + user.name + '</td>';
-        for (i = 0; i < nbdays; i++){
-          var index = i % dayPerWeek;
-          var css = ( index==0 ) ? ' class="leftSep"' : '';
-          html += '<td' + css + '><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
-          html += root.renderTask(user.id + ":" + dates[i]);
-          html += '</div></td>';
+        if(user){
+          html += "<tr>";
+          html += '<td class="firstCol" >' + user.firstname + '</td>';
+          for (i = 0; i < nbdays; i++){
+            var index = i % dayPerWeek;
+            var css = ( index==0 ) ? ' class="leftSep"' : '';
+            html += '<td' + css + '><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
+            html += root.renderTask(user.id + ":" + dates[i]);
+            html += '</div></td>';
+          }
+          html += "</tr>";
         }
-        html += "</tr>";
       });
 
       $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
@@ -328,63 +443,13 @@ $(function() {
         var id = $(this).attr("tid");
         var task =  tasksById[id];
         $(this).removeClass('selected');
-        if(! task.open){
-          $(this).css("position","absolute");
-          
-          var p = $(this).position();
-          task.initPosition = p;
-          
-          $(this).css({
-            "z-index":1000,
-            "left":p.left,
-            "top":p.top
-          });
-          $(this).animate({
-            left:0,
-            top:0,
-            width:  "100%",
-            height:  "100%",
-          }, 400, function() {
-            $(this).css({"text-align":"left"});
-            $(this).children("span").css({"display":"block"});
-            $(this).append( '<div id="taskDetail"><p>Céer par Thibaud GRANIER aujourd’hui<p><p class="desc">Lors de l’import d’un fichier xls, si une date n’est pas au 1er du mois.Le jour de la date doit être focé à 01.<p></div>' );
-          });
-          log(task.open);
-          task.open = true;
-          log(task.open);
-          $(this).children("span").css({
-            "vertical-align": "initial",
-            "text-align": "left"
-          });
-          $(this).children("span").animate({
-            "font-size": "60px"
-          });
-          
+        if(! task.isOpen){
+          task.open($(this));
         }else{
-          log("ok");
-          var p = task.initPosition;
-            $(this).children("#taskDetail").remove();
-          $(this).animate({
-            left:p.left,
-            top:p.top,
-            width:  100,
-            height:  100
-          }, 400, function() {
-            $(this).css({
-              "position":"static",
-              "z-index":"auto"
-            });
-          });
-          $(this).children("span").css({
-            "vertical-align": "middle",
-            "text-align": "center"
-          });
-          $(this).children("span").animate({
-            "font-size": "16px"
-          });
-          task.open = false;
+          task.close($(this));
         }
       });
+
       // Task tooltip
       $( ".task" ).tooltip({
         items: "li",
@@ -438,14 +503,15 @@ $(function() {
     };
   }
 
-  //////////////////////
-  // Event management
+  ////////////////////////////////////////////
+  //
+  //  EVENT MANAGEMEMENT
+  //
+  ////////////////////////////////////////////
 
   var tasksManager = new tasksManager();
-
+  tasksManager.init();
   tasksManager.getData().done(function(){
-    tasksManager.init();
-    tasksManager.getData();
     tasksManager.render();
     tasksManager.activate();
   });
