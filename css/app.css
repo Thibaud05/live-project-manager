@@ -210,3 +210,17 @@ td.firstCol{
     font-weight: 300;
     width: 700px;
 }
+#closeTask {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 50px;
+    position: absolute;
+    right: 20px;
+    top: 1px;
+    cursor: pointer;
+}
+.task input{
+    background-color: transparent;
+    border:0;
+    border-bottom:2px; 
+}

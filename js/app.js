@@ -88,7 +88,8 @@ $(function() {
       htmlTask.css({
         "z-index":1000,
         "left":p.left,
-        "top":p.top
+        "top":p.top,
+        "cursor":"default"
       });
       htmlTask.animate({
         left:0,
@@ -98,11 +99,14 @@ $(function() {
       }, 400, function() {
         htmlTask.css({"text-align":"left"});
         htmlTask.children("span").css({"display":"block"});
-        var html = '<div id="taskDetail">';
+        var html = '<div id="taskDetail"><div id="closeTask">X</div>';
         html += '<p>Céer par ' + self.getCreationUser() + ' aujourd’hui<p>';
         html += '<p class="desc">' + description + '<p>';
         html += '</div>';
         htmlTask.append(html);
+        $("#closeTask").click(function() {
+          self.close(htmlTask);
+        });
       });
       htmlTask.children("span").css({
         "vertical-align": "initial",
@@ -112,7 +116,14 @@ $(function() {
       htmlTask.children("span").animate({
         "font-size": "60px"
       });
+
+      htmlTask.children("span").unbind('dblclick').dblclick(function() {
+        var content = $(this).html();
+        $(this).html("<input type='text' value='" + content + "' />");
+        console.log("edit");
+      });
       this.isOpen = true;
+      htmlTask.addClass('disable-task');
     }
 
     /////////////////////
@@ -140,6 +151,7 @@ $(function() {
         "font-size": "16px"
       });
       this.isOpen = false;
+      htmlTask.removeClass('disable-task');
     }
 
     /////////////////////
@@ -403,6 +415,7 @@ $(function() {
       // Task drag and drop
       $( ".connectedSortable" ).sortable({
         revert:150,
+        cancel: ".disable-task",
         connectWith: ".connectedSortable",
         receive: function( event, ui ) {
           var task = tasksById[ui.item.attr("tid")];
@@ -445,9 +458,9 @@ $(function() {
         $(this).removeClass('selected');
         if(! task.isOpen){
           task.open($(this));
-        }else{
+        }/*else{
           task.close($(this));
-        }
+        }*/
       });
 
       // Task tooltip
