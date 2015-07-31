@@ -410,12 +410,12 @@ $(function() {
     /////////////////////
     // DISPLAY BOX    
 
-    this.renderBox = function(type){
+    this.renderBox = function(type,idType){
       var html = ''
       html = '<div class="panel panel-default box">';
       html += '<div class="panel-heading">' + type + '</div>';
       html +=   '<div class="panel-body">';
-      html +=     '<ul class="connectedSortable" di = "' + type + '" uid ="0">' + this.renderTask("0:" + type) + '</ul>';
+      html +=     '<ul class="connectedSortable" di = "' + type + '" uid ="' + idType + '">' + this.renderTask(idType + ":0000-00-00") + '</ul>';
       html +=   '</div>';
       html += '</div>';
       return html;
@@ -470,7 +470,7 @@ $(function() {
       });
 
       $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
-      $("#box").html(this.renderBox("DEV") +  this.renderBox("QA") + this.renderBox("PRD"));
+      $("#box").html(this.renderBox("DEV",1) +  this.renderBox("QA",2) + this.renderBox("PRD",3));
     }
 
     /////////////////////
