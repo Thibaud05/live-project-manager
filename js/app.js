@@ -80,7 +80,7 @@ $(function() {
     /////////////////////
     //  affichage du detail d'une tache
 
-    this.open = function(htmlTask){
+    this.open = function(htmlTask){ 
       var description = this.description;
       htmlTask.css("position","absolute");
       var p = htmlTask.position();
@@ -107,6 +107,23 @@ $(function() {
         $("#closeTask").click(function() {
           self.close(htmlTask);
         });
+        htmlTask.find(".desc").unbind('dblclick').dblclick(function() {
+          if(!this.editMode){
+              var parent = this;
+              var content = $(this).html().replace(/<br>/g,'\n');
+              $(this).html("<textarea >" + content + "</textarea >");
+              $(this).children("textarea").focus();
+              $(this).children("textarea").select();
+              this.editMode = true;
+              $(this).children("textarea").blur(function() {
+                $(parent).html($(this).val().replace(/\n\r?/g, '<br>'));
+                parent.editMode = false;
+                self.description = $(this).val().replace(/\n\r?/g, '<br>');
+                self.save(htmlTask);
+              });
+          }
+        });
+
       });
       htmlTask.children("span").css({
         "vertical-align": "initial",
@@ -117,14 +134,38 @@ $(function() {
         "font-size": "60px"
       });
 
-      htmlTask.children("span").unbind('dblclick').dblclick(function() {
-        var content = $(this).html();
-        $(this).html("<input type='text' value='" + content + "' />");
-        console.log("edit");
+        // Edition du titre 
+      htmlTask.children("span").dblclick(function() {
+        if(!this.editMode){
+          var parent = this;
+          var content = $(this).html();
+          $(this).html("<input type='text' value='" + content + "' />");
+          $(this).children("input").focus();
+          $(this).children("input").select();
+          this.editMode = true;
+          $(this).children("input").blur(function() {
+            $(parent).html($(this).val());
+            parent.editMode = false;
+            self.title = $(this).val();
+            self.save(htmlTask);
+          });
+        }
       });
+
+
+
+
+
+
+
+
+
+
       this.isOpen = true;
       htmlTask.addClass('disable-task');
     }
+
+
 
     /////////////////////
     // masquage du details de la tache
@@ -132,6 +173,7 @@ $(function() {
     this.close = function(htmlTask){
       var p = this.initPosition;
       htmlTask.children("#taskDetail").remove();
+      htmlTask.children("span").unbind('dblclick');
       htmlTask.animate({
         left:p.left,
         top:p.top,
@@ -142,6 +184,7 @@ $(function() {
           "position":"static",
           "z-index":"auto"
         });
+        htmlTask.children("span").css({"display":"table-cell"});
       });
       htmlTask.children("span").css({
         "vertical-align": "middle",
@@ -161,7 +204,23 @@ $(function() {
       var user = tasksManager.getUser(this.id_user);
       return user.getName();
     }
-  }
+
+    /////////////////////
+    // Sauvegarde d'une tache
+
+    this.save = function(htmlTask){
+      $.ajax({
+        url: "data.php",
+        data: {
+          a: "setData",
+          obj:JSON.stringify(this)
+        },
+        success: function( data ) {
+          tasksManager.save();
+        }
+      });
+    }
+}
 
 
   //////////////////////////////////////////
@@ -280,6 +339,13 @@ $(function() {
       this.sync();
       this.render();
       this.activate();
+    }
+
+    this.save = function(){
+      $( "body" ).append('<div class="dataSaved"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>');
+      $(".dataSaved").animate({opacity:1}).animate({opacity:0},400,function() {
+        $(".dataSaved").remove();
+      });
     }
 
     /////////////////////

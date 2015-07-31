@@ -12,6 +12,7 @@ class task {
 	var $title;
 	var $id_type;
 	var $day;
+	var $desc;
 
 	function task ($obj){
 		$this->id = $obj->id;
@@ -19,13 +20,15 @@ class task {
 		$this->title = $obj->title;
 		$this->id_type = $obj->id_type;
 		$this->day = $obj->day;
+		$this->comments = $obj->description;
 	}
 	function update(){
 		$sql = "UPDATE `task` 
 				SET `name` = '".$this->title."',
 					`id_user_responsible` = '".$this->id_user."',
 					`id_type` = '".$this->id_type."',
-					`date_finish` = '".$this->day."'
+					`date_finish` = '".$this->day."',
+					`comments` = '".$this->comments."'
 		 		WHERE `id` = ".$this->id;
 		$res = SQL::$mysqli->query($sql);
 
@@ -34,7 +37,20 @@ class task {
 		$this->day = date("Y-m-d");
 		$this->id_user = 1;
 		$this->id_type = 1;
-		$sql = "INSERT INTO `task` (`name`, `id_user_responsible`, `id_type`, `date_finish`) VALUES ('".$this->title."','".$this->id_user ."','".$this->id_type ."','".$this->day."')";
+		$sql = "INSERT INTO `task` (
+					`name`, 
+					`id_user_responsible`, 
+					`id_type`, 
+					`date_finish`, 
+					`date_finish`, 
+					`comments`
+				) VALUES (
+					'".$this->title."',
+					'".$this->id_user ."',
+					'".$this->id_type ."',
+					'".$this->day."',
+					'".$this->comments."'
+				)";
 		$res = SQL::$mysqli->query($sql);
 		$this->id = SQL::$mysqli->insert_id;
 		echo json_encode($this);
