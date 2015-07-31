@@ -9,7 +9,7 @@ class SQL {
     public static $mysqli;
 
     public static function connect() {
-        self::$mysqli = new mysqli("127.0.0.1", "root", "", "ltm");
+        self::$mysqli = new mysqli("127.0.0.1", "root", "", "lpm");
         
         if (self::$mysqli->connect_error) {
             die('Erreur de connexion (' . self::$mysqli->connect_errno . ') '
