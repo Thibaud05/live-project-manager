@@ -513,7 +513,7 @@ $(function() {
       $( ".connectedSortable > li" ).mousedown(function(e) {
         var id = $(this).attr("tid");
         var task =  tasksById[id];
-        if(! task.open){
+        if(! task.isPpen){
           if(!e.ctrlKey){
             $.each(selectedTasks, function( key, task ) {
               task.removeClass('selected');

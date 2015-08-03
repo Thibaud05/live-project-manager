@@ -199,7 +199,7 @@ td.firstCol{
 }
 
 .connectedSortable > li.selected {
-    background-color: #000;
+    background: #000;
 }
 #taskDetail {
     margin-left: 20px;
