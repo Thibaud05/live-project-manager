@@ -82,6 +82,9 @@ $(function() {
 
     this.open = function(htmlTask){ 
       var description = this.description;
+      if (description == ""){description = "Sans descriptif";}
+      if (this.title == ""){htmlTask.children("span").html("Sans titre");}
+
       htmlTask.css("position","absolute");
       var p = htmlTask.position();
       this.initPosition = p;  
@@ -111,15 +114,18 @@ $(function() {
           if(!this.editMode){
               var parent = this;
               var content = $(this).html().replace(/<br>/g,'\n');
+              if (content == "Sans descriptif"){content = "";}
               $(this).html("<textarea >" + content + "</textarea >");
               $(this).children("textarea").focus();
               $(this).children("textarea").select();
               this.editMode = true;
               $(this).children("textarea").blur(function() {
-                $(parent).html($(this).val().replace(/\n\r?/g, '<br>'));
+                content = $(this).val().replace(/\n\r?/g, '<br>');
                 parent.editMode = false;
-                self.description = $(this).val().replace(/\n\r?/g, '<br>');
-                self.save(htmlTask);
+                self.description = content;
+                self.save(htmlTask); 
+                if (content == ""){content = "Sans descriptif";}
+                $(parent).html(content);
               });
           }
         });
@@ -139,15 +145,18 @@ $(function() {
         if(!this.editMode){
           var parent = this;
           var content = $(this).html();
+          if (content == "Sans titre"){content = "";}
           $(this).html("<input type='text' value='" + content + "' />");
           $(this).children("input").focus();
           $(this).children("input").select();
           this.editMode = true;
           $(this).children("input").blur(function() {
-            $(parent).html($(this).val());
+            content = $(this).html();  
             parent.editMode = false;
-            self.title = $(this).val();
             self.save(htmlTask);
+            self.title = content;
+            if (content == ""){content = "Sans titre";}
+            $(parent).html(content);
           });
         }
       });
