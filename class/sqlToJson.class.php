@@ -7,6 +7,7 @@
 class sqlToJson {
 
 	var $sqlList;
+	var $varList;
 
 	function sqlToJson (){
 		$sqlList = array();
@@ -15,12 +16,18 @@ class sqlToJson {
 	function addSql($store,$sql){
 		$this->sqlList[$store] = $sql;
 	}
-
+	function addVar($key,$value){
+		$this->varList[$key] = $value; 
+	}
 	function get(){
 		$json = "";
 		foreach ($this->sqlList as $store => $sql) {
 			$json .= ($json == "") ? "" : ",";
 			$json .= $this->getStoreJson($store,$sql);
+		}
+		foreach ($this->varList as $key => $value) {
+			$json .= ($json == "") ? "" : ",";
+			$json .= '"'.$key.'":"'.$value.'"';
 		}
 		echo "{".$json."}";
 	}

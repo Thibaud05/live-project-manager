@@ -1,9 +1,9 @@
 <?php
-require_once 'class/SQL.class.php';
+include("class/template.php");
+$page = new template("3");
+
 require_once 'class/LPM.class.php';
 require_once 'class/sqlToJson.class.php';
-
-SQL::connect();
 
 $LPM = new LPM();
 $json = new sqlToJson();
@@ -12,7 +12,7 @@ $json->addSql("tasks","SELECT id,id_user_responsible as id_user,name as title,id
 $json->addSql("taskTypes","SELECT * FROM type");
 $json->addSql("releases","SELECT * FROM `release`");
 $json->addSql("users","SELECT id,firstname, lastname FROM user");
-
+$json->addVar("connectUserId",$page->login->id);
 $json->get();
 
 ?>

@@ -19,6 +19,7 @@ class login {
             $this->name = $obj->name;
             $this->lastname = $obj->lastname;
             $this->logged = $obj->logged;
+            $this->id = $obj->id;
         }
         if(isset($_GET['logout'])){
             session_destroy();
@@ -40,6 +41,7 @@ class login {
                 while ($obj = $result->fetch_object()) 
                 {
 
+                    $this->id = $obj->id;
                     $this->name = $obj->firstname;
                     $this->lastname = $obj->lastname;
                     $this->saveLogin();

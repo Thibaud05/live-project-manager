@@ -160,16 +160,6 @@ $(function() {
           });
         }
       });
-
-
-
-
-
-
-
-
-
-
       this.isOpen = true;
       htmlTask.addClass('disable-task');
     }
@@ -256,6 +246,7 @@ $(function() {
     var dates;
     var offset;
     var selectedTasks = {};
+    var connectUserId;
 
     /////////////////////
     // CONTROLLER
@@ -278,6 +269,8 @@ $(function() {
 
       var getJSON = $.getJSON( "data.php", function( data ) {
 
+
+        connectUserId = data.connectUserId;
         tasks = [];
 
         $.each( data.users, function( key, data ) {
@@ -463,21 +456,28 @@ $(function() {
       html += "</tr>";
 
       // Rows tasks
+      var lines = "";
       $.each( users, function( key, user ) {
         if(user){
-          html += "<tr>";
-          html += '<td class="firstCol" >' + user.firstname + '</td>';
+
+          var line  = "<tr>";
+          line += '<td class="firstCol" >' + user.firstname + '</td>';
           for (i = 0; i < nbdays; i++){
             var index = i % dayPerWeek;
             var css = ( index==0 ) ? ' class="leftSep"' : '';
-            html += '<td' + css + '><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
-            html += root.renderTask(user.id + ":" + dates[i]);
-            html += '</div></td>';
+            line += '<td' + css + '><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
+            line += root.renderTask(user.id + ":" + dates[i]);
+            line += '</div></td>';
           }
-          html += "</tr>";
+          line += "</tr>";
+          if(user.id == connectUserId){
+            firstLine = line;
+          }else{
+            lines += line;
+          }
         }
       });
-
+      html += firstLine + lines;
       $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
       $("#box").html(this.renderBox("DEV",1) +  this.renderBox("QA",2) + this.renderBox("PRD",3));
     }
