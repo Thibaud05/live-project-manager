@@ -26,12 +26,21 @@ body{
 	margin: 10px;
 	float: left;
 }
-.user{
-  float: right;
-  color: #fff;
-  height: 50px;
-  padding: 10px;
-  line-height: 50px;
+ul.nav.navbar-right {
+    margin-right: 20px;
+}
+ul#menu3 {
+    margin-top: 25px;
+    border-radius: 0;
+    border: 0;
+}
+#user{
+    margin-top: 10px;
+    color: #fff;
+}
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover,
+#user:hover{
+    background-color: transparent;;
 }
 .clear{
 	clear: both;

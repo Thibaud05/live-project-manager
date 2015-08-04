@@ -7,6 +7,7 @@
 class login {
     var $id;
     var $name;
+    var $lastname;
     var $email;
     var $password;
     var $logged;
@@ -16,7 +17,13 @@ class login {
         if(isset($_SESSION['login'])){
             $obj = unserialize($_SESSION['login']);
             $this->name = $obj->name;
+            $this->lastname = $obj->lastname;
             $this->logged = $obj->logged;
+        }
+        if(isset($_GET['logout'])){
+            session_destroy();
+            header('Location: index.php');
+            exit();
         }
     }
 
@@ -27,13 +34,14 @@ class login {
         {
             $this->email = $_POST['email'];
             $this->password = $_POST['password'];
-            $query = "SELECT `id`,`email`,`password`,`firstname` FROM `user`WHERE `email` = '".$this->email."' AND `password` ='".$this->password."'";
+            $query = "SELECT `id`,`email`,`password`,`firstname`,`lastname` FROM `user`WHERE `email` = '".$this->email."' AND `password` ='".$this->password."'";
             if ($result = SQL::$mysqli->query($query))
             {
                 while ($obj = $result->fetch_object()) 
                 {
 
                     $this->name = $obj->firstname;
+                    $this->lastname = $obj->lastname;
                     $this->saveLogin();
                     $this->logged = true;
                 }
@@ -55,5 +63,8 @@ class login {
             header('Location: index.php'); 
             exit();
         }
+    }
+    function getUserName(){
+        return $this->name . " " . $this->lastname;
     }
 } 

@@ -1,28 +1,13 @@
 <?php
-session_start();
-require_once 'class/SQL.class.php';
-require_once 'class/login.class.php';
-SQL::connect();
-$login = new login();
-$login->check();
-
-
-
-include("class/page.class.php");
-$page = new page("3");
+include("class/template.php");
+$page = new template("3");
 $page->title = "Live project manager";
 $page->addCss("css/app.css");
 $page->addJs("js/app.js");
-$page->displayHeaderBase();
+$page->displayHeader();
 ?>
 
-<div class="stripHead"></div>
-<div class="head">
-<div class="LPMrond"><span>LPM</span></div>
-<div class="user">Thibaud</div>
-<div class="clear"></div>
-</div>
-<div class="strip"></div>
+
 <div class="container">
 <nav>
   <ul class="pager">
@@ -132,5 +117,5 @@ $page->displayHeaderBase();
 
 
 <?php
-$page->displayFooterBase();
+$page->displayFooter();
 ?>

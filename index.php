@@ -1,12 +1,11 @@
 <?php
-session_start();
-include("class/page.class.php");
-$page = new page("1");
+include("class/tpl_log.php");
+$page = new tpl_log("1");
 
 $page->title = "Live project manager";
 $page->addCss("css/login.css");
 $page->addJs("js/login.js");
-$page->displayHeaderBase();
+$page->displayHeader();
 ?>
 <div class="container">
 	<div class="form-signin">
@@ -22,6 +21,6 @@ $page->displayHeaderBase();
 	</div>
 </div>
 <?php
-$page->displayFooterBase();
+$page->displayFooter();
 
 ?>
