@@ -262,3 +262,51 @@ td.firstCol{
     margin-left: -27px;
     opacity: 0;
 }
+
+#upload{
+    width: 100px;
+    float: right;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+#upload .fileinput-button {
+    width: 100px;
+    height: 70px;
+}
+#upload .fileinput-button {
+    width: 100px;
+    height: 95px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+#upload .fileinput-button:hover {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+#upload #progress {
+    height: 5px;
+    margin-bottom: 0px;
+    border-radius: 0px;
+}
+#files {
+    min-height: 100px;
+    width: 500px;
+    float: right;
+}
+#files .file {
+    width: 100px;
+    display: block;
+    float: right;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 11px;
+}
+
+#files .file .content {
+    height: 100px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+#files .file .content img {
+margin: 10px;
+}

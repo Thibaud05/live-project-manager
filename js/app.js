@@ -102,11 +102,57 @@ $(function() {
       }, 400, function() {
         htmlTask.css({"text-align":"left"});
         htmlTask.children("span").css({"display":"block"});
+
         var html = '<div id="taskDetail"><div id="closeTask">X</div>';
+
+     html +='<div id="upload"><span class="btn fileinput-button"> \
+        <i class="glyphicon glyphicon-plus"></i> \
+        <input id="fileupload" type="file" name="files[]" multiple> \
+    </span> \
+               <div id="progress" class="progress"> \
+        <div class="progress-bar progress-bar-success"></div> \
+    </div> \
+    </div> \
+    <div id="files" class="files"></div>';
+
+
         html += '<p>Céer par ' + self.getCreationUser() + ' aujourd’hui<p>';
         html += '<p class="desc">' + description + '<p>';
         html += '</div>';
         htmlTask.append(html);
+
+
+    $('#fileupload').fileupload({
+        url: 'server/',
+        dataType: 'json',
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+
+                if (file.url) {
+                  var thumbnail = "";
+                  if(file.thumbnailUrl){
+                      thumbnail = '<img src="' + file.thumbnailUrl + '" />';
+                  }
+                  html = '<a target="_blank" class="file" href="' + file.url + '" ><div class="content">' + thumbnail + '</div>' + file.name + '</a>';
+                } else if (file.error) {
+                  html  = '<span class="text-danger">' + file.error + '<br>' + error + '</span>'
+                }
+                $('#files').append(html);
+            });
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .progress-bar').css(
+                'width',
+                progress + '%'
+            );
+        }
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+
+
+
         $("#closeTask").click(function() {
           self.close(htmlTask);
         });
@@ -513,7 +559,7 @@ $(function() {
       $( ".connectedSortable > li" ).mousedown(function(e) {
         var id = $(this).attr("tid");
         var task =  tasksById[id];
-        if(! task.isPpen){
+        if(! task.isOpen){
           if(!e.ctrlKey){
             $.each(selectedTasks, function( key, task ) {
               task.removeClass('selected');
