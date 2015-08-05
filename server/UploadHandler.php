@@ -152,9 +152,9 @@ class UploadHandler
                     //'upload_url' => $this->get_full_url().'/thumb/',
                     // Uncomment the following to force the max
                     // dimensions and e.g. create square thumbnails:
-                    //'crop' => true,
-                    'max_width' => 80,
-                    'max_height' => 80
+                    'crop' => true,
+                    'max_width' => 100,
+                    'max_height' => 100
                 )
             ),
             'print_response' => true

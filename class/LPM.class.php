@@ -3,6 +3,7 @@
 require_once 'class/SQL.class.php';
 require_once 'class/task.class.php';
 require_once 'class/release.class.php';
+require_once 'class/file.class.php';
 /**
  * User: TGRA
  * Date: 23/06/15
@@ -17,24 +18,29 @@ class LPM {
 	function controller(){
 		if(isset($_GET["a"])){
 			$this->action = $_GET["a"];
+			$obj = json_decode($_GET["obj"]);
 			switch ($this->action) {
 				case 'setData':
 
-					$this->setData();
+					$this->setData($obj);
+					break;
+				case 'setDataFiles':
+
+					$this->setDataFiles($obj);
 					break;
 				case 'addTask':
 
-					$this->addTask();
+					$this->addTask($obj);
 					break;
 
 				case 'setRelease':
 
-					$this->setRelease();
+					$this->setRelease($obj);
 					break;
 
 				case 'delTask':
 
-					$this->delTask();
+					$this->delTask($obj);
 					break;
 								
 				default:
@@ -43,31 +49,37 @@ class LPM {
 			}
 		}
 	}
-	function setData(){
-		$obj = json_decode($_GET["obj"]);
+	function setData($obj){
 		$task = new task($obj);
 		$task->update();
 		exit;
 	}
-	function setRelease(){
-		$obj = json_decode($_GET["obj"]);
+	function setRelease($obj){
 		$release = new release($obj);
 		$release->update();
 		exit;
 	}
-	function addTask(){
-		$obj = json_decode($_GET["obj"]);
+	function addTask($obj){
 		$task = new task($obj);
 		$task->add();
 		exit;
 	}
-	function delTask(){
-		$objs = json_decode($_GET["obj"]);
+	function delTask($objs){
 		foreach ($objs as $obj) {
 			$task = new task($obj);
 			$task->del();
 		}
 		exit;
+	}
+	function setDataFiles($obj){
+		foreach ($obj->files as $data) {
+			$data->id = "";
+			$file = new file($data);
+			$file->id_task = $obj->taskId;
+			$file->add();
+			exit;
+		}
+
 	}
 }
 ?>

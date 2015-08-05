@@ -82,6 +82,7 @@ $(function() {
 
     this.open = function(htmlTask){ 
       var description = this.description;
+      var taskId = this.id;
       if (description == ""){description = "Sans descriptif";}
       if (this.title == ""){htmlTask.children("span").html("Sans titre");}
 
@@ -126,6 +127,21 @@ $(function() {
         url: 'server/',
         dataType: 'json',
         done: function (e, data) {
+
+            
+
+            $.ajax({
+              url: "data.php",
+              data: {
+                a: "setDataFiles",
+                obj:JSON.stringify({files:data.result.files,taskId:taskId})
+              },
+              success: function( data ) {
+                //
+              }
+            });
+
+
             $.each(data.result.files, function (index, file) {
 
                 if (file.url) {
@@ -332,7 +348,6 @@ $(function() {
           releases[release.day] = release;
           releasesById[release.id] = release;
         });
-        log("start");
         $.each( data.tasks, function( key, data ) {
           var t = new task(data);
           tasksById[t.id] = t;
