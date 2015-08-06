@@ -40,6 +40,39 @@ $(function() {
 
   //////////////////////////////////////////
   //
+  //  FILE OBJECT
+  //
+  //////////////////////////////////////////
+  function file(data){
+    this.id = data.id;
+    this.id_task = data.id_task;
+    this.name = data.title;
+    this.type = data.type;
+
+    this.buildUrl = function(){
+      var baseUrl = tasksManager.fullUrl + "/server/files/";
+      this.url = baseUrl + this.name;
+      this.thumbnailUrl = baseUrl + "thumbnail/" + this.name;
+    }
+
+    this.display = function(){
+      this.buildUrl();
+      if (this.url) {
+        var thumbnail = "";
+        if(this.thumbnailUrl){
+            thumbnail = '<img src="' + this.thumbnailUrl + '" />';
+        }
+        html = '<a target="_blank" class="file" href="' + this.url + '" ><div class="content">' + thumbnail + '</div>' + this.name + '</a>';
+      } else if (this.error) {
+        html  = '<span class="text-danger">' + this.error + '<br>' + error + '</span>'
+      }
+      return html;
+    }
+  }
+
+
+  //////////////////////////////////////////
+  //
   //  USER OBJECT
   //
   //////////////////////////////////////////
@@ -76,6 +109,7 @@ $(function() {
     this.creationUser;
     this.title = data.title;
     this.description = data.description;
+    this.files = [];
 
     /////////////////////
     //  affichage du detail d'une tache
@@ -113,9 +147,8 @@ $(function() {
                <div id="progress" class="progress"> \
         <div class="progress-bar progress-bar-success"></div> \
     </div> \
-    </div> \
-    <div id="files" class="files"></div>';
-
+    </div>';
+    html += self.displayFiles();
 
         html += '<p>Céer par ' + self.getCreationUser() + ' aujourd’hui<p>';
         html += '<p class="desc">' + description + '<p>';
@@ -281,6 +314,17 @@ $(function() {
         }
       });
     }
+
+    this.displayFiles = function(){
+      var html = '<div id="files" class="files">';
+      $.each( this.files, function( key, data ) {
+        if(data){
+          var objFile = new file({id:"",id_task:self.id,title:data.name,type:data.type});
+          html += objFile.display();
+        }
+      });
+      return html + '</div>';
+    }
 }
 
 
@@ -291,6 +335,7 @@ $(function() {
   //////////////////////////////////////////
 
   function tasksManager(){
+    var self = this;
     var tasks = [];
     var tasksById = [];
     var users = [];
@@ -309,6 +354,7 @@ $(function() {
     var offset;
     var selectedTasks = {};
     var connectUserId;
+    this.fullUrl;
 
     /////////////////////
     // CONTROLLER
@@ -333,10 +379,20 @@ $(function() {
 
 
         connectUserId = data.connectUserId;
+        self.fullUrl = data.fullUrl;
         tasks = [];
 
         $.each( data.users, function( key, data ) {
           users[data.id] = new user(data);
+        });
+
+        var tasks_files = {};
+        
+        $.each( data.tasks_files, function( key, data ) {
+          if(tasks_files[data.id_task] == undefined ){
+            tasks_files[data.id_task] = [];
+          }
+          tasks_files[data.id_task][data.id] = new file(data);
         });
 
         $.each( data.taskTypes, function( key, taskType ) {
@@ -348,8 +404,13 @@ $(function() {
           releases[release.day] = release;
           releasesById[release.id] = release;
         });
+
         $.each( data.tasks, function( key, data ) {
           var t = new task(data);
+          if(tasks_files[t.id] != undefined ){
+            t.files = tasks_files[t.id];
+            //log(t.files);
+          }
           tasksById[t.id] = t;
           var key = t.id_user + ":" + t.day;
           if(tasks[key] != undefined ){
@@ -359,7 +420,7 @@ $(function() {
           }
         });
       });
-      log(tasks);
+      //log(tasks);
       return getJSON;
     }
 
