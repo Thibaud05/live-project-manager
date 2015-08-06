@@ -44,6 +44,7 @@ $(function() {
   //
   //////////////////////////////////////////
   function file(data){
+
     this.id = data.id;
     this.id_task = data.id_task;
     this.name = data.title;
@@ -62,7 +63,7 @@ $(function() {
         if(this.thumbnailUrl){
             thumbnail = '<img src="' + this.thumbnailUrl + '" />';
         }
-        html = '<a target="_blank" class="file" href="' + this.url + '" ><div class="content">' + thumbnail + '</div>' + this.name + '</a>';
+        html = '<div class="file"><a class="content" target="_blank" href="' + this.url + '" >' + thumbnail + '</a>' + this.name + ' <a href="#" fid="' + this.id + '" class="removeFile" >X</a></div>';
       } else if (this.error) {
         html  = '<span class="text-danger">' + this.error + '<br>' + error + '</span>'
       }
@@ -155,12 +156,31 @@ $(function() {
         html += '</div>';
         htmlTask.append(html);
 
-
+        $('.removeFile').click(function(){
+          var fid = $(this).attr('fid');
+          var parent = $(this).parent();
+          $.ajax({
+              url: "data.php",
+              data: {
+                a: "delDataFiles",
+                obj:JSON.stringify(self.files[fid])
+              },
+              success: function( data ) {
+                parent.remove();
+                delete self.files.splice(fid, 1);
+              }
+            });
+        });
     $('#fileupload').fileupload({
         url: 'server/',
         dataType: 'json',
         done: function (e, data) {
-
+          $('#progress .progress-bar')
+            .delay(800)
+            .queue(function (next) { 
+            $(this).css('width',0);
+              next(); 
+            });
             
 
             $.ajax({
@@ -170,7 +190,7 @@ $(function() {
                 obj:JSON.stringify({files:data.result.files,taskId:taskId})
               },
               success: function( data ) {
-                //
+                //self.files[];//todo
               }
             });
 
@@ -187,9 +207,11 @@ $(function() {
                   html  = '<span class="text-danger">' + file.error + '<br>' + error + '</span>'
                 }
                 $('#files').append(html);
+                
+            
             });
         },
-        progressall: function (e, data) {
+        progress : function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
             $('#progress .progress-bar').css(
                 'width',
@@ -319,7 +341,7 @@ $(function() {
       var html = '<div id="files" class="files">';
       $.each( this.files, function( key, data ) {
         if(data){
-          var objFile = new file({id:"",id_task:self.id,title:data.name,type:data.type});
+          var objFile = new file({id:data.id,id_task:self.id,title:data.name,type:data.type});
           html += objFile.display();
         }
       });

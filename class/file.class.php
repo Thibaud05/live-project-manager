@@ -34,6 +34,9 @@ class file {
 	function del(){
 		$sql = "DELETE FROM `task_file` WHERE id = ".$this->id;
 		$res = SQL::$mysqli->query($sql);
+		unlink ("server/files//".$this->title);
+		unlink ("server/files/thumbnail/".$this->title);
+		//echo json_encode((object)array("reponse"=>"true")));
 	}
 }
 ?>

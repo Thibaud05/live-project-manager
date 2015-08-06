@@ -28,6 +28,10 @@ class LPM {
 
 					$this->setDataFiles($obj);
 					break;
+				case 'delDataFiles':
+
+					$this->delDataFiles($obj);
+					break;
 				case 'addTask':
 
 					$this->addTask($obj);
@@ -80,6 +84,11 @@ class LPM {
 			exit;
 		}
 
+	}
+	function delDataFiles($obj){
+			$file = new file($obj);
+			$file->del();
+			exit;
 	}
 }
 ?>
