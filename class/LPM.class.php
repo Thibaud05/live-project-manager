@@ -76,19 +76,17 @@ class LPM {
 		exit;
 	}
 	function setDataFiles($obj){
-		foreach ($obj->files as $data) {
-			$data->id = "";
-			$file = new file($data);
-			$file->id_task = $obj->taskId;
-			$file->add();
-			exit;
-		}
-
+		$data = $obj->files[0];
+		$data->id = "";
+		$file = new file($data);
+		$file->id_task = $obj->taskId;
+		echo json_encode($file->add());
+		exit;
 	}
 	function delDataFiles($obj){
-			$file = new file($obj);
-			$file->del();
-			exit;
+		$file = new file($obj);
+		$file->del();
+		exit;
 	}
 }
 ?>

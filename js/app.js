@@ -190,7 +190,8 @@ $(function() {
                 obj:JSON.stringify({files:data.result.files,taskId:taskId})
               },
               success: function( data ) {
-                //self.files[];//todo
+                data = $.parseJSON(data);
+                self.files[data.id] = new file(data);
               }
             });
 
