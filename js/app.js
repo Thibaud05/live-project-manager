@@ -269,10 +269,10 @@ $(function() {
           $(this).children("input").select();
           this.editMode = true;
           $(this).children("input").blur(function() {
-            content = $(this).html();  
+            content = $(this).val();  
             parent.editMode = false;
-            self.save(htmlTask);
             self.title = content;
+            self.save(htmlTask);
             if (content == ""){content = "Sans titre";}
             $(parent).html(content);
           });
