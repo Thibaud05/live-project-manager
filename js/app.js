@@ -411,24 +411,24 @@ $(function() {
 
         var tasks_files = {};
         
-        $.each( data.tasks_files, function( key, data ) {
+        data.tasks_files.map(function(data,key ) {
           if(tasks_files[data.id_task] == undefined ){
             tasks_files[data.id_task] = [];
           }
           tasks_files[data.id_task][data.id] = new file(data);
         });
 
-        $.each( data.taskTypes, function( key, taskType ) {
+        data.taskTypes.map(function(taskType,key) {
           taskTypes[taskType.id] = taskType;
           taskTypesByDate[taskType.day] = taskType;
         });
 
-        $.each( data.releases, function( key, release ) {
+        data.releases.map(function(release,key) {
           releases[release.day] = release;
           releasesById[release.id] = release;
         });
 
-        $.each( data.tasks, function( key, data ) {
+        data.tasks.map(function(data,key) {
           var t = new task(data);
           if(tasks_files[t.id] != undefined ){
             t.files = tasks_files[t.id];
@@ -465,7 +465,7 @@ $(function() {
       });
 
       releases = [];
-      $.each( releasesById, function( key, release ) {
+      releasesById.map(function(release,key) {
         if (release){
           var key =  release.day;
           releases[key] = release;
@@ -500,7 +500,7 @@ $(function() {
 
     this.delSelectedTasks = function (){
       var removedTasksId = [];
-      $.each(selectedTasks, function( key, task ) {
+      selectedTasks.map(function(task,key) {
           delete tasksById[key];
           task.remove();
           delete selectedTasks[key];
