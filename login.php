@@ -6,6 +6,11 @@ require_once 'class/login.class.php';
 SQL::connect();
 
 $login = new login();
-$login->connect();
+if(isset($_GET["changePassword"])){
+    $login->check(true);
+    $login->changePassword();
+}else{
+    $login->connect();
+}
 $login->result();
 ?>

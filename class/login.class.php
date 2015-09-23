@@ -20,6 +20,8 @@ class login {
             $this->lastname = $obj->lastname;
             $this->logged = $obj->logged;
             $this->id = $obj->id;
+            $this->email = $obj->email;
+            $this->password = $obj->password;
         }
         if(isset($_GET['logout'])){
             session_destroy();
@@ -44,7 +46,7 @@ class login {
                     $this->id = $obj->id;
                     $this->name = $obj->firstname;
                     $this->lastname = $obj->lastname;
-                    $this->saveLogin();
+                    $this->save();
                     $this->logged = true;
                 }
             $result->free();
@@ -52,7 +54,7 @@ class login {
         }
     }
 
-    function saveLogin()
+    function save()
     {
         $_SESSION['login'] = serialize($this);
     }
@@ -60,13 +62,31 @@ class login {
     {
         echo '{"logged":"' . $this->logged . '"}';
     }
-    function check(){
+    function check($init = false){
+        //print_r($this);
         if(!isset($_SESSION['login'])){
             header('Location: index.php'); 
+            exit();
+        }
+        if(($this->password=="0000")&&(!$init)){
+            header('Location: password.php');
             exit();
         }
     }
     function getUserName(){
         return $this->name . " " . $this->lastname;
+    }
+    function changePassword(){
+        $password = $_POST['password'];
+        $password2 = $_POST['password2'];
+        $this->logged = false;
+        if($password==$password2 && $password != "0000"){
+            $this->logged = true;
+            $this->password = $password;
+            $this->save();
+            $query = "UPDATE `user` SET  `password` =  '".$password."' WHERE `id` =".$this->id;
+            SQL::$mysqli->query($query);
+        }
+       
     }
 } 
