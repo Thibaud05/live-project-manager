@@ -82,6 +82,7 @@ $(function() {
     this.id = data.id;
     this.firstname = data.firstname;
     this.lastname = data.lastname;
+    this.level = data.level;
 
     /////////////////////
     //  Nom complet 
@@ -107,7 +108,7 @@ $(function() {
     this.id_user = data.id_user;
     this.day = data.day;
     this.creationDate;
-    this.creationUser;
+    this.creationUser = data.creationUser;
     this.title = data.title;
     this.description = data.description;
     this.files = [];
@@ -318,7 +319,7 @@ $(function() {
     // affichage du nom de l'utilisateur
 
     this.getCreationUser = function(){
-      var user = tasksManager.getUser(this.id_user);
+      var user = tasksManager.getUser(this.creationUser);
       return user.getName();
     }
 
@@ -377,6 +378,7 @@ $(function() {
     var offset;
     var selectedTasks = {};
     var connectUserId;
+    var connectUser;
     this.fullUrl;
 
     /////////////////////
@@ -408,7 +410,7 @@ $(function() {
         $.each( data.users, function( key, data ) {
           users[data.id] = new user(data);
         });
-
+        connectUser = self.getUser(connectUserId)
         var tasks_files = {};
         
         data.tasks_files.map(function(data,key ) {
@@ -453,7 +455,7 @@ $(function() {
     this.sync = function(){
 
       tasks = [];
-      $.each( tasksById, function( key, task ) {
+      tasksById.map(function(task,key) {
         if (task){
           var key = task.id_user + ":" + task.day;
           if(tasks[key] != undefined ){
@@ -602,9 +604,10 @@ $(function() {
 
       // Rows tasks
       var lines = "";
+      var firstLine = "";
       $.each( users, function( key, user ) {
         if(user){
-
+          
           var line  = "<tr>";
           line += '<td class="firstCol" >' + user.firstname + '</td>';
           for (i = 0; i < nbdays; i++){
@@ -622,7 +625,10 @@ $(function() {
           }
         }
       });
-      html += firstLine + lines;
+      html += firstLine;
+      if(connectUser.level!=0){
+        html += lines;
+      }
       $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
       $("#box").html(this.renderBox("DEV",1) +  this.renderBox("QA",2) + this.renderBox("PRD",3));
     }
