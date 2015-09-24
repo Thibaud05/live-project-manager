@@ -320,7 +320,9 @@ $(function() {
 
     this.getCreationUser = function(){
       var user = tasksManager.getUser(this.creationUser);
-      return user.getName();
+      if (user != undefined){
+        return user.getName();
+      }
     }
 
     /////////////////////
