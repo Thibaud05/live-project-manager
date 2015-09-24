@@ -74,7 +74,7 @@ class login {
         }
     }
     function getUserName(){
-        return $this->name . " " . $this->lastname;
+        return ucfirst($this->name) . " " . strtoupper($this->lastname);
     }
     function changePassword(){
         $password = $_POST['password'];
