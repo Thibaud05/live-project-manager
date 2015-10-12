@@ -59,15 +59,34 @@ $(function() {
     this.display = function(){
       this.buildUrl();
       if (this.url) {
-        var thumbnail = "";
-        if(this.thumbnailUrl){
-            thumbnail = '<img src="' + this.thumbnailUrl + '" />';
-        }
+        var thumbnail = this.getThumbnail();
         html = '<div class="file"><a class="content" target="_blank" href="' + this.url + '" >' + thumbnail + '</a>' + this.name + ' <a href="#" fid="' + this.id + '" class="removeFile" >X</a></div>';
       } else if (this.error) {
         html  = '<span class="text-danger">' + this.error + '<br>' + error + '</span>'
       }
       return html;
+    }
+    this.getThumbnail = function(){
+      var html = ""
+      switch(this.type){
+        case "image/jpeg" :
+          html = '<img src="' + this.thumbnailUrl + '" />';
+          break
+        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
+          html = '<img src="' + tasksManager.fullUrl + "/img/ico/doc.png" + '" />';
+          break
+        case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+          html = '<img src="' + tasksManager.fullUrl + "/img/ico/ppt.png" + '" />';
+          break
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+          html = '<img src="' + tasksManager.fullUrl + "/img/ico/xls.png" + '" />';
+          break
+          
+        default : 
+          html = this.type
+      }
+      return html
+      
     }
   }
 
@@ -121,7 +140,8 @@ $(function() {
       var taskId = this.id;
       if (description == ""){description = "Sans descriptif";}
       if (this.title == ""){htmlTask.children("span").html("Sans titre");}
-
+      $("body").css("overflow","hidden");
+      $("body").scrollTop()
       htmlTask.css("position","absolute");
       var p = htmlTask.position();
       this.initPosition = p;  
@@ -228,6 +248,7 @@ $(function() {
 
         $("#closeTask").click(function() {
           self.close(htmlTask);
+          $("body").css("overflow","auto");
         });
         htmlTask.find(".desc").unbind('dblclick').dblclick(function() {
           if(!this.editMode){

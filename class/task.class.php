@@ -13,6 +13,7 @@ class task {
 	var $id_type;
 	var $day;
 	var $desc;
+	var $creationUser;
 
 	function task ($obj){
 		$this->id = $obj->id;
@@ -21,11 +22,14 @@ class task {
 		$this->id_type = $obj->id_type;
 		$this->day = $obj->day;
 		$this->comments = $obj->description;
+		$this->creationUser = $obj->creationUser;
 	}
 	function update(){
 		$sql = "UPDATE `task` 
 				SET `name` = '".$this->title."',
 					`id_user_responsible` = '".$this->id_user."',
+					`id_user_add` = '".$this->creationUser."',
+					
 					`id_type` = '".$this->id_type."',
 					`date_finish` = '".$this->day."',
 					`comments` = '".$this->comments."'
@@ -41,7 +45,6 @@ class task {
 					`name`, 
 					`id_user_responsible`, 
 					`id_type`, 
-					`date_finish`, 
 					`date_finish`, 
 					`comments`
 				) VALUES (
