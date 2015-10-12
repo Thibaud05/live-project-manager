@@ -20,6 +20,7 @@ $page->displayHeader();
     <li>
     <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-task-modal-lg"><span id="add_btn" class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
     <button id="del_btn" type="button" class="btn btn-default" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+    <button id="duplicate_btn" type="button" class="btn btn-default" ><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button>
 </li>
     <li id="next" class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
   </ul>

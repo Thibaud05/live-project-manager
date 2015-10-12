@@ -3,6 +3,9 @@ $(function() {
     BOOTSTRAP MODAL FIX
     http://gurde.com/stacked-bootstrap-modals/
   */
+  // bug box : l'animation d'appartion part toujour de la premier tache
+
+
 
   $(document)  
     .on('show.bs.modal', '.modal', function(event) {
@@ -117,7 +120,6 @@ $(function() {
   //  TASK OBJECT
   //
   //////////////////////////////////////////
-
   function task(data){
 
     var self = this;
@@ -250,6 +252,8 @@ $(function() {
           self.close(htmlTask);
           $("body").css("overflow","auto");
         });
+
+         // Edition du descriptif 
         htmlTask.find(".desc").unbind('dblclick').dblclick(function() {
           if(!this.editMode){
               var parent = this;
@@ -513,6 +517,16 @@ $(function() {
       this.activate();
     }
 
+    this.addTasks = function (tasks){
+      $.each(tasks, function( key, task ) {
+        tasksById[task.id] = task;
+      });
+      this.init();
+      this.sync();
+      this.render();
+      this.activate();
+    }
+
     this.save = function(){
       $( "body" ).append('<div class="dataSaved"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>');
       $(".dataSaved").animate({opacity:1}).animate({opacity:0},400,function() {
@@ -525,11 +539,12 @@ $(function() {
 
     this.delSelectedTasks = function (){
       var removedTasksId = [];
-      selectedTasks.map(function(task,key) {
-          delete tasksById[key];
-          task.remove();
-          delete selectedTasks[key];
-          removedTasksId.push({"id":key,"id_user":"","title":"","id_type":"","day":""});
+      $.each(selectedTasks, function( key, task ) {
+        var id = task.attr("tid");
+        task.remove();
+        delete tasksById[id];
+        delete selectedTasks[id];
+        removedTasksId.push({"id":id,"id_user":"","title":"","id_type":"","day":""});
       });
       $.ajax({
         url: "data.php",
@@ -543,6 +558,29 @@ $(function() {
         }
       });
     }
+
+    /////////////////////
+    // DUPLICATE TASK
+
+    this.duplicateTask = function (){
+      var duplicatedTasksId = [];
+      for (key in selectedTasks) {
+        var task = tasksById[key]
+        duplicatedTasksId.push({"id":"","id_user":task.id_user,"title":task.title,"id_type":task.id_type,"day":task.day,"description":task.description,"creationUser":connectUserId});
+      }
+      $.ajax({
+        url: "data.php",
+        dataType: "json",
+        data: {
+          a: "duplicateTask",
+          obj:JSON.stringify(duplicatedTasksId)
+        },
+        success: function( tasks ) {
+          tasksManager.addTasks(tasks);
+        }
+      });
+    }
+
 
     /////////////////////
     // DISPLAY TASK  
@@ -802,6 +840,13 @@ $(function() {
       }
   }) 
 
+
+  //////////////////////
+  // Duplicate selected task
+
+   $( "#duplicate_btn" ).click(function() {
+    tasksManager.duplicateTask()
+  }); 
 
   //////////////////////
   // Add a new task

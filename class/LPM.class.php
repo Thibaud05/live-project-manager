@@ -46,7 +46,12 @@ class LPM {
 
 					$this->delTask($obj);
 					break;
-								
+						
+				case 'duplicateTask':
+
+					$this->duplicateTask($obj);
+					break;
+
 				default:
 					# code...
 					break;
@@ -73,6 +78,18 @@ class LPM {
 			$task = new task($obj);
 			$task->del();
 		}
+		exit;
+	}
+	function duplicateTask($objs){
+		echo "[";
+		$first = false;
+		foreach ($objs as $obj) {
+			if($first){echo ",";}
+			$first = true;
+			$task = new task($obj);
+			$task->add();
+		}
+		echo "]";
 		exit;
 	}
 	function setDataFiles($obj){

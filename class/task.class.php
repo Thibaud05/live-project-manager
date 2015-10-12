@@ -12,7 +12,7 @@ class task {
 	var $title;
 	var $id_type;
 	var $day;
-	var $desc;
+	var $description;
 	var $creationUser;
 
 	function task ($obj){
@@ -21,7 +21,7 @@ class task {
 		$this->title = $obj->title;
 		$this->id_type = $obj->id_type;
 		$this->day = $obj->day;
-		$this->comments = $obj->description;
+		$this->description = $obj->description;
 		$this->creationUser = $obj->creationUser;
 	}
 	function update(){
@@ -32,15 +32,21 @@ class task {
 					
 					`id_type` = '".$this->id_type."',
 					`date_finish` = '".$this->day."',
-					`comments` = '".$this->comments."'
+					`comments` = '".$this->description."'
 		 		WHERE `id` = ".$this->id;
 		$res = SQL::$mysqli->query($sql);
 
 	}
 	function add(){
-		$this->day = date("Y-m-d");
-		$this->id_user = 1;
-		$this->id_type = 1;
+		if($this->day==""){
+			$this->day = date("Y-m-d");
+		}
+		if($this->id_user == ""){
+			$this->id_user = 1;
+		}
+		if($this->id_type == ""){
+			$this->id_type = 1;
+		}
 		$sql = "INSERT INTO `task` (
 					`name`, 
 					`id_user_responsible`, 
@@ -52,7 +58,7 @@ class task {
 					'".$this->id_user ."',
 					'".$this->id_type ."',
 					'".$this->day."',
-					'".$this->comments."'
+					'".$this->description."'
 				)";
 		$res = SQL::$mysqli->query($sql);
 		$this->id = SQL::$mysqli->insert_id;
