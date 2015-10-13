@@ -70,7 +70,7 @@ class LPM {
 	}
 	function addTask($obj){
 		$task = new task($obj);
-		$task->add();
+		echo json_encode($task->add());
 		exit;
 	}
 	function delTask($objs){
@@ -81,15 +81,12 @@ class LPM {
 		exit;
 	}
 	function duplicateTask($objs){
-		echo "[";
-		$first = false;
+		$arr = [];
 		foreach ($objs as $obj) {
-			if($first){echo ",";}
-			$first = true;
 			$task = new task($obj);
-			$task->add();
+			$arr[] = $task->add();
 		}
-		echo "]";
+		echo json_encode($arr);
 		exit;
 	}
 	function setDataFiles($obj){

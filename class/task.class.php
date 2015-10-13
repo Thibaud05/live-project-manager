@@ -62,7 +62,7 @@ class task {
 				)";
 		$res = SQL::$mysqli->query($sql);
 		$this->id = SQL::$mysqli->insert_id;
-		echo json_encode($this);
+		return $this;
 	}
 	function del(){
 		$sql = "DELETE FROM `task` WHERE id = ".$this->id;

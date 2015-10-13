@@ -20,6 +20,7 @@ class template extends page {
         $this->addJs("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js");
         $this->addJs("js/moment.min.js");
         $this->addCss('http://fonts.googleapis.com/css?family=Roboto:400,300');
+        $this->version = "v1.0.0";
         SQL::connect();
         $this->login = new login();
         $this->login->check();
@@ -36,6 +37,8 @@ class template extends page {
                         </a>
                         <ul id="menu3" class="dropdown-menu" aria-labelledby="user">
                           <li><a href="#">Mon compte</a></li>
+                          <li role="separator" class="divider"></li>
+                          <li class="dropdown-header">'.$this->version.'</li>
                           <li role="separator" class="divider"></li>
                           <li><a href="?logout">Déconnexion</a></li>
                         </ul>

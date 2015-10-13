@@ -143,8 +143,7 @@ $(function() {
       if (description == ""){description = "Sans descriptif";}
       if (this.title == ""){htmlTask.children("span").html("Sans titre");}
       $("body").css("overflow","hidden");
-      $("body").scrollTop()
-      htmlTask.css("position","absolute");
+      htmlTask.css("position","fixed");
       var p = htmlTask.position();
       this.initPosition = p;  
       htmlTask.css({
@@ -482,13 +481,13 @@ $(function() {
     this.sync = function(){
 
       tasks = [];
-      tasksById.map(function(task,key) {
-        if (task){
-          var key = task.id_user + ":" + task.day;
+      tasksById.map(function(t,key) {
+        if (t){
+          var key = t.id_user + ":" + t.day;
           if(tasks[key] != undefined ){
-            tasks[key].push(task);
+            tasks[key].push(t);
           }else{
-            tasks[key] = new Array(task);
+            tasks[key] = new Array(t);
           }
         }
       });
@@ -509,17 +508,18 @@ $(function() {
     /////////////////////
     // ADD TASK 
 
-    this.addTask = function (task){
-      tasksById[task.id] = task;
+    this.addTask = function (t){
+      tasksById[t.id] = t;
       this.init();
       this.sync();
       this.render();
       this.activate();
     }
 
-    this.addTasks = function (tasks){
-      $.each(tasks, function( key, task ) {
-        tasksById[task.id] = task;
+    this.addTasks = function (datas){
+      datas.map(function( data, key ) {
+        var t = new task(data)
+        tasksById[t.id] = t;
       });
       this.init();
       this.sync();
@@ -539,9 +539,9 @@ $(function() {
 
     this.delSelectedTasks = function (){
       var removedTasksId = [];
-      $.each(selectedTasks, function( key, task ) {
-        var id = task.attr("tid");
-        task.remove();
+      $.each(selectedTasks, function( key, t ) {
+        var id = t.attr("tid");
+        t.remove();
         delete tasksById[id];
         delete selectedTasks[id];
         removedTasksId.push({"id":id,"id_user":"","title":"","id_type":"","day":""});
@@ -553,7 +553,7 @@ $(function() {
           a: "delTask",
           obj:JSON.stringify(removedTasksId)
         },
-        success: function( task ) {
+        success: function( t ) {
           log("taskRemoved");
         }
       });
@@ -565,8 +565,8 @@ $(function() {
     this.duplicateTask = function (){
       var duplicatedTasksId = [];
       for (key in selectedTasks) {
-        var task = tasksById[key]
-        duplicatedTasksId.push({"id":"","id_user":task.id_user,"title":task.title,"id_type":task.id_type,"day":task.day,"description":task.description,"creationUser":connectUserId});
+        var t = tasksById[key]
+        duplicatedTasksId.push({"id":"","id_user":t.id_user,"title":t.title,"id_type":t.id_type,"day":t.day,"description":t.description,"creationUser":connectUserId});
       }
       $.ajax({
         url: "data.php",
@@ -575,8 +575,8 @@ $(function() {
           a: "duplicateTask",
           obj:JSON.stringify(duplicatedTasksId)
         },
-        success: function( tasks ) {
-          tasksManager.addTasks(tasks);
+        success: function( data ) {
+          tasksManager.addTasks(data);
         }
       });
     }
@@ -588,11 +588,12 @@ $(function() {
     this.renderTask = function(key){
       var html = ''
       tabTask = tasks[key];
+
       if(tabTask){
         for (var i = 0; i < tabTask.length; i++){
-          task = tabTask[i];
-          color = taskTypes[task.id_type].color;
-          html += '<li class="ui-state-default task ' + color + '" tid = "' + task.id + '" ><span>' + task.title + '</span></li>';
+          t = tabTask[i];
+          color = taskTypes[t.id_type].color;
+          html += '<li class="ui-state-default task ' + color + '" tid = "' + t.id + '" ><span>' + t.title + '</span></li>';
         }
       }
       return html;
@@ -705,9 +706,9 @@ $(function() {
         cancel: ".disable-task",
         connectWith: ".connectedSortable",
         receive: function( event, ui ) {
-          var task = tasksById[ui.item.attr("tid")];
-          task.day = dates[$(this).attr("di")];
-          task.id_user = $(this).attr("uid");
+          var t = tasksById[ui.item.attr("tid")];
+          t.day = dates[$(this).attr("di")];
+          t.id_user = $(this).attr("uid");
           $.ajax({
             url: "data.php",
             data: {
@@ -724,12 +725,12 @@ $(function() {
       // Task click
       $( ".connectedSortable > li" ).mousedown(function(e) {
         var id = $(this).attr("tid");
-        var task =  tasksById[id];
-        if(! task.isOpen){
+        var t =  tasksById[id];
+        if(! t.isOpen){
           if(!e.ctrlKey){
-            $.each(selectedTasks, function( key, task ) {
-              task.removeClass('selected');
-              delete selectedTasks[task.attr("tid")];
+            $.each(selectedTasks, function( key, t ) {
+              t.removeClass('selected');
+              delete selectedTasks[t.attr("tid")];
             });
           }
           selectedTask = $(this);
@@ -741,10 +742,10 @@ $(function() {
       // Task double click
       $( ".connectedSortable > li" ).dblclick(function() {
         var id = $(this).attr("tid");
-        var task =  tasksById[id];
+        var t =  tasksById[id];
         $(this).removeClass('selected');
-        if(! task.isOpen){
-          task.open($(this));
+        if(! t.isOpen){
+          t.open($(this));
         }/*else{
           task.close($(this));
         }*/
@@ -756,8 +757,8 @@ $(function() {
         content: function(){
           var element = $( this );
           var idTask = element.attr("tid");
-          var task = tasksById[idTask];
-          color = taskTypes[task.id_type].color;
+          var t = tasksById[idTask];
+          color = taskTypes[t.id_type].color;
           if(color == "pink"){
             return "";
           }
