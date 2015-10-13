@@ -122,17 +122,18 @@ $(function() {
   //////////////////////////////////////////
   function task(data){
 
-    var self = this;
+    
     this.isOpen = false;
     this.id = data.id;
     this.id_type = data.id_type;
     this.id_user = data.id_user;
     this.day = data.day;
-    this.creationDate;
+    this.creationDate = data.creationDate;
     this.creationUser = data.creationUser;
     this.title = data.title;
     this.description = data.description;
     this.files = [];
+    var self = this;
 
     /////////////////////
     //  affichage du detail d'une tache
@@ -143,7 +144,7 @@ $(function() {
       if (description == ""){description = "Sans descriptif";}
       if (this.title == ""){htmlTask.children("span").html("Sans titre");}
       $("body").css("overflow","hidden");
-      htmlTask.css("position","fixed");
+      htmlTask.css("position","absolute");
       var p = htmlTask.position();
       this.initPosition = p;  
       htmlTask.css({
@@ -154,7 +155,7 @@ $(function() {
       });
       htmlTask.animate({
         left:0,
-        top:0,
+        top:$("body").scrollTop(),
         width:  "100%",
         height:  "100%",
       }, 400, function() {
@@ -173,7 +174,7 @@ $(function() {
     </div>';
     html += self.displayFiles();
 
-        html += '<p>Céer par ' + self.getCreationUser() + ' aujourd’hui<p>';
+        html += '<p>Edité par ' + self.getCreationUser() + ' le ' + moment(self.creationDate).format("DD/MM/YYYY à H:mm:ss") + '<p>';
         html += '<p class="desc">' + description + '<p>';
         html += '</div>';
         htmlTask.append(html);
@@ -353,6 +354,7 @@ $(function() {
     // Sauvegarde d'une tache
 
     this.save = function(htmlTask){
+      this.creationUser = connectUserId;
       $.ajax({
         url: "data.php",
         data: {
@@ -692,7 +694,7 @@ $(function() {
         html += lines;
       }
       $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
-      $("#box").html(this.renderBox("DEV",1) +  this.renderBox("QA",2) + this.renderBox("PRD",3));
+      $("#box").html(this.renderBox("ALPHA",4) + this.renderBox("DEV",1) +  this.renderBox("QA",2) + this.renderBox("PRD",3));
     }
 
     /////////////////////
@@ -709,11 +711,12 @@ $(function() {
           var t = tasksById[ui.item.attr("tid")];
           t.day = dates[$(this).attr("di")];
           t.id_user = $(this).attr("uid");
+          t.creationUser = connectUserId;
           $.ajax({
             url: "data.php",
             data: {
               a: "setData",
-              obj:JSON.stringify(task)
+              obj:JSON.stringify(t)
             },
             success: function( data ) {
               log("saved");
