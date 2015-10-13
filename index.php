@@ -1,7 +1,8 @@
 <?php
 include("class/tpl_log.php");
 $page = new tpl_log("1");
-
+$login = new login();
+$login->connect();
 $page->title = "Live project manager";
 $page->addCss("css/login.css");
 $page->addJs("js/login.js");
