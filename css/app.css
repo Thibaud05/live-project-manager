@@ -10,8 +10,7 @@ body{
 	height: 10px;
 }
 .strip{
-	background-color: #E0E0E0;
-	height: 30px;
+	background-color: #F5F5F5;
 }
 .LPMrond{
 	border-radius:50%;
@@ -51,8 +50,11 @@ div.LPMrond{
 
 div.LPMrond span{
 	position:relative;
-	font-size:18px;
-	top:12px;
+	font-size:13px;
+    top: 12px;
+    font-family: 'roboto';
+    font-weight: bold;
+};
 }
 .right{
 	float: right;
@@ -132,7 +134,7 @@ div.LPMrond span{
 
 .releaseSlot{
 	width: 100px;
-    min-height: 30px;
+    min-height: 32px;
     list-style-type: none;
     margin: 0;
     float: left;
@@ -335,9 +337,8 @@ div.LPMrond span{
     .abs{height: 60px;}
     .connectedSortable li {width: 60px; height: 60px;}
     .releaseSlot{width: 60px;}
-
+    .releaseSlot span {font-size: 9px;}
 }
-
 td.firstCol{
     width: 100%;
 }
@@ -347,10 +348,10 @@ td.firstCol{
     z-index: 2;
 }
 .page{
-    padding-top:120px;
+    padding-top:165px;
 }
 .barContent {
-    margin-left: -200px;
+    margin-left: -215px;
     left: 50%;
     position: absolute;
     margin-top: 15px;
@@ -360,11 +361,15 @@ td.firstCol{
     background-color: #303F9F;
     border-color: transparent;
 }
-.btn-default:hover {
+.btn-default:hover, .btn-default:focus {
     color: #3F51B5;
     background-color: #fff;
     border-color: transparent;
 }
+ .btn-default:focus {
+    background-color: #000;
+ }
+
 .next{
     margin-left: 50px;
 }

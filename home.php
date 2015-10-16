@@ -19,6 +19,7 @@ $page->barContent = '
     <a id="next" class="next btn btn-default" href="#" title="Taches suivantes">Suivant <span aria-hidden="true">&rarr;</span></a>
     </div>
 ';
+$page->stripContent ='<div id="tasksManagerHead"></div>';
 
 $page->displayHeader();
 ?>

@@ -646,31 +646,32 @@ $(function() {
     this.render = function(){
       var root = this;
       var html = "";
+      var htmlHead = "";
 
       // Week row
-      html += '<tr class="week"><td class="firstCol"></td>';
+      htmlHead += '<tr class="week"><td class="firstCol"></td>';
       for (i = 0; i < nbWeekPerScreen; i++){
-        html += '<td class="leftSep" colspan="' + dayPerWeek + '">W' + (i + week) + '</td>';
+        htmlHead += '<td class="leftSep" colspan="' + dayPerWeek + '">W' + (i + week) + '</td>';
       }
-      html += "</tr>";
+      htmlHead += "</tr>";
     
       // Realeases row
-      html += '<tr class="day"><td></td>';
+      htmlHead += '<tr class="day"><td></td>';
       for (i = 0; i < nbdays; i++){
         var index = i % dayPerWeek;
         var css = ( index==0 ) ? 'leftSep' : '';
-        html += '<td  class="' + css + '"><ul class="releaseSlot" di = "' + i + '">' + this.renderRelease(dates[i]) + '</ul></td>';
+        htmlHead += '<td  class="' + css + '"><ul class="releaseSlot" di = "' + i + '">' + this.renderRelease(dates[i]) + '</ul></td>';
       }
-      html += "</tr>";
+      htmlHead += "</tr>";
 
       // Days row 
-      html += '<tr class="day"><td></td>';
+      htmlHead += '<tr class="day"><td></td>';
       for (i = 0; i < nbdays; i++){
         var index = i % dayPerWeek;
         var css = ( index==0 ) ? ' class="leftSep"' : '';
-        html += '<td' + css + '>' + days[index] + '</td>';
+        htmlHead += '<td' + css + '>' + days[index] + '</td>';
       }
-      html += "</tr>";
+      htmlHead += "</tr>";
 
       // Rows tasks
       var lines = "";
@@ -699,6 +700,7 @@ $(function() {
       if(connectUser.level!=0){
         html += lines;
       }
+      $("#tasksManagerHead").html('<table class="table" width="100%" cellspacing="0">' + htmlHead + '</table>');
       $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
       $("#box").html(this.renderBox("ALPHA",4) + this.renderBox("DEV",1) +  this.renderBox("QA",2) + this.renderBox("PRD",3));
     }

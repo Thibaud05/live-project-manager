@@ -19,7 +19,7 @@ class template extends page {
         $this->addJs("http://code.jquery.com/ui/1.11.4/jquery-ui.js");
         $this->addJs("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js");
         $this->addJs("js/moment.min.js");
-        $this->addCss('http://fonts.googleapis.com/css?family=Roboto:400,300');
+        $this->addCss('http://fonts.googleapis.com/css?family=Roboto:400,300,700');
         $this->version = "v1.0.0";
         SQL::connect();
         $this->login = new login();

@@ -52,6 +52,8 @@ class login {
             while ($obj = $result->fetch_object()) 
             {
 
+                $this->email = $obj->email;
+                $this->password = $obj->password;
                 $this->id = $obj->id;
                 $this->name = $obj->firstname;
                 $this->lastname = $obj->lastname;
@@ -95,6 +97,9 @@ class login {
         }
     }
     function getUserName(){
+        return ucfirst($this->name);
+    }
+    function getUserFullName(){
         return ucfirst($this->name) . " " . strtoupper($this->lastname);
     }
     function changePassword(){
