@@ -68,12 +68,10 @@ div.LPMrond span{
 	padding: 0px !important;
 	width: 100px;
 }
-td.firstCol{
-	width: 100%;
-}
 .ui-state-hover{
 	background-color: #E0E0E0;
 }
+
 
 .draggable { width: 100px; height: 100px;background-color: #9FA8DA;border:0;}
 .droppable { width: 100px; height: 100px;background-color: #fff;border:0;}
@@ -172,7 +170,7 @@ td.firstCol{
 	background-color: #0097A7;
 }
 .teal{
-	background-color: #00968;
+	background-color: #009688;
 }
 .yellow200{
     background-color: #FFF59D;
@@ -310,4 +308,36 @@ td.firstCol{
     display: block;
     height: 100px;
     background-color: rgba(0, 0, 0, 0.3);
+}
+.table > tbody > tr > td.firstCol {
+    vertical-align: middle;
+}
+
+@media only screen and (max-width : 1600px) {
+
+    .table td{ width: 80px;}
+    .draggable { width: 80px; height: 80px;}
+    .droppable { width: 80px; height: 80px;}
+    .connectedSortable {width: 80px;min-height: 80px;}
+    .abs{height: 80px;}
+    .connectedSortable li {width: 80px; height: 80px;}
+    .releaseSlot{width: 80px;}
+
+}
+
+
+@media only screen and (max-width : 1350px) {
+
+    .table td{ width: 60px;}
+    .draggable { width: 60px; height: 60px;}
+    .droppable { width: 60px; height: 60px;}
+    .connectedSortable {width: 60px;min-height: 60px;}
+    .abs{height: 60px;}
+    .connectedSortable li {width: 60px; height: 60px;}
+    .releaseSlot{width: 60px;}
+
+}
+
+td.firstCol{
+    width: 100%;
 }

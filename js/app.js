@@ -133,6 +133,8 @@ $(function() {
     this.title = data.title;
     this.description = data.description;
     this.files = [];
+    this.w = 0
+    this.h = 0
     var self = this;
 
     /////////////////////
@@ -147,6 +149,8 @@ $(function() {
       htmlTask.css("position","absolute");
       var p = htmlTask.position();
       this.initPosition = p;  
+      this.w = htmlTask.width();
+      this.h = htmlTask.height();
       htmlTask.css({
         "z-index":1000,
         "left":p.left,
@@ -315,13 +319,15 @@ $(function() {
 
     this.close = function(htmlTask){
       var p = this.initPosition;
+      var w = this.w;
+      var h = this.h;
       htmlTask.children("#taskDetail").remove();
       htmlTask.children("span").unbind('dblclick');
       htmlTask.animate({
         left:p.left,
         top:p.top,
-        width:  100,
-        height:  100
+        width:  w,
+        height:  h
       }, 400, function() {
         htmlTask.css({
           "position":"static",
@@ -354,7 +360,7 @@ $(function() {
     // Sauvegarde d'une tache
 
     this.save = function(htmlTask){
-      this.creationUser = connectUserId;
+      this.creationUser = tasksManager.connectUserId;
       $.ajax({
         url: "data.php",
         data: {
