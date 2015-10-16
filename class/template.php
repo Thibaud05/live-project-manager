@@ -24,11 +24,14 @@ class template extends page {
         SQL::connect();
         $this->login = new login();
         $this->login->check();
+        $this->barContent = "";
+        $this->stripContent = "";
     }
     protected function header(){
-        return '<div class="stripHead"></div>
+        return '<div class="bar"><div class="stripHead"></div>
                 <div class="head">
                 <div class="LPMrond"><span>LPM</span></div>
+                    '.$this->barContent.'
                     <ul class="nav navbar-right" role="tablist">
                       <li role="presentation" class="dropdown">
                         <a id="user" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -46,10 +49,10 @@ class template extends page {
                     </ul>
                 <div class="clear"></div>
                 </div>
-                <div class="strip"></div>';
+                <div class="strip">'.$this->stripContent.'</div></div><div class="page">';
     }
     protected function footer(){
-        return '';
+        return '</div>';
     }
 }
 ?>

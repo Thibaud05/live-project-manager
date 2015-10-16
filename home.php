@@ -9,22 +9,22 @@ $page->addJs("js/upload/jquery.iframe-transport.js");
 $page->addJs("js/upload/jquery.fileupload.js");
 $page->addCss("css/jquery.fileupload.css");
 
+$page->barContent = '
+<div class="barContent">
+
+    <a id="prev" class="previous btn btn-default" href="#" title="Taches précédentes"><span aria-hidden="true">&larr;</span> Précédent</a>
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-task-modal-lg" title="Ajouter une tache"><span id="add_btn" class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+    <button id="duplicate_btn" type="button" class="btn btn-default" title="Copier une tache"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button>
+    <button id="del_btn" type="button" class="btn btn-default" title="Supprimer une tache" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+    <a id="next" class="next btn btn-default" href="#" title="Taches suivantes">Suivant <span aria-hidden="true">&rarr;</span></a>
+    </div>
+';
+
 $page->displayHeader();
 ?>
 
 
 <div class="container">
-<nav>
-  <ul class="pager">
-    <li id="prev" class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li>
-    <li>
-    <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-task-modal-lg"><span id="add_btn" class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-    <button id="del_btn" type="button" class="btn btn-default" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
-    <button id="duplicate_btn" type="button" class="btn btn-default" ><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button>
-</li>
-    <li id="next" class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
-  </ul>
-</nav>
 </div>
 <div id="tasksManager"></div>
 <div id="box">

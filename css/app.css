@@ -341,3 +341,33 @@ div.LPMrond span{
 td.firstCol{
     width: 100%;
 }
+.bar{
+    position: fixed;
+    width: 100%;
+    z-index: 2;
+}
+.page{
+    padding-top:120px;
+}
+.barContent {
+    margin-left: -200px;
+    left: 50%;
+    position: absolute;
+    margin-top: 15px;
+}
+.btn-default {
+    color: #fff;
+    background-color: #303F9F;
+    border-color: transparent;
+}
+.btn-default:hover {
+    color: #3F51B5;
+    background-color: #fff;
+    border-color: transparent;
+}
+.next{
+    margin-left: 50px;
+}
+.previous{
+    margin-right: 50px;
+}
