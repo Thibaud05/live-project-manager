@@ -73,9 +73,9 @@ class login {
     function save()
     {
         $key = md5($this->email.$this->salt.$this->password);
-        if($this->autoconnexion != $key){
-            SQL::$mysqli->query('UPDATE `user` SET `autoconnexion` = "'.md5($key).'" WHERE `id` = "'.$this->id.'"');
-        }
+        
+        SQL::$mysqli->query('UPDATE `user` SET `autoconnexion` = "'.md5($key).'" WHERE `id` = "'.$this->id.'"');
+        
         $_SESSION['login'] = serialize($this);
         setcookie("LPMlogin",$key,time()+(365*24*3600));
     }
