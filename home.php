@@ -3,6 +3,10 @@ include("class/template.php");
 $page = new template("3");
 $page->title = "Live project manager";
 $page->addCss("css/app.css");
+$page->addJs("js/file.js");
+$page->addJs("js/user.js");
+$page->addJs("js/task.js");
+$page->addJs("js/taskManager.js");
 $page->addJs("js/app.js");
 
 $page->addJs("js/upload/jquery.iframe-transport.js");
