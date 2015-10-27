@@ -64,7 +64,7 @@ div.LPMrond span{
 	font-family: arial;
 	font-style: 14px;
 }
-.table td{ 
+.table td{
 	border-left: 1px solid #E0E0E0;
 	border-bottom: 1px solid #E0E0E0;
 	padding: 0px !important;
@@ -92,7 +92,7 @@ div.LPMrond span{
 	float: left;
 }
 
-  
+
 .connectedSortable {
     width: 100px;
     min-height: 100px;
@@ -119,7 +119,7 @@ div.LPMrond span{
     height: 100px;
     float: left;
     border: 0;
-    
+
     text-align: center;
     transition: background-color 0.5s;
   }
@@ -201,7 +201,7 @@ div.LPMrond span{
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
   display: table-cell;
-  vertical-align: middle;     
+  vertical-align: middle;
 }
 
 
@@ -366,9 +366,6 @@ td.firstCol{
     background-color: #fff;
     border-color: transparent;
 }
- .btn-default:focus {
-    background-color: #000;
- }
 
 .next{
     margin-left: 50px;

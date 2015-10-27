@@ -41,12 +41,12 @@ tasksManager.prototype = {
     },
 
     /////////////////////
-    // LOAD DATA 
+    // LOAD DATA
 
     getData: function(){
       var self = this
       var getJSON = $.getJSON( "data.php", function( data ) {
-        
+
         self.connectUserId = data.connectUserId;
         self.fullUrl = data.fullUrl;
         self.tasks = [];
@@ -56,7 +56,7 @@ tasksManager.prototype = {
         });
         self.connectUser = self.getUser(self.connectUserId)
         var tasks_files = {};
-        
+
         data.tasks_files.map(function(data,key ) {
           if(tasks_files[data.id_task] == undefined ){
             tasks_files[data.id_task] = [];
@@ -77,7 +77,7 @@ tasksManager.prototype = {
         data.tasks.map(function(data,key) {
           //log(data);
           var t = new task(data);
-          
+
           if(tasks_files[t.id] != undefined ){
             t.files = tasks_files[t.id];
             //log(t.files);
@@ -86,7 +86,7 @@ tasksManager.prototype = {
           var k = t.id_user + ":" + t.day;
           if(self.tasks[k] != undefined ){
             self.tasks[k].push(t);
-            
+
           }else{
             self.tasks[k] = new Array(t);
           }
@@ -96,17 +96,19 @@ tasksManager.prototype = {
     },
 
     /////////////////////
-    // SYNCRONISE DATA 
+    // SYNCRONISE DATA
 
     sync: function(){
+      var self = this
       this.tasks = [];
+
       this.tasksById.map(function(t,key) {
         if (t){
           var k = t.id_user + ":" + t.day;
-          if(this.tasks[k] != undefined ){
-            this.tasks[k].push(t);
+          if(self.tasks[k] != undefined ){
+            self.tasks[k].push(t);
           }else{
-            this.tasks[k] = new Array(t);
+            self.tasks[k] = new Array(t);
           }
         }
       });
@@ -115,7 +117,7 @@ tasksManager.prototype = {
       this.releasesById.map(function(release,key) {
         if (release){
           var k =  release.day;
-          this.releases[k] = release;
+          self.releases[k] = release;
         }
       });
     },
@@ -125,7 +127,7 @@ tasksManager.prototype = {
       }
     },
     /////////////////////
-    // ADD TASK 
+    // ADD TASK
 
     addTask :function (t){
       this.tasksById[t.id] = t;
@@ -203,7 +205,7 @@ tasksManager.prototype = {
 
 
     /////////////////////
-    // DISPLAY TASK  
+    // DISPLAY TASK
 
     renderTask: function(key){
       var html = ''
@@ -220,7 +222,7 @@ tasksManager.prototype = {
     },
 
     /////////////////////
-    // DISPLAY RELEASE    
+    // DISPLAY RELEASE
 
     renderRelease: function(key){
       var html = ''
@@ -239,7 +241,7 @@ tasksManager.prototype = {
     },
 
     /////////////////////
-    // DISPLAY BOX    
+    // DISPLAY BOX
 
     renderBox: function(type,idType){
       var html = ''
@@ -257,7 +259,7 @@ tasksManager.prototype = {
 
     render: function(){
       log(this)
-      
+
       var self = this;
       var html = "";
       var htmlHead = "";
@@ -268,7 +270,7 @@ tasksManager.prototype = {
         htmlHead += '<td class="leftSep" colspan="' + this.dayPerWeek + '">W' + (i + this.week) + '</td>';
       }
       htmlHead += "</tr>";
-    
+
       // Realeases row
       htmlHead += '<tr class="day"><td></td>';
       for (var i = 0; i < this.nbdays; i++){
@@ -278,12 +280,13 @@ tasksManager.prototype = {
       }
       htmlHead += "</tr>";
 
-      // Days row 
+      // Days row
       htmlHead += '<tr class="day"><td></td>';
       for (var i = 0; i < this.nbdays; i++){
         var index = i % this.dayPerWeek;
         var css = ( index==0 ) ? ' class="leftSep"' : '';
-        htmlHead += '<td' + css + '>' + this.days[index] + '</td>';
+        var day = moment(this.dates[i],'YYYY-MM-DD');
+        htmlHead += '<td' + css + ' title="' + day.format('DD-MM-YYYY') + '">' + this.days[index] + '</td>';
       }
       htmlHead += "</tr>";
 
@@ -292,7 +295,7 @@ tasksManager.prototype = {
       var firstLine = "";
       $.each( this.users, function( key, user ) {
         if(user){
-          
+
           var line  = "<tr>";
           line += '<td class="firstCol" >' + user.firstname + '</td>';
           for (i = 0; i < self.nbdays; i++){
