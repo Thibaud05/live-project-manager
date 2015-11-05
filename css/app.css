@@ -162,27 +162,64 @@ div.LPMrond span{
     #D81B60 20px
   );
 }
+.connectedSortable > li.pink.selected {
+    background-color: #AD1457;
+    background: repeating-linear-gradient(
+    -45deg,
+    #C2185B,
+    #C2185B 10px,
+    #AD1457 10px,
+    #AD1457 20px
+  );
+}
+.red{
+    background-color: #F44336;
+}
+.connectedSortable > li.red.selected {
+    background: #B71C1C;
+}
 .indigo{
 	background-color: #3F51B5;
+}
+.connectedSortable > li.indigo.selected {
+    background: #1A237E;
 }
 .blue{
 	background-color: #2196F3;
 }
+.connectedSortable > li.blue.selected {
+    background: #0D47A1;
+}
 .cyan{
 	background-color: #00BCD4;
+}
+.connectedSortable > li.cyan.selected {
+    background: #006064;
 }
 .teal{
 	background-color: #009688;
 }
+.connectedSortable > li.teal.selected {
+    background: #004D40;
+}
 .green{
     background-color: #4CAF50;
+}
+.connectedSortable > li.green.selected {
+    background: #1B5E20;
 }
 .lightGreen{
     background-color: #8BC34A;
 }
+.connectedSortable > li.lightGreen.selected {
+    background: #33691E;
+}
 .yellow200{
     background-color: #FFF59D;
     color:#000;
+}
+.connectedSortable > li.yellow200.selected {
+    background: #FFEB3B;
 }
 .table td.leftSep{
 	border-left: 4px solid #ccc;
@@ -218,10 +255,6 @@ div.LPMrond span{
 
 .input-group-addon {
 	padding: 0;
-}
-
-.connectedSortable > li.selected {
-    background: #000;
 }
 #taskDetail {
     margin-left: 20px;
