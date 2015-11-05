@@ -169,10 +169,16 @@ div.LPMrond span{
 	background-color: #2196F3;
 }
 .cyan{
-	background-color: #0097A7;
+	background-color: #00BCD4;
 }
 .teal{
 	background-color: #009688;
+}
+.green{
+    background-color: #4CAF50;
+}
+.lightGreen{
+    background-color: #8BC34A;
 }
 .yellow200{
     background-color: #FFF59D;
@@ -324,6 +330,7 @@ div.LPMrond span{
     .abs{height: 80px;}
     .connectedSortable li {width: 80px; height: 80px;}
     .releaseSlot{width: 80px;}
+    .releaseSlot span {font-size: 9px;}
 
 }
 
@@ -337,7 +344,7 @@ div.LPMrond span{
     .abs{height: 60px;}
     .connectedSortable li {width: 60px; height: 60px;}
     .releaseSlot{width: 60px;}
-    .releaseSlot span {font-size: 9px;}
+    .releaseSlot span {font-size: 8px;}
 }
 td.firstCol{
     width: 100%;

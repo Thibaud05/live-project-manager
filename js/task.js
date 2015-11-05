@@ -7,6 +7,7 @@
   //////////////////////////////////////////
   function task(data){
     this.isOpen = false;
+    this.isDraging = false;
     this.id = data.id;
     this.id_type = data.id_type;
     this.id_user = data.id_user;
@@ -22,7 +23,8 @@
 }
 
 task.prototype = {
-    open: function(htmlTask){ 
+    open: function(htmlTask){
+      var self = this
       var description = this.description;
       var taskId = this.id;
       if (description == ""){description = "Sans descriptif";}
@@ -30,7 +32,7 @@ task.prototype = {
       $("body").css("overflow","hidden");
       htmlTask.css("position","absolute");
       var p = htmlTask.position();
-      this.initPosition = p;  
+      this.initPosition = p;
       this.w = htmlTask.width();
       this.h = htmlTask.height();
       htmlTask.css({
@@ -86,11 +88,11 @@ task.prototype = {
         done: function (e, data) {
           $('#progress .progress-bar')
             .delay(800)
-            .queue(function (next) { 
+            .queue(function (next) {
             $(this).css('width',0);
-              next(); 
+              next();
             });
-            
+
 
             $.ajax({
               url: "data.php",
@@ -117,8 +119,8 @@ task.prototype = {
                   html  = '<span class="text-danger">' + file.error + '<br>' + error + '</span>'
                 }
                 $('#files').append(html);
-                
-            
+
+
             });
         },
         progress : function (e, data) {
@@ -139,7 +141,7 @@ task.prototype = {
           $("body").css("overflow","auto");
         });
 
-         // Edition du descriptif 
+         // Edition du descriptif
         htmlTask.find(".desc").unbind('dblclick').dblclick(function() {
           if(!this.editMode){
               var parent = this;
@@ -153,7 +155,7 @@ task.prototype = {
                 content = $(this).val().replace(/\n\r?/g, '<br>');
                 parent.editMode = false;
                 self.description = content;
-                self.save(htmlTask); 
+                self.save(htmlTask);
                 if (content == ""){content = "Sans descriptif";}
                 $(parent).html(content);
               });
@@ -170,7 +172,7 @@ task.prototype = {
         "font-size": "60px"
       });
 
-        // Edition du titre 
+        // Edition du titre
       htmlTask.children("span").dblclick(function() {
         if(!this.editMode){
           var parent = this;
@@ -181,7 +183,7 @@ task.prototype = {
           $(this).children("input").select();
           this.editMode = true;
           $(this).children("input").blur(function() {
-            content = $(this).val();  
+            content = $(this).val();
             parent.editMode = false;
             self.title = content;
             self.save(htmlTask);

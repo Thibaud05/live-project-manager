@@ -138,9 +138,10 @@ tasksManager.prototype = {
     },
 
     addTasks :function (datas){
+      var self = this
       datas.map(function( data, key ) {
         var t = new task(data)
-        this.tasksById[t.id] = t;
+        self.tasksById[t.id] = t;
       });
       this.init();
       this.sync();
@@ -163,10 +164,13 @@ tasksManager.prototype = {
       var self = this
       $.each(self.selectedTasks, function( key, t ) {
         var id = t.attr("tid");
-        t.remove();
-        delete self.tasksById[id];
-        delete self.selectedTasks[id];
-        removedTasksId.push({"id":id,"id_user":"","title":"","id_type":"","day":""});
+        var task =  self.tasksById[id];
+        if(!task.isOpen){
+          t.remove();
+          delete self.tasksById[id];
+          delete self.selectedTasks[id];
+          removedTasksId.push({"id":id,"id_user":"","title":"","id_type":"","day":""});
+        }
       });
       $.ajax({
         url: "data.php",
@@ -188,7 +192,7 @@ tasksManager.prototype = {
       var duplicatedTasksId = [];
       for (var key in this.selectedTasks) {
         var t = this.tasksById[key]
-        duplicatedTasksId.push({"id":"","id_user":t.id_user,"title":t.title,"id_type":t.id_type,"day":t.day,"description":t.description,"creationUser":connectUserId});
+        duplicatedTasksId.push({"id":"","id_user":t.id_user,"title":t.title,"id_type":t.id_type,"day":t.day,"description":t.description,"creationUser":this.connectUserId});
       }
       $.ajax({
         url: "data.php",
@@ -258,7 +262,7 @@ tasksManager.prototype = {
     // DISPLAY COMPONANT
 
     render: function(){
-      log(this)
+      //log(this)
 
       var self = this;
       var html = "";
@@ -333,7 +337,16 @@ tasksManager.prototype = {
         revert:150,
         cancel: ".disable-task",
         connectWith: ".connectedSortable",
+        start: function( event, ui ) {
+          var t = self.tasksById[ui.item.attr("tid")];
+          t.isDraging = true;
+        },
+        stop: function( event, ui ) {
+          var t = self.tasksById[ui.item.attr("tid")];
+          t.isDraging = false;
+        },
         receive: function( event, ui ) {
+          log("recive");
           var t = self.tasksById[ui.item.attr("tid")];
           t.day = self.dates[$(this).attr("di")];
           t.id_user = $(this).attr("uid");
@@ -353,10 +366,11 @@ tasksManager.prototype = {
 
       // Task click
       $( ".connectedSortable > li" ).mousedown(function(e,obj) {
-        log(e)
-        log(obj)
-        log(this)
-        log(self)
+        //log(e)
+        //log(obj)
+        //log(this)
+        //log(self)
+        log("down");
         var id = $(this).attr("tid");
         var t =  self.tasksById[id];
         if(! t.isOpen){
@@ -374,14 +388,17 @@ tasksManager.prototype = {
 
       // Task double click
       $( ".connectedSortable > li" ).dblclick(function() {
+        log("dbleclick");
         var id = $(this).attr("tid");
         var t =  self.tasksById[id];
+        if(!t.isDraging){
         $(this).removeClass('selected');
         if(! t.isOpen){
           t.open($(this));
         }/*else{
           task.close($(this));
         }*/
+      }
       });
 
       // Task tooltip

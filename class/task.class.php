@@ -19,10 +19,10 @@ class task {
 	function task ($obj){
 		$this->id = $obj->id;
 		$this->id_user = $obj->id_user;
-		$this->title = $obj->title;
+		$this->title = SQL::$mysqli->real_escape_string($obj->title);
 		$this->id_type = $obj->id_type;
 		$this->day = $obj->day;
-		$this->description = $obj->description;
+		$this->description = SQL::$mysqli->real_escape_string($obj->description);
 		$this->creationUser = $obj->creationUser;
 		$this->creationDate = date("Y-m-d H:i:s");
 	}
