@@ -17,6 +17,7 @@
     this.title = data.title;
     this.description = data.description;
     this.files = [];
+    this.priority = data.priority
     this.w = 0
     this.h = 0
     var self = this;

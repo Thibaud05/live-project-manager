@@ -24,6 +24,10 @@ class LPM {
 
 					$this->setData($obj);
 					break;
+				case 'moveTask':
+
+					$this->moveTask($obj);
+					break;
 				case 'setDataFiles':
 
 					$this->setDataFiles($obj);
@@ -77,6 +81,13 @@ class LPM {
 		foreach ($objs as $obj) {
 			$task = new task($obj);
 			$task->del();
+		}
+		exit;
+	}
+	function moveTask($objs){
+		foreach ($objs as $obj) {
+			$task = new task($obj);
+			$task->update();
 		}
 		exit;
 	}

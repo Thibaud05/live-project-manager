@@ -345,6 +345,26 @@ tasksManager.prototype = {
           var t = self.tasksById[ui.item.attr("tid")];
           t.isDraging = false;
         },
+        update:function( event, ui ) {
+          log("update")
+          var tasksToUpdate = $(this).sortable('toArray', {attribute: 'tid'})
+          var tasksUpdate = []
+          tasksToUpdate.map(function(id,pos){
+            var t = self.tasksById[id];
+            t.priority = pos
+            tasksUpdate.push(t)
+          })
+          $.ajax({
+            url: "data.php",
+            data: {
+              a: "moveTask",
+              obj:JSON.stringify(tasksUpdate)
+            },
+            success: function( data ) {
+              log("saved");
+            }
+          });
+        },
         receive: function( event, ui ) {
           log("recive");
           var t = self.tasksById[ui.item.attr("tid")];

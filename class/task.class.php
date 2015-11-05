@@ -15,6 +15,7 @@ class task {
 	var $description;
 	var $creationUser;
 	var $creationDate;
+	var $priority;
 
 	function task ($obj){
 		$this->id = $obj->id;
@@ -25,6 +26,7 @@ class task {
 		$this->description = SQL::$mysqli->real_escape_string($obj->description);
 		$this->creationUser = $obj->creationUser;
 		$this->creationDate = date("Y-m-d H:i:s");
+		$this->priority = $obj->priority;
 	}
 	function update(){
 		$sql = "UPDATE `task` 
@@ -34,6 +36,7 @@ class task {
 					`id_type` = '".$this->id_type."',
 					`date_finish` = '".$this->day."',
 					`date_creation` = '".$this->creationDate."',
+					`priority` = '".$this->priority."',
 					`comments` = '".$this->description."'
 		 		WHERE `id` = ".$this->id;
 		$res = SQL::$mysqli->query($sql);
