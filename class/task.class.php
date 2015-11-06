@@ -59,6 +59,7 @@ class task {
 					`date_finish`, 
 					`id_user_add`,
 					`date_creation`,
+					`priority`,
 					`comments`
 				) VALUES (
 					'".$this->title."',
@@ -67,6 +68,7 @@ class task {
 					'".$this->day."',
 					'".$this->creationUser."',
 					'".$this->creationDate."',
+					'".$this->priority."',
 					'".$this->description."'
 				)";
 		$res = SQL::$mysqli->query($sql);

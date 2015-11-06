@@ -191,7 +191,8 @@ tasksManager.prototype = {
       var duplicatedTasksId = [];
       for (var key in this.selectedTasks) {
         var t = this.tasksById[key]
-        duplicatedTasksId.push({"id":"","id_user":t.id_user,"title":t.title,"id_type":t.id_type,"day":t.day,"description":t.description,"creationUser":this.connectUserId});
+        var lowPriority =  this.tasks[t.id_user + ":" + t.day].length;
+        duplicatedTasksId.push({"id":"","id_user":t.id_user,"title":t.title,"id_type":t.id_type,"day":t.day,"description":t.description,"creationUser":this.connectUserId,"priority":lowPriority});
       }
       $.ajax({
         url: "data.php",
@@ -217,8 +218,10 @@ tasksManager.prototype = {
       if(tabTask){
         for (var i = 0; i < tabTask.length; i++){
           var t = tabTask[i];
-          var color = this.taskTypes[t.id_type].color;
-          html += '<li class="ui-state-default task ' + color + '" tid = "' + t.id + '" ><span>' + t.title + '</span></li>';
+          if(t!=undefined){
+            var color = this.taskTypes[t.id_type].color;
+            html += '<li class="ui-state-default task ' + color + '" tid = "' + t.id + '" ><span>' + t.title + '</span></li>';
+          }
         }
       }
       return html;
@@ -333,7 +336,8 @@ tasksManager.prototype = {
       // Task drag and drop
       var self = this
 
-      $( "body" ).click(function(e) {
+      $( "body" ).mousedown(function(e) {
+          //log("click out")
           if(!e.ctrlKey){
             $.each(self.selectedTasks, function( key, t ) {
               t.removeClass('selected');
@@ -401,7 +405,8 @@ tasksManager.prototype = {
         //log(obj)
         //log(this)
         //log(self)
-        log("down");
+        //log("down");
+        e.stopPropagation();
         var id = $(this).attr("tid");
         var t =  self.tasksById[id];
         if(! t.isOpen){
@@ -411,6 +416,7 @@ tasksManager.prototype = {
               delete self.selectedTasks[t.attr("tid")];
             });
           }
+          log("selected");
           var selectedTask = $(this);
           selectedTask.addClass('selected');
           self.selectedTasks[selectedTask.attr("tid")] = selectedTask;
