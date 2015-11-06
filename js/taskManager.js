@@ -105,11 +105,10 @@ tasksManager.prototype = {
       this.tasksById.map(function(t,key) {
         if (t){
           var k = t.id_user + ":" + t.day;
-          if(self.tasks[k] != undefined ){
-            self.tasks[k].push(t);
-          }else{
-            self.tasks[k] = new Array(t);
+          if(self.tasks[k] == undefined ){
+            self.tasks[k] = new Array();
           }
+          self.tasks[k][t.priority] = t
         }
       });
 
@@ -333,15 +332,27 @@ tasksManager.prototype = {
 
       // Task drag and drop
       var self = this
+
+      $( "body" ).click(function(e) {
+          if(!e.ctrlKey){
+            $.each(self.selectedTasks, function( key, t ) {
+              t.removeClass('selected');
+              delete self.selectedTasks[t.attr("tid")];
+            });
+          }
+      });
+
       $( ".connectedSortable" ).sortable({
         revert:150,
         cancel: ".disable-task",
         connectWith: ".connectedSortable",
         start: function( event, ui ) {
+          log("start")
           var t = self.tasksById[ui.item.attr("tid")];
           t.isDraging = true;
         },
         stop: function( event, ui ) {
+          log("stop")
           var t = self.tasksById[ui.item.attr("tid")];
           t.isDraging = false;
         },
