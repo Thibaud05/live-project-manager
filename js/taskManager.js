@@ -25,6 +25,7 @@
     this.connectUserId;
     this.connectUser;
     this.fullUrl;
+    this.select = false;
 }
     /////////////////////
     // CONTROLLER
@@ -338,12 +339,13 @@ tasksManager.prototype = {
 
       $( "body" ).mousedown(function(e) {
           //log("click out")
-          if(!e.ctrlKey){
+          if(!self.select){
             $.each(self.selectedTasks, function( key, t ) {
               t.removeClass('selected');
               delete self.selectedTasks[t.attr("tid")];
             });
           }
+          self.select = false;
       });
 
       $( ".connectedSortable" ).sortable({
@@ -406,7 +408,8 @@ tasksManager.prototype = {
         //log(this)
         //log(self)
         //log("down");
-        e.stopPropagation();
+        //e.stopPropagation();
+        self.select = true;
         var id = $(this).attr("tid");
         var t =  self.tasksById[id];
         if(! t.isOpen){
