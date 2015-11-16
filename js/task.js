@@ -63,8 +63,8 @@ task.prototype = {
     </div> \
     </div>';
     html += self.displayFiles();
-
-        html += '<p>Edité par ' + self.getCreationUser() + ' le ' + moment(self.creationDate).format("DD/MM/YYYY à H:mm:ss") + '<p>';
+        moment.locale('fr');
+        html += '<p>Edité par ' + self.getCreationUser() + " "+ moment(self.creationDate).fromNow() + '<p>';
         html += '<p class="desc">' + description + '<p>';
         html += '</div>';
         htmlTask.append(html);
