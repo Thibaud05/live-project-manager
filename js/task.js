@@ -25,6 +25,7 @@
 
 task.prototype = {
     open: function(htmlTask){
+      htmlTask.parent().enableSelection(); 
       var self = this
       var description = this.description;
       var taskId = this.id;

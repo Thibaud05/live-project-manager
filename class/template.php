@@ -7,6 +7,7 @@ class template extends page {
     var $login;
 
     public function __construct($id){
+        date_default_timezone_set('Europe/Paris');
         $this->id = $id;
         $this->title = "Titre par default";
         $this->site_title = "Mon site";

@@ -66,7 +66,7 @@ $(function() {
   //////////////////////
   // Remove selected task
 
-  $("#del_btn").click(function() {
+  $("#del_btn").mousedown(function() {
     tasksManager.delSelectedTasks();
   });
   $('html').keydown(function(e){
@@ -79,7 +79,7 @@ $(function() {
   //////////////////////
   // Duplicate selected task
 
-   $( "#duplicate_btn" ).click(function() {
+   $( "#duplicate_btn" ).mousedown(function() {
     tasksManager.duplicateTask()
   }); 
 

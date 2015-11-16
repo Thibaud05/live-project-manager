@@ -337,8 +337,8 @@ tasksManager.prototype = {
       // Task drag and drop
       var self = this
 
-      $( "body" ).mousedown(function(e) {
-          //log("click out")
+      $( "body" ).off().mousedown(function(e) {
+          log("click out")
           if(!self.select){
             $.each(self.selectedTasks, function( key, t ) {
               t.removeClass('selected');
@@ -407,7 +407,7 @@ tasksManager.prototype = {
         //log(obj)
         //log(this)
         //log(self)
-        //log("down");
+        log("down");
         //e.stopPropagation();
         self.select = true;
         var id = $(this).attr("tid");
