@@ -26,6 +26,7 @@
     this.connectUser;
     this.fullUrl;
     this.select = false;
+    this.lastRelease = []
 }
     /////////////////////
     // CONTROLLER
@@ -73,6 +74,17 @@ tasksManager.prototype = {
         data.releases.map(function(release,key) {
           self.releases[release.day] = release;
           self.releasesById[release.id] = release;
+
+          if(self.lastRelease[release.id_type]!=undefined){
+            if(moment(release.day)>moment(self.lastRelease[release.id_type].day) && moment(release.day)<moment()){
+               self.lastRelease[release.id_type] = release;
+            }
+          }else{
+            if(moment(release.day)<moment()){
+              self.lastRelease[release.id_type] = release;
+            }
+          }
+
         });
 
         data.tasks.map(function(data,key) {
@@ -120,10 +132,20 @@ tasksManager.prototype = {
           self.releases[k] = release;
         }
       });
+
     },
     getUser :function (id){
       if(this.users[id] != undefined) {
         return this.users[id];
+      }
+    },
+
+    getLastRelease :function (id_type){
+      var r = this.lastRelease[id_type]
+      if(r != undefined && r.name != "α") {
+        return r.name;
+      }else{
+        return "ALPHA";
       }
     },
     /////////////////////
@@ -221,7 +243,11 @@ tasksManager.prototype = {
           var t = tabTask[i];
           if(t!=undefined){
             var color = this.taskTypes[t.id_type].color;
-            html += '<li class="ui-state-default task ' + color + '" tid = "' + t.id + '" ><span>' + t.title + '</span></li>';
+            var env = '';
+            if(t.id_type!=5 && t.id_type!=6){
+               env = '<div class="env">' + this.getLastRelease(t.id_type) + '</div>'
+            }
+            html += '<li class="ui-state-default task ' + color + '" tid = "' + t.id + '" >'+ env +'<span>' + t.title + '</span></li>';
           }
         }
       }
