@@ -415,8 +415,7 @@ td.firstCol{
 }
 .connectedSortable li .env {
     font-size: 10px;
-    border-bottom: 1px solid;
     padding: 3px;
-    border-right: 1px solid;
     position: absolute;
+    background-color: rgba(0, 0, 0, 0.25);
 }
