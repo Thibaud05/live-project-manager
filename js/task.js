@@ -22,6 +22,7 @@
     this.priority = data.priority
     this.w = 0
     this.h = 0
+    this.valid = data.valid
     var self = this;
 }
 
@@ -66,6 +67,7 @@ task.prototype = {
     </div>';
     html += self.displayFiles();
         moment.locale('fr');
+        html += '<p><button type="button" class="btn btn-default" title="Repousser à la prochaine release"><span id="shifting_btn" class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button></p>';
         html += '<p>Créer par ' + self.getEditUser() + " "+ moment(self.creationDate).fromNow() + '<p>';
         html += '<p>Edité par ' + self.getCreationUser() + " "+ moment(self.updateDate).fromNow() + '<p>';
         html += '<p class="desc">' + description + '<p>';

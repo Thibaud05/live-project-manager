@@ -142,6 +142,13 @@ $(function() {
   }); 
 
   //////////////////////
+  // valid selected task
+
+   $( "#valid_btn" ).mousedown(function() {
+    tasksManager.validTask()
+  }); 
+
+  //////////////////////
   // Add a new task
 
    $( "#addTask" ).click(function() {

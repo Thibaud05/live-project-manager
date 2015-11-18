@@ -24,6 +24,10 @@ class LPM {
 
 					$this->setData($obj);
 					break;
+				case 'updateTask':
+
+					$this->updateTask($obj);
+					break;
 				case 'moveTask':
 
 					$this->moveTask($obj);
@@ -106,6 +110,15 @@ class LPM {
 		$file = new file($data);
 		$file->id_task = $obj->taskId;
 		echo json_encode($file->add());
+		exit;
+	}
+	function updateTask($objs){
+		$arr = [];
+		foreach ($objs as $obj) {
+			$task = new task($obj);
+			$arr[] = $task->update();
+		}
+		echo json_encode($arr);
 		exit;
 	}
 	function delDataFiles($obj){

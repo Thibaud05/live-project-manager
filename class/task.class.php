@@ -18,6 +18,7 @@ class task {
 	var $updateDate;
 	var $priority;
 	var $accountableUser;
+	var $valid;
 
 	function task ($obj){
 		$this->id = $obj->id;
@@ -31,6 +32,7 @@ class task {
 		$this->accountableUser = $obj->accountableUser;
 		$this->updateDate = date("Y-m-d H:i:s");
 		$this->priority = $obj->priority;
+		$this->valid = $obj->valid;
 	}
 	function update(){
 		$sql = "UPDATE `task` 
@@ -43,10 +45,11 @@ class task {
 					`date_update` = '".$this->updateDate."',
 					`date_creation` = '".$this->creationDate."',
 					`priority` = '".$this->priority."',
+					`valid` = '".$this->valid."',
 					`comments` = '".$this->description."'
 		 		WHERE `id` = ".$this->id;
 		$res = SQL::$mysqli->query($sql);
-
+		return $this;
 	}
 	function add(){
 		if($this->day==""){
@@ -74,6 +77,7 @@ class task {
 					`id_user_accountable`,
 					`date_creation`,
 					`priority`,
+					`valid`,
 					`comments`
 				) VALUES (
 					'".$this->title."',
@@ -85,6 +89,7 @@ class task {
 					'".$this->accountableUser."',
 					'".$this->creationDate."',
 					'".$this->priority."',
+					'".$this->valid."',
 					'".$this->description."'
 				)";
 		$res = SQL::$mysqli->query($sql);

@@ -215,7 +215,7 @@ tasksManager.prototype = {
       for (var key in this.selectedTasks) {
         var t = this.tasksById[key]
         var lowPriority =  this.tasks[t.id_user + ":" + t.day].length;
-        duplicatedTasksId.push({"id":"","id_user":t.id_user,"title":t.title,"id_type":t.id_type,"day":t.day,"description":t.description,"creationUser":this.connectUserId,"priority":lowPriority,"accountableUser":this.connectUserId,"creationDate":""});
+        duplicatedTasksId.push({"id":"","id_user":t.id_user,"title":t.title,"id_type":t.id_type,"day":t.day,"description":t.description,"creationUser":this.connectUserId,"priority":lowPriority,"accountableUser":this.connectUserId,"creationDate":"","valid":false});
       }
       $.ajax({
         url: "data.php",
@@ -229,7 +229,30 @@ tasksManager.prototype = {
         }
       });
     },
+    /////////////////////
+    // DUPLICATE TASK
 
+    validTask: function (){
+      var validTasks = [];
+      for (var key in this.selectedTasks) {
+        var t = this.tasksById[key]
+        this.selectedTasks[key].find( ".ok" ).toggleClass("hidden")
+        t.valid = t.valid==1?0:1
+        this.tasksById[key] = t
+        validTasks.push(t);
+      }
+      $.ajax({
+        url: "data.php",
+        dataType: "json",
+        data: {
+          a: "updateTask",
+          obj:JSON.stringify(validTasks)
+        },
+        success: function( data ) {
+          //tasksManager.updateTasks(data);
+        }
+      });
+    },
 
     /////////////////////
     // DISPLAY TASK
@@ -247,7 +270,12 @@ tasksManager.prototype = {
             if(t.id_type!=5 && t.id_type!=6){
                env = '<div class="env">' + this.getLastRelease(t.id_type) + '</div>'
             }
-            html += '<li class="ui-state-default task ' + color + '" tid = "' + t.id + '" >'+ env +'<span>' + t.title + '</span></li>';
+            var validClass = "ok"
+            log(t.valid)
+            if(t.valid!=1){
+              validClass = "ok hidden"
+            }
+            html += '<li class="ui-state-default task ' + color + '" tid = "' + t.id + '" >'+ env +'<span class="title">' + t.title + '</span><div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></li>';
           }
         }
       }

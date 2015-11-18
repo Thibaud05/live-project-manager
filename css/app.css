@@ -111,6 +111,7 @@ div.LPMrond span{
     padding: 5px 0 0 0;
   }
  .connectedSortable li {
+    position: relative;
  	display: table;
     margin: 0;
     padding: 0px;
@@ -240,7 +241,7 @@ div.LPMrond span{
 	font-size: 16px;
 }
 
-.task span {
+.task .title, .task .fileinput-button {
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
   display: table-cell;
@@ -418,4 +419,10 @@ td.firstCol{
     padding: 3px;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.25);
+}
+.ok {
+    font-size: 10px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
 }

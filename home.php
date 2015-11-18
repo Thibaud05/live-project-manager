@@ -18,6 +18,7 @@ $page->barContent = '
 
     <a id="prev" class="previous btn btn-default" href="#" title="Taches précédentes"><span aria-hidden="true">&larr;</span> Précédent</a>
     <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-task-modal-lg" title="Ajouter une tache"><span id="add_btn" class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+    <button id="valid_btn" type="button" class="btn btn-default" title="Valider une tache" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
     <button id="duplicate_btn" type="button" class="btn btn-default" title="Copier une tache"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button>
     <button id="del_btn" type="button" class="btn btn-default" title="Supprimer une tache" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
     <a id="next" class="next btn btn-default" href="#" title="Taches suivantes">Suivant <span aria-hidden="true">&rarr;</span></a>
