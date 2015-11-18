@@ -8,7 +8,9 @@ require_once 'class/sqlToJson.class.php';
 $LPM = new LPM();
 $json = new sqlToJson();
 
-$json->addSql("tasks","SELECT id,id_user_responsible as id_user,name as title,id_type,date_finish as day, comments as description , id_user_add as creationUser, date_creation as creationDate, priority FROM task ORDER BY priority");
+$json->addSql("tasks","SELECT id,id_user_responsible as id_user,name as title,id_type,date_finish as day, comments as description ,
+ id_user_add as creationUser, date_creation as creationDate, priority, 
+ id_user_accountable as accountableUser, date_update as updateDate FROM task ORDER BY priority");
 $json->addSql("taskTypes","SELECT * FROM type");
 $json->addSql("releases","SELECT * FROM `release`");
 $json->addSql("users","SELECT id,firstname, lastname,id_group as level FROM user");

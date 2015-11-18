@@ -215,7 +215,7 @@ tasksManager.prototype = {
       for (var key in this.selectedTasks) {
         var t = this.tasksById[key]
         var lowPriority =  this.tasks[t.id_user + ":" + t.day].length;
-        duplicatedTasksId.push({"id":"","id_user":t.id_user,"title":t.title,"id_type":t.id_type,"day":t.day,"description":t.description,"creationUser":this.connectUserId,"priority":lowPriority});
+        duplicatedTasksId.push({"id":"","id_user":t.id_user,"title":t.title,"id_type":t.id_type,"day":t.day,"description":t.description,"creationUser":this.connectUserId,"priority":lowPriority,"accountableUser":this.connectUserId,"creationDate":""});
       }
       $.ajax({
         url: "data.php",

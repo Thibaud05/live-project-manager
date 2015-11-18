@@ -14,6 +14,8 @@
     this.day = data.day;
     this.creationDate = data.creationDate;
     this.creationUser = data.creationUser;
+    this.accountableUser = data.accountableUser;
+    this.updateDate = data.updateDate;
     this.title = data.title;
     this.description = data.description;
     this.files = [];
@@ -64,7 +66,8 @@ task.prototype = {
     </div>';
     html += self.displayFiles();
         moment.locale('fr');
-        html += '<p>Edité par ' + self.getCreationUser() + " "+ moment(self.creationDate).fromNow() + '<p>';
+        html += '<p>Créer par ' + self.getEditUser() + " "+ moment(self.creationDate).fromNow() + '<p>';
+        html += '<p>Edité par ' + self.getCreationUser() + " "+ moment(self.updateDate).fromNow() + '<p>';
         html += '<p class="desc">' + description + '<p>';
         html += '</div>';
         htmlTask.append(html);
@@ -243,10 +246,20 @@ task.prototype = {
     },
 
     /////////////////////
+    // affichage du nom de l'utilisateur
+
+    getEditUser :function(){
+      var user = tasksManager.getUser(this.accountableUser);
+      if (user != undefined){
+        return user.getName();
+      }
+    },
+
+    /////////////////////
     // Sauvegarde d'une tache
 
     save :function(htmlTask){
-      this.creationUser = tasksManager.connectUserId;
+      this.accountableUser = tasksManager.connectUserId;
       $.ajax({
         url: "data.php",
         data: {
