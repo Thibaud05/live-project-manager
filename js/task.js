@@ -184,7 +184,7 @@ task.prototype = {
       });
 
         // Edition du titre
-      htmlTask.children("span").dblclick(function() {
+      htmlTitle.dblclick(function() {
         if(!this.editMode){
           var parent = this;
           var content = $(this).html();

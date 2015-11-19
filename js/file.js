@@ -8,13 +8,15 @@ function file(data){
   this.id_task = data.id_task;
   this.name = data.title;
   this.type = data.type;
+  this.fullUrl = tasksManager.fullUrl;
 }
 
 file.prototype = {
   buildUrl: function() {
-    var baseUrl = tasksManager.fullUrl + "/server/files/";
+    var baseUrl = this.fullUrl + "/server/files/";
     this.url = baseUrl + this.name;
     this.thumbnailUrl = baseUrl + "thumbnail/" + this.name;
+    return true
   },
   display: function(){
     this.buildUrl();
@@ -33,13 +35,13 @@ file.prototype = {
         html = '<img src="' + this.thumbnailUrl + '" />';
         break
       case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
-        html = '<img src="' + tasksManager.fullUrl + "/img/ico/doc.png" + '" />';
+        html = '<img src="' + this.fullUrl + "/img/ico/doc.png" + '" />';
         break
       case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-        html = '<img src="' + tasksManager.fullUrl + "/img/ico/ppt.png" + '" />';
+        html = '<img src="' + this.fullUrl + "/img/ico/ppt.png" + '" />';
         break
       case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-        html = '<img src="' + tasksManager.fullUrl + "/img/ico/xls.png" + '" />';
+        html = '<img src="' + this.fullUrl + "/img/ico/xls.png" + '" />';
         break
         
       default : 

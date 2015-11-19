@@ -187,6 +187,7 @@ tasksManager.prototype = {
       $.each(self.selectedTasks, function( key, t ) {
         var id = t.attr("tid");
         var task =  self.tasksById[id];
+        
         if(!task.isOpen){
           t.remove();
           delete self.tasksById[id];
