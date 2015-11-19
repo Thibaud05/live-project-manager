@@ -23,20 +23,23 @@
     this.w = 0
     this.h = 0
     this.valid = data.valid
+    this.initPosition
     var self = this;
 }
 
 task.prototype = {
     open: function(htmlTask){
+      var htmlTitle = htmlTask.children(".contener").children("span")
       htmlTask.parent().enableSelection(); 
       var self = this
       var description = this.description;
       var taskId = this.id;
       if (description == ""){description = "Sans descriptif";}
-      if (this.title == ""){htmlTask.children("span").html("Sans titre");}
-      $("body").css("overflow","hidden");
-      htmlTask.css("position","absolute");
+      if (this.title == ""){htmlTask.htmlTitle.html("Sans titre");}
+      
+      
       var p = htmlTask.position();
+      htmlTask.css("position","absolute");
       this.initPosition = p;
       this.w = htmlTask.width();
       this.h = htmlTask.height();
@@ -53,7 +56,8 @@ task.prototype = {
         height:  "100%",
       }, 400, function() {
         htmlTask.css({"text-align":"left"});
-        htmlTask.children("span").css({"display":"block"});
+        htmlTitle.css({"display":"block"});
+        $("body").css("overflow","hidden");
 
         var html = '<div id="taskDetail"><div id="closeTask">X</div>';
 
@@ -72,7 +76,7 @@ task.prototype = {
         html += '<p>Edité par ' + self.getCreationUser() + " "+ moment(self.updateDate).fromNow() + '<p>';
         html += '<p class="desc">' + description + '<p>';
         html += '</div>';
-        htmlTask.append(html);
+        htmlTask.children(".contener").append(html);
 
         $('.removeFile').click(function(){
           var fid = $(this).attr('fid');
@@ -170,12 +174,12 @@ task.prototype = {
         });
 
       });
-      htmlTask.children("span").css({
+      htmlTitle.css({
         "vertical-align": "initial",
         "text-align": "left",
          "margin-left":"20px"
       });
-      htmlTask.children("span").animate({
+      htmlTitle.animate({
         "font-size": "60px"
       });
 
@@ -209,11 +213,12 @@ task.prototype = {
     // masquage du details de la tache
 
     close: function(htmlTask){
+      var htmlTitle = htmlTask.children(".contener").children("span")
       var p = this.initPosition;
       var w = this.w;
       var h = this.h;
-      htmlTask.children("#taskDetail").remove();
-      htmlTask.children("span").unbind('dblclick');
+      htmlTask.children(".contener").children("#taskDetail").remove();
+      htmlTitle.unbind('dblclick');
       htmlTask.animate({
         left:p.left,
         top:p.top,
@@ -221,16 +226,18 @@ task.prototype = {
         height:  h
       }, 400, function() {
         htmlTask.css({
-          "position":"static",
+          "left":"inherit",
+          "top":"inherit",
+          "position":"relative",
           "z-index":"auto"
         });
-        htmlTask.children("span").css({"display":"table-cell"});
+        htmlTitle.css({"display":"table-cell"});
       });
-      htmlTask.children("span").css({
+      htmlTitle.css({
         "vertical-align": "middle",
         "text-align": "center"
       });
-      htmlTask.children("span").animate({
+      htmlTitle.animate({
         "font-size": "16px"
       });
       this.isOpen = false;

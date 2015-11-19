@@ -275,7 +275,7 @@ tasksManager.prototype = {
             if(t.valid!=1){
               validClass = "ok hidden"
             }
-            html += '<li class="ui-state-default task ' + color + '" tid = "' + t.id + '" >'+ env +'<span class="title">' + t.title + '</span><div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></li>';
+            html += '<li class="ui-state-default task ' + color + '" tid = "' + t.id + '" >'+ env +'<div class="contener"><span class="title">' + t.title + '</span><div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></div></li>';
           }
         }
       }
