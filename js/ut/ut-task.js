@@ -5,6 +5,15 @@
 QUnit.test( "Tasks manager tests", function( assert ) {
   assert.ok( new tasksManager(), "Create a new tasksManager" );
   var testTaskManager = new tasksManager()
+
+testTaskManager.releasesById = [null,
+{"id":"1","id_type":"1","name":"QA","day":"2015-11-12"},
+{"id":"2","id_type":"2","name":"DEV","day":"2015-08-18"},
+{"id":"3","id_type":"1","name":"PRD","day":"2015-11-13"},
+{"id":"4","id_type":"2","name":"QA","day":"2015-08-12"},
+{"id":"5","id_type":"3","name":"QA","day":"2015-08-13"},
+{"id":"6","id_type":"3","name":"PRD","day":"2015-08-20"}]
+  assert.equal(testTaskManager.getNextRelease(2),3, "Get next tasks manger release" );
 });
 
 

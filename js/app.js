@@ -75,12 +75,12 @@ $(function() {
       $(this).appendTo($('body'));
     })
     .on('shown.bs.modal', '.modal.in', function(event) {
-      console.log("ok");
-      console.log("///");
+      //.log("ok");
+      //console.log("///");
       setModalsAndBackdropsOrder();
     })
     .on('hidden.bs.modal', '.modal', function(event) {
-      console.log("ok2");
+      //console.log("ok2");
       setModalsAndBackdropsOrder();
     });
 
@@ -126,6 +126,9 @@ $(function() {
 
   $("#del_btn").mousedown(function() {
     tasksManager.delSelectedTasks();
+  });
+  $("#archive_btn").mousedown(function() {
+    tasksManager.archiveSelectedTasks();
   });
   $('html').keydown(function(e){
       if(e.keyCode == 46){

@@ -59,7 +59,6 @@ class LPM {
 
 					$this->duplicateTask($obj);
 					break;
-
 				default:
 					# code...
 					break;

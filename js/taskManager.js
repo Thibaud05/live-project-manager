@@ -84,9 +84,8 @@ tasksManager.prototype = {
               self.lastRelease[release.id_type] = release;
             }
           }
-
+          
         });
-
         data.tasks.map(function(data,key) {
           //log(data);
           var t = new task(data);
@@ -108,10 +107,38 @@ tasksManager.prototype = {
       return getJSON;
     },
 
+    getNextRelease : function(id_type){
+
+      var maxRelease = []
+      var types = []
+      this.releasesById.map(function(r,key){
+        if (r){
+          //console.log(r)
+          if(types[r.id_type]!=undefined){
+            var index = types[r.id_type]
+            if(maxRelease[index].day<r.day){
+              maxRelease[index].day = r.day
+            }
+          }else{
+            maxRelease.push({"day":r.day,"id_type":r.id_type})
+            types[r.id_type] = types.length
+          }
+        }
+      })
+
+
+      //console.log("ok")
+
+      //console.log(maxRelease)
+
+      return 1
+    },
+
     /////////////////////
     // SYNCRONISE DATA
 
     sync: function(){
+
       var self = this
       this.tasks = [];
 
@@ -231,7 +258,7 @@ tasksManager.prototype = {
       });
     },
     /////////////////////
-    // DUPLICATE TASK
+    // valid task TASK
 
     validTask: function (){
       var validTasks = [];
@@ -255,6 +282,61 @@ tasksManager.prototype = {
       });
     },
 
+    /////////////////////
+    // archive task task TASK
+
+    archiveSelectedTasks: function (){
+      var archivedTasks = [];
+      for (var key in this.selectedTasks) {
+        var t = this.tasksById[key]
+        var id = t.id
+        t.id_user = 5
+        t.day = '0000-00-00'
+        archivedTasks.push(t);
+        this.selectedTasks[key].remove();
+        delete this.tasksById[id];
+        delete this.selectedTasks[id];
+      }
+      $.ajax({
+        url: "data.php",
+        dataType: "json",
+        data: {
+          a: "updateTask",
+          obj:JSON.stringify(archivedTasks)
+        },
+        success: function( data ) {
+          //tasksManager.updateTasks(data);
+        }
+      });
+    },
+
+    /////////////////////
+    // DUPLICATE TASK
+
+    extendTask: function (){
+      var extendTasks = [];
+      for (var key in this.selectedTasks) {
+        var t = this.tasksById[key]
+          t.id_type 
+
+
+        this.selectedTasks[key].find( ".ok" ).toggleClass("hidden")
+        t.valid = t.valid==1?0:1
+        this.tasksById[key] = t
+        validTasks.push(t);
+      }
+      $.ajax({
+        url: "data.php",
+        dataType: "json",
+        data: {
+          a: "updateTask",
+          obj:JSON.stringify(extendTasks)
+        },
+        success: function( data ) {
+          //tasksManager.updateTasks(data);
+        }
+      });
+    },
     /////////////////////
     // DISPLAY TASK
 
@@ -393,7 +475,7 @@ tasksManager.prototype = {
       var self = this
 
       $( "body" ).off().mousedown(function(e) {
-          log("click out")
+          //log("click out")
           if(!self.select){
             $.each(self.selectedTasks, function( key, t ) {
               t.removeClass('selected');
