@@ -9,16 +9,16 @@ class user
             this.id_group = data.id_group
             this.email = data.email
             this.password = data.password
-            this.firstname = data.firstname
-            this.lastname = data.lastname
-            this.lastconnexion = data.lastconnexion
-            this.autoconnexion = data.autoconnexion
+            this.firstName = data.firstName
+            this.lastName = data.lastName
+            this.lastConnexion = data.lastConnexion
+            this.autoConnexion = data.autoConnexion
         }
     }
 
     getFullName()
     {
-        return this.firstname + " " + this.lastname
+        return this.firstName + " " + this.lastName
     }
 }
 module.exports=user;
