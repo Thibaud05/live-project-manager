@@ -1,4 +1,7 @@
+var app = require('./class/app.js');
 var user = require('./class/user.js');
+
+var app = new app()
 
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
@@ -9,46 +12,40 @@ var connection = mysql.createConnection({
 });
  
 var express = require('express')
-var app = express();
-var server = require('http').Server(app);
+var appExpress = express();
+var server = require('http').Server(appExpress);
 var io = require('socket.io')(server);
 
 server.listen(3000);
 
-app.use("/css", express.static(__dirname + '/css'));
-app.use("/js", express.static(__dirname + '/js'));
+appExpress.use("/css", express.static(__dirname + '/css'));
+appExpress.use("/js", express.static(__dirname + '/js'));
 
-app.get('/', function (req, res) {
-  console.log("ok")
+appExpress.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
-
 
 connection.connect();
  
 connection.query('SELECT * FROM user', function(err, rows, fields) {
   if (err) throw err;
   
-  var users = []
   for (var data of rows) {
     var u = new user(data)
-    users.push(u)
+    app.users.push(u)
   }
 
   io.on('connection', function (socket) {
-    var u = new user()
+    
     socket.emit('news', { hello: 'world' });
     socket.on('login', function (data) {
-      login(data)
-      console.log(data);
+      var u = app.login(new user(data))
+      socket.emit('logged',u.logged);
+      io.emit('changeNbUser',app.getNbUserLogged());
     });
   });
 
 });
  
 connection.end();
-
-function login(){
-  console.log(users)
-}
 

@@ -13,6 +13,7 @@ class user
             this.lastName = data.lastName
             this.lastConnexion = data.lastConnexion
             this.autoConnexion = data.autoConnexion
+            this.logged = false
         }
     }
 

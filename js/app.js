@@ -16,3 +16,11 @@ socket.on('news', function (data) {
       });
   });
 });
+
+socket.on('logged', function (data) {
+  console.log(data)
+})
+
+socket.on('changeNbUser', function (html) {
+  $('#usersLogged').html(html)
+})
