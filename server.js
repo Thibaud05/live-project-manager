@@ -1,15 +1,11 @@
 var app = require('./class/app.js');
 var user = require('./class/user.js');
+var config = require('./config.js');
 
 var app = new app()
 
 var mysql      = require('mysql');
-var connection = mysql.createConnection({
-  socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
-  user     : 'root',
-  password : 'root',
-  database : 'lpm'
-});
+var connection = mysql.createConnection(config);
  
 var express = require('express')
 var appExpress = express();

@@ -18,7 +18,9 @@ socket.on('news', function (data) {
 });
 
 socket.on('logged', function (data) {
-  console.log(data)
+    if(data.logged){
+         $('body').html(data.html)
+    }
 })
 
 socket.on('changeNbUser', function (html) {
