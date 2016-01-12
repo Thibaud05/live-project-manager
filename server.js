@@ -16,9 +16,11 @@ server.listen(3000);
 
 appExpress.use("/css", express.static(__dirname + '/css'));
 appExpress.use("/js", express.static(__dirname + '/js'));
+appExpress.use("/img", express.static(__dirname + '/img'));
 
 appExpress.get('/', function (req, res) {
-  res.sendFile(__dirname + '/index.html');
+  res.send(app.displayLogin())
+  //res.sendFile(__dirname + '/index.html');
 });
 
 connection.connect();
