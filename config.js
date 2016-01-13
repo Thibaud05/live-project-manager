@@ -1,8 +1,6 @@
 module.exports={
-  socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
-  //host     : 'localhost',
+  host     : 'localhost',
   user     : 'root',
-  password : 'root',
-  //password : '',
+  password : '',
   database : 'lpm'
 }
