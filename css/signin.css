@@ -44,19 +44,9 @@ body{
   background-color: #E0E0E0;
   height: 30px;
 }
-.LPMrond{
+.logo{
   margin-bottom: 40px;
-}
-div.LPMrond{
-  text-align:center;
-}
-
-div.LPMrond span{
-  position:relative;
-  font-size:13px;
-  top:12px;
-    font-family: 'roboto';
-    font-weight: bold;
+  text-align: center;
 }
 .form-signin {
   margin-top: 200px;

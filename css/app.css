@@ -1,0 +1,437 @@
+body{
+	margin: 0;
+}
+.head{
+	background-color: #3F51B5;
+	padding: 5px;
+}
+.stripHead{
+	background-color: #303F9F;
+	height: 10px;
+}
+.strip{
+	background-color: #F5F5F5;
+}
+.LPMrond{
+	border-radius:50%;
+	width:50px;
+	height:50px;
+	border:2px solid #fff;
+	outline:none;
+	font-family: Arial;
+	color: #fff;
+	margin:5px;
+	font-weight: bold;
+	margin: 10px;
+	float: left;
+}
+ul.nav.navbar-right {
+    margin-right: 20px;
+}
+ul#menu3 {
+    margin-top: 25px;
+    border-radius: 0;
+    border: 0;
+}
+#user{
+    margin-top: 10px;
+    color: #fff;
+}
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover,
+#user:hover{
+    background-color: transparent;;
+}
+.clear{
+	clear: both;
+}
+div.LPMrond{
+	text-align:center;
+}
+
+div.LPMrond span{
+	position:relative;
+	font-size:13px;
+    top: 12px;
+    font-family: 'roboto';
+    font-weight: bold;
+};
+}
+.right{
+	float: right;
+}
+.table{
+	text-align: center;
+	font-family: arial;
+	font-style: 14px;
+}
+.table td{
+	border-left: 1px solid #E0E0E0;
+	border-bottom: 1px solid #E0E0E0;
+	padding: 0px !important;
+	width: 100px;
+}
+.ui-state-hover{
+	background-color: #E0E0E0;
+}
+
+
+.draggable { width: 100px; height: 100px;background-color: #9FA8DA;border:0;}
+.droppable { width: 100px; height: 100px;background-color: #fff;border:0;}
+.lot-1{
+		height: 100px;
+	background-color: #9FA8DA;
+}
+.abs{
+		height: 100px;
+	background-color: #FF4081;
+}
+.box{
+	margin: 10px;
+	min-height: 180px;
+	width:300px;
+	float: left;
+}
+
+
+.connectedSortable {
+    width: 100px;
+    min-height: 100px;
+    list-style-type: none;
+    margin: 0;
+    float: left;
+    padding:0;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+  }
+  .box .connectedSortable {
+  	width: 300px;
+    min-height: 180px;
+    margin-right: 10px;
+    padding: 5px 0 0 0;
+  }
+ .connectedSortable li {
+    position: relative;
+ 	display: table;
+    margin: 0;
+    padding: 0px;
+    font-size: 1.2em;
+    width: 100px;
+    height: 100px;
+    float: left;
+    border: 0;
+
+    text-align: center;
+    transition: background-color 0.5s;
+  }
+  .box .connectedSortable li {
+  	margin: 1px 1px;
+  }
+  .ui-state-default{
+  	background: none;
+  	color: #fff;
+  	background-color: #ccc;
+  }
+
+.releaseSlot{
+	width: 100px;
+    min-height: 32px;
+    list-style-type: none;
+    margin: 0;
+    float: left;
+    padding:0;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+}
+.releaseSlot span{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.releaseSlot .glyphicon{
+	font-size: 10px;
+}
+
+
+.pink{
+	background-color: #E91E63;
+	background: repeating-linear-gradient(
+    -45deg,
+    #E91E63,
+    #E91E63 10px,
+    #D81B60 10px,
+    #D81B60 20px
+  );
+}
+.connectedSortable > li.pink.selected {
+    background-color: #AD1457;
+    background: repeating-linear-gradient(
+    -45deg,
+    #C2185B,
+    #C2185B 10px,
+    #AD1457 10px,
+    #AD1457 20px
+  );
+}
+.red{
+    background-color: #F44336;
+}
+.connectedSortable > li.red.selected {
+    background: #B71C1C;
+}
+.indigo{
+	background-color: #3F51B5;
+}
+.connectedSortable > li.indigo.selected {
+    background: #1A237E;
+}
+.blue{
+	background-color: #2196F3;
+}
+.connectedSortable > li.blue.selected {
+    background: #0D47A1;
+}
+.cyan{
+	background-color: #00BCD4;
+}
+.connectedSortable > li.cyan.selected {
+    background: #006064;
+}
+.teal{
+	background-color: #009688;
+}
+.connectedSortable > li.teal.selected {
+    background: #004D40;
+}
+.green{
+    background-color: #4CAF50;
+}
+.connectedSortable > li.green.selected {
+    background: #1B5E20;
+}
+.lightGreen{
+    background-color: #8BC34A;
+}
+.connectedSortable > li.lightGreen.selected {
+    background: #33691E;
+}
+.yellow200{
+    background-color: #FFF59D;
+    color:#000;
+}
+.connectedSortable > li.yellow200.selected {
+    background: #FFEB3B;
+}
+.table td.leftSep{
+	border-left: 4px solid #ccc;
+}
+.table .week td, .table .day td{
+	padding: 5px;
+	height: 20px;
+}
+.tooltip{
+	min-height: 200px;
+	min-width: 200px;
+	font-size: 12px;
+	color: #fff;
+	padding: 10px;
+}
+.tooltip h1{
+	color: #fff;
+	font-size: 16px;
+}
+
+.task .title, .task .fileinput-button {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+
+.release{
+	color: #fff;
+	font-weight: bold;
+}
+
+.input-group-addon {
+	padding: 0;
+}
+#taskDetail {
+    margin-left: 20px;
+}
+#taskDetail .desc{
+    font-size: 25px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    width: 700px;
+}
+#closeTask {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 50px;
+    position: absolute;
+    right: 20px;
+    top: 1px;
+    cursor: pointer;
+}
+.task input{
+    background-color: transparent;
+    border:0;
+    border-left:2px solid #fff;
+    outline: none;
+    padding: 0;
+    padding-left: 10px;
+}
+
+#taskDetail textarea {
+    outline: none;
+    background-color: transparent;
+    width: 100%;
+    min-height: 500px;
+    border:0;
+    padding: 0;
+    border-left:2px solid #fff;
+    padding-left: 10px;
+}
+.dataSaved {
+    position: absolute;
+    left: 50%;
+    top: 20px;
+    z-index: 2000;
+    background-color: #43A047;
+    padding: 20px;
+    color: #fff;
+    margin-left: -27px;
+    opacity: 0;
+}
+
+#upload{
+    width: 100px;
+    float: right;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+#upload .fileinput-button {
+    width: 100px;
+    height: 70px;
+}
+#upload .fileinput-button {
+    width: 100px;
+    height: 95px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+#upload .fileinput-button:hover {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+#upload #progress {
+    height: 5px;
+    margin-bottom: 0px;
+    border-radius: 0px;
+}
+#files {
+    min-height: 100px;
+    width: 500px;
+    float: right;
+}
+#files .file {
+    width: 100px;
+    display: block;
+    float: right;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 11px;
+}
+
+#files .file .content {
+    display: block;
+    height: 100px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.table > tbody > tr > td.firstCol {
+    vertical-align: middle;
+}
+
+@media only screen and (max-width : 1600px) {
+
+    .table td{ width: 80px;}
+    .draggable { width: 80px; height: 80px;}
+    .droppable { width: 80px; height: 80px;}
+    .connectedSortable {width: 80px;min-height: 80px;}
+    .abs{height: 80px;}
+    .connectedSortable li {width: 80px; height: 80px;}
+    .releaseSlot{width: 80px;}
+    .releaseSlot span {font-size: 9px;}
+
+}
+
+
+@media only screen and (max-width : 1350px) {
+
+    .table td{ width: 60px;}
+    .draggable { width: 60px; height: 60px;}
+    .droppable { width: 60px; height: 60px;}
+    .connectedSortable {width: 60px;min-height: 60px;}
+    .abs{height: 60px;}
+    .connectedSortable li {width: 60px; height: 60px;}
+    .releaseSlot{width: 60px;}
+    .releaseSlot span {font-size: 8px;}
+}
+td.firstCol{
+    width: 100%;
+}
+.bar{
+    position: fixed;
+    width: 100%;
+    z-index: 2;
+}
+.page{
+    padding-top:165px;
+}
+.barContent {
+    margin-left: -215px;
+    left: 50%;
+    position: absolute;
+    margin-top: 15px;
+}
+.btn-default {
+    color: #fff;
+    background-color: #303F9F;
+    border-color: transparent;
+}
+.btn-default:hover, .btn-default:focus {
+    color: #3F51B5;
+    background-color: #fff;
+    border-color: transparent;
+}
+
+.next{
+    margin-left: 50px;
+}
+.previous{
+    margin-right: 50px;
+}
+.connectedSortable li .env {
+    font-size: 10px;
+    padding: 3px;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+.ok {
+    font-size: 10px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+.task .contener{
+    position: relative;
+    width: 100%;
+    height :100%;
+    display: table;
+}
+#tasksManagerHead .table{
+    margin-bottom: 0;
+}

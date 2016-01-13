@@ -5,6 +5,7 @@ class app
     {
         this.users = []
         this.usersLogged = 0
+        this.appVersion = "v1"
     }
 
     login(data)
@@ -33,10 +34,45 @@ class app
         }
         return str
     }
-
-    displayHome()
+    header()
     {
+        return '<div class="bar"><div class="stripHead"></div>' +
+                '<div class="head">' +
+                '<div class="LPMrond"><span>LPM</span></div>' + this.barContent() + 
+                    '<ul class="nav navbar-right" role="tablist">' +
+                      '<li role="presentation" class="dropdown">' +
+                        '<a id="user" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' +
+                          + 'userName' +
+                          '<span class="caret"></span>' +
+                        '</a>' +
+                        '<ul id="menu3" class="dropdown-menu" aria-labelledby="user">' +
+                          '<li><a href="#">Mon compte</a></li>' +
+                          '<li role="separator" class="divider"></li>' +
+                          '<li class="dropdown-header">' + this.appVersion + '</li>' +
+                          '<li role="separator" class="divider"></li>' +
+                          '<li><a href="?logout">Déconnexion</a></li>' +
+                        '</ul>' +
+                      '</li>' +
+                    '</ul>' +
+                '<div class="clear"></div>' +
+                '</div>' +
+                '<div class="strip">' + 'stripContent' + '</div></div><div class="page">';
+    }
+    barContent(){
+        return '<div class="barContent"> ' +
+            '<a id="prev" class="previous btn btn-default" href="#" title="Taches précédentes"><span aria-hidden="true">&larr;</span> Précédent</a>' +
+            '<button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-task-modal-lg" title="Ajouter une tache"><span id="add_btn" class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> ' +
+            '<button id="valid_btn" type="button" class="btn btn-default" title="Valider une tache" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button> ' +
+            '<button id="duplicate_btn" type="button" class="btn btn-default" title="Copier une tache"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button> ' +
+            '<button id="archive_btn" type="button" class="btn btn-default" title="Archiver une tache" ><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></button> ' +
+            '<button id="del_btn" type="button" class="btn btn-default" title="Supprimer une tache" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button> ' +
+            '<a id="next" class="next btn btn-default" href="#" title="Taches suivantes">Suivant <span aria-hidden="true">&rarr;</span></a>' +
+        '</div>';
+    }
 
+    display()
+    {
+        return this.header() + '</div>'
     }
 
     displayLogin()
@@ -50,9 +86,10 @@ class app
     '<meta name="author" content=""> ' +
     '<link rel="icon" href="../../favicon.ico"> ' +
     '<title>Signin Template for Bootstrap</title> ' +
-    '<link href="css/bootstrap.min.css" rel="stylesheet"> ' +
+    '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> ' +
     '<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet"> ' +
     '<link href="css/signin.css" rel="stylesheet"> ' +
+    '<link href="css/app.css" rel="stylesheet"> ' +
     '<script src="/socket.io/socket.io.js"></script> ' +
 
     '<!--[if lt IE 9]> ' +
@@ -63,7 +100,7 @@ class app
   '<body> ' +
     '<div class="container"> ' +
         '<div class="form-signin"> ' +
-            '<div class="LPMrond"><img src="img/lpm-big.png" /></div> ' +
+            '<div class="logo"><img src="img/lpm-big.png" /></div> ' +
             '<form id="form-signin" method="POST" action="login.php" > ' +
                 '<label for="inputEmail" class="sr-only">Email address</label> ' +
                 '<input name="email" type="email" id="inputEmail" class="form-control" placeholder="Votre@e-mail.fr" required="" autofocus=""> ' +
@@ -75,6 +112,7 @@ class app
         '</div> ' +
     '</div> <!-- /container --> ' +
     '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> ' +
+    '<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> ' +
     '<script src="js/bootstrap.min.js"></script> ' +
     '<script src="js/app.js"></script> ' +
     '<script src="js/ie10-viewport-bug-workaround.js"></script> ' +

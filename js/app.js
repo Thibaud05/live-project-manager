@@ -29,10 +29,12 @@ socket.on('logged', function (data) {
           height: "easeOutCubic"
         },
         complete: function() {
-          $( this ).remove();
-          $('.container').html(data.html)
+          $('body').html(data.html)
         }
       });   
+    }else{
+      $('.form-signin').effect( "shake" );
+      $("#inputPassword").val('').focus();
     }
 })
 
