@@ -1,25 +1,38 @@
 var socket = io.connect('http://localhost:3000');
-socket.on('news', function (data) {
-  console.log(data);
-  $(function () {
+$(function () {
+  console.log("ok");
+    $('.form-signin').on('submit', function(e) {
+        e.preventDefault();
+ 
+        var $this = $(this);
+ 
+        var email = $('#inputEmail').val();
+        var password = $('#inputPassword').val();
+        
 
-      $('.form-signin').on('submit', function(e) {
-          e.preventDefault();
-   
-          var $this = $(this);
-   
-          var email = $('#inputEmail').val();
-          var password = $('#inputPassword').val();
-          
-
-          socket.emit('login', { "email":email , "password":password });
-      });
-  });
+        socket.emit('login', { "email":email , "password":password });
+    });
 });
 
+socket.on('news', function (data) {
+  console.log(data);
+});
 socket.on('logged', function (data) {
     if(data.logged){
-         $('body').html(data.html)
+      $('.form-signin').animate({
+        opacity: 0,
+        marginTop: "0px"
+      },{
+        duration: 500,
+        specialEasing: {
+          width: "linear",
+          height: "easeOutCubic"
+        },
+        complete: function() {
+          $( this ).remove();
+          $('.container').html(data.html)
+        }
+      });   
     }
 })
 

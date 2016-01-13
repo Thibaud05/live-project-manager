@@ -38,7 +38,8 @@ connection.query('SELECT * FROM user', function(err, rows, fields) {
     socket.emit('news', { hello: 'world' });
     socket.on('login', function (data) {
       var u = app.login(new user(data))
-      socket.emit('logged',u.logged);
+      var html = "<h1>Hello !</h1>";
+      socket.emit('logged',{logged:u.logged,html:html});
       io.emit('changeNbUser',app.getNbUserLogged());
     });
   });
