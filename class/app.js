@@ -56,7 +56,7 @@ class app
                     '</ul>' +
                 '<div class="clear"></div>' +
                 '</div>' +
-                '<div class="strip">' + 'stripContent' + '</div></div><div class="page">';
+                '<div class="strip">' + '' + '</div></div><div class="page">';
     }
     barContent(){
         return '<div class="barContent"> ' +
