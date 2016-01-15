@@ -218,16 +218,9 @@ tasksManager.prototype = {
           removedTasksId.push({"id":id,"id_user":"","title":"","id_type":"","day":""});
         }
       });
-      $.ajax({
-        url: "data.php",
-        dataType: "json",
-        data: {
-          a: "delTask",
-          obj:JSON.stringify(removedTasksId)
-        },
-        success: function( t ) {
-          log("taskRemoved");
-        }
+      socket.emit('delTask', JSON.stringify(removedTasksId));
+      socket.on('delTask', function (data) {
+        log("taskRemoved");
       });
     },
 
@@ -241,16 +234,9 @@ tasksManager.prototype = {
         var lowPriority =  this.tasks[t.id_user + ":" + t.day].length;
         duplicatedTasksId.push({"id":"","id_user":t.id_user,"title":t.title,"id_type":t.id_type,"day":t.day,"description":t.description,"creationUser":this.connectUserId,"priority":lowPriority,"accountableUser":this.connectUserId,"creationDate":"","valid":false});
       }
-      $.ajax({
-        url: "data.php",
-        dataType: "json",
-        data: {
-          a: "duplicateTask",
-          obj:JSON.stringify(duplicatedTasksId)
-        },
-        success: function( data ) {
-          tasksManager.addTasks(data);
-        }
+      socket.emit('duplicateTask', JSON.stringify(duplicatedTasksId));
+      socket.on('duplicateTask', function (data) {
+         tasksManager.addTasks(data);
       });
     },
     /////////////////////
@@ -265,16 +251,9 @@ tasksManager.prototype = {
         this.tasksById[key] = t
         validTasks.push(t);
       }
-      $.ajax({
-        url: "data.php",
-        dataType: "json",
-        data: {
-          a: "updateTask",
-          obj:JSON.stringify(validTasks)
-        },
-        success: function( data ) {
-          //tasksManager.updateTasks(data);
-        }
+      socket.emit('updateTask', JSON.stringify(validTasks));
+      socket.on('updateTask', function (data) {
+         log('taskUpdated')
       });
     },
 
@@ -293,16 +272,9 @@ tasksManager.prototype = {
         delete this.tasksById[id];
         delete this.selectedTasks[id];
       }
-      $.ajax({
-        url: "data.php",
-        dataType: "json",
-        data: {
-          a: "updateTask",
-          obj:JSON.stringify(archivedTasks)
-        },
-        success: function( data ) {
-          //tasksManager.updateTasks(data);
-        }
+      socket.emit('updateTask', JSON.stringify(archivedTasks));
+      socket.on('updateTask', function (data) {
+         log('taskUpdated')
       });
     },
 
@@ -321,16 +293,9 @@ tasksManager.prototype = {
         this.tasksById[key] = t
         validTasks.push(t);
       }
-      $.ajax({
-        url: "data.php",
-        dataType: "json",
-        data: {
-          a: "updateTask",
-          obj:JSON.stringify(extendTasks)
-        },
-        success: function( data ) {
-          //tasksManager.updateTasks(data);
-        }
+      socket.emit('updateTask', JSON.stringify(extendTasks));
+      socket.on('updateTask', function (data) {
+         log('taskUpdated')
       });
     },
     /////////////////////
@@ -506,15 +471,9 @@ tasksManager.prototype = {
             t.priority = pos
             tasksUpdate.push(t)
           })
-          $.ajax({
-            url: "data.php",
-            data: {
-              a: "moveTask",
-              obj:JSON.stringify(tasksUpdate)
-            },
-            success: function( data ) {
-              log("saved");
-            }
+          socket.emit('moveTask', JSON.stringify(tasksUpdate));
+          socket.on('moveTask', function (data) {
+            log("saved");
           });
         },
         receive: function( event, ui ) {
@@ -523,15 +482,9 @@ tasksManager.prototype = {
           t.day = self.dates[$(this).attr("di")];
           t.id_user = $(this).attr("uid");
           t.creationUser = self.connectUserId;
-          $.ajax({
-            url: "data.php",
-            data: {
-              a: "setData",
-              obj:JSON.stringify(t)
-            },
-            success: function( data ) {
-              log("saved");
-            }
+          socket.emit('setData', JSON.stringify(t));
+          socket.on('setData', function (data) {
+            log("saved");
           });
         }
       }).disableSelection();
@@ -602,15 +555,9 @@ tasksManager.prototype = {
         receive: function( event, ui ) {
           var release = self.releasesById[ui.item.attr("tid")];
           release.day = self.dates[$(this).attr("di")];
-          $.ajax({
-            url: "data.php",
-            data: {
-              a: "setRelease",
-              obj:JSON.stringify(release)
-            },
-            success: function( data ) {
-              log("saved0");
-            }
+          socket.emit('setRelease', JSON.stringify(t));
+          socket.on('setRelease', function (data) {
+            log("saved");
           });
         }
       }).disableSelection();
