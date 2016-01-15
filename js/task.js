@@ -6,18 +6,19 @@
   //
   //////////////////////////////////////////
   function task(data){
+
     this.isOpen = false;
     this.isDraging = false;
     this.id = data.id;
     this.id_type = data.id_type;
-    this.id_user = data.id_user;
-    this.day = data.day;
-    this.creationDate = data.creationDate;
-    this.creationUser = data.creationUser;
-    this.accountableUser = data.accountableUser;
-    this.updateDate = data.updateDate;
-    this.title = data.title;
-    this.description = data.description;
+    this.id_user = data.id_user_responsible;
+    this.day = moment(data.date_finish).format('YYYY-MM-DD');
+    this.creationDate = data.date_creation;
+    this.creationUser = data.id_user_add;
+    this.accountableUser = data.id_user_accountable;
+    this.updateDate = data.date_update;
+    this.title = data.name;
+    this.description = data.comments;
     this.files = [];
     this.priority = data.priority
     this.w = 0

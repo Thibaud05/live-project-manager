@@ -337,10 +337,12 @@ tasksManager.prototype = {
     // DISPLAY TASK
 
     renderTask: function(key){
+
       var html = ''
       var tabTask = this.tasks[key];
-
+      console.log(key)
       if(tabTask){
+        console.log("rendretask")
         for (var i = 0; i < tabTask.length; i++){
           var t = tabTask[i];
           if(t!=undefined){
@@ -398,7 +400,7 @@ tasksManager.prototype = {
     // DISPLAY COMPONANT
 
     render: function(){
-      //log(this)
+      log(this.tasks)
 
       var self = this;
       var html = "";
