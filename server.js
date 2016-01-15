@@ -6,7 +6,6 @@ var app = new app()
 
 var mysql      = require('mysql');
 var connection = mysql.createConnection(config);
- 
 var express = require('express')
 var appExpress = express();
 var server = require('http').Server(appExpress);
@@ -24,22 +23,43 @@ appExpress.get('/', function (req, res) {
 });
 
 connection.connect();
- 
-connection.query('SELECT * FROM user', function(err, rows, fields) {
+
+ /*
+
+$json->addSql("tasks","SELECT id,id_user_responsible as id_user,name as title,id_type,date_finish as day, comments as description ,
+ id_user_add as creationUser, date_creation as creationDate, priority, valid,
+ id_user_accountable as accountableUser, date_update as updateDate FROM task ORDER BY priority");
+$json->addSql("taskTypes","SELECT * FROM type");
+$json->addSql("releases","SELECT * FROM `release`");
+$json->addSql("users","SELECT id,firstname, lastname,id_group as level FROM user");
+$json->addSql("tasks_files","SELECT * FROM task_file");
+*/
+var sqls = [
+  "SELECT * FROM `type`",
+  "SELECT * FROM `release`",
+  "SELECT * FROM `user`",
+  "SELECT * FROM `task_file`",
+  "SELECT * FROM `task`"]
+console.log(sqls.join(";"))
+connection.query(sqls.join(";"), function(err, r, fields) {
   if (err) throw err;
   
-  for (var data of rows) {
+  var json = {taskTypes:r[0],releases:r[1],users:r[2],tasks_files:r[3],tasks:r[4]}
+
+  for (var data of r[2]) {
     var u = new user(data)
     app.users.push(u)
   }
 
   io.on('connection', function (socket) {
-    
+    var u = null
     socket.emit('news', { hello: 'world' });
     socket.on('login', function (data) {
-      var u = app.login(new user(data))
-      var html = app.display()
-      socket.emit('logged',{logged:u.logged,html:html});
+      u = app.login(new user(data))
+              console.log(u)
+      var html = app.display(u)
+      json.connectUserId = u.id
+      socket.emit('logged',{logged:u.logged,html:html,data:json});
       io.emit('changeNbUser',app.getNbUserLogged());
     });
   });

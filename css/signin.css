@@ -1,8 +1,3 @@
-@keyframes intro {
-    from {opacity: 0;}
-    to {opacity: 100;}
-}
-
 h1,label{
   color: #fff;
   text-align: center;
@@ -14,10 +9,6 @@ h1{
 body{
   margin: 0;
   background-color: #3F51B5;
-  animation-name: intro;
-    animation-duration: 1s;
-    animation-timing-function: linear;
-    animation-fill-mode:both;
 }
 .loading{
   background-color: #fff;
@@ -25,12 +16,7 @@ body{
   height: 30px;
   margin: auto;
   border-radius: 30px;
-  animation-name: intro;
-  animation-timing-function: linear;
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-    animation-direction: alternate;
-    color: #fff;
+  color: #fff;
 }
 .head{
   background-color: #3F51B5;
@@ -49,7 +35,6 @@ body{
   text-align: center;
 }
 .form-signin {
-  margin-top: 200px;
   max-width: 330px;
   padding: 15px;
   margin: 150px auto 0 auto;
@@ -64,7 +49,6 @@ body{
   font-size: 16px;
   background-color: #303F9F;
   color:#fff;
-    transition: all 0.5s;
 }
 .form-signin input:focus {
   outline:none;
@@ -109,3 +93,11 @@ input:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0px 1000px #1A2379 inset;
     -webkit-text-fill-color: #fff !important;
 }
+.form-control {
+  transition: none;
+}
+/*
+.form-signin .form-control {
+  transition: all 0.5s;
+}
+*/

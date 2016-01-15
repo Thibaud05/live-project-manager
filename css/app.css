@@ -1,3 +1,4 @@
+html {overflow-y: scroll;}
 body{
 	margin: 0;
 }
@@ -11,19 +12,18 @@ body{
 }
 .strip{
 	background-color: #F5F5F5;
+    height: 80px;
+    width: 100%;
 }
-.LPMrond{
-	border-radius:50%;
-	width:50px;
-	height:50px;
-	border:2px solid #fff;
-	outline:none;
-	font-family: Arial;
-	color: #fff;
-	margin:5px;
-	font-weight: bold;
+.logoLpm{
+	width:80px;
+	height:31px;
 	margin: 10px;
 	float: left;
+}
+#tasksManager{
+    opacity: 0;
+    background-color: #fff;
 }
 ul.nav.navbar-right {
     margin-right: 20px;
@@ -43,18 +43,6 @@ ul#menu3 {
 }
 .clear{
 	clear: both;
-}
-div.LPMrond{
-	text-align:center;
-}
-
-div.LPMrond span{
-	position:relative;
-	font-size:13px;
-    top: 12px;
-    font-family: 'roboto';
-    font-weight: bold;
-};
 }
 .right{
 	float: right;
@@ -86,6 +74,7 @@ div.LPMrond span{
 	background-color: #FF4081;
 }
 .box{
+    opacity: 0;
 	margin: 10px;
 	min-height: 180px;
 	width:300px;
@@ -226,8 +215,9 @@ div.LPMrond span{
 	border-left: 4px solid #ccc;
 }
 .table .week td, .table .day td{
-	padding: 5px;
-	height: 20px;
+    height: 23px;
+    font-size: 12px;
+    vertical-align: middle;
 }
 .tooltip{
 	min-height: 200px;
@@ -389,13 +379,19 @@ td.firstCol{
     z-index: 2;
 }
 .page{
-    padding-top:165px;
+    padding-top:151px;
 }
 .barContent {
-    margin-left: -215px;
+    margin-left: -275px;
     left: 50%;
     position: absolute;
-    margin-top: 15px;
+    margin-top: 4px;
+}
+.bar .btn-default {
+    height: 40px;
+    border-radius: 0;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 .btn-default {
     color: #fff;

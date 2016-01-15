@@ -20,7 +20,6 @@ class app
                 newUser = user
             }
         }
-        console.log(this.users)
         return newUser
     }
 
@@ -34,15 +33,17 @@ class app
         }
         return str
     }
-    header()
+
+    header(u)
     {
+        console.log(u.getFullName())
         return '<div class="bar"><div class="stripHead"></div>' +
                 '<div class="head">' +
-                '<div class="LPMrond"><span>LPM</span></div>' + this.barContent() + 
+                '<div class="logoLpm"><img src="img/lpm.png" /></div>' + this.barContent() + 
                     '<ul class="nav navbar-right" role="tablist">' +
                       '<li role="presentation" class="dropdown">' +
                         '<a id="user" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' +
-                          + 'userName' +
+                           u.getFullName() +
                           '<span class="caret"></span>' +
                         '</a>' +
                         '<ul id="menu3" class="dropdown-menu" aria-labelledby="user">' +
@@ -56,23 +57,26 @@ class app
                     '</ul>' +
                 '<div class="clear"></div>' +
                 '</div>' +
-                '<div class="strip">' + '' + '</div></div><div class="page">';
+                '<div class="strip"><div id="tasksManagerHead"></div></div></div><div class="page">';
     }
-    barContent(){
+
+    barContent()
+    {
         return '<div class="barContent"> ' +
-            '<a id="prev" class="previous btn btn-default" href="#" title="Taches précédentes"><span aria-hidden="true">&larr;</span> Précédent</a>' +
+            '<button id="prev" type="button" class="previous btn btn-default" title="Taches précédentes" ><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button> ' +
             '<button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-task-modal-lg" title="Ajouter une tache"><span id="add_btn" class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> ' +
             '<button id="valid_btn" type="button" class="btn btn-default" title="Valider une tache" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button> ' +
             '<button id="duplicate_btn" type="button" class="btn btn-default" title="Copier une tache"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button> ' +
             '<button id="archive_btn" type="button" class="btn btn-default" title="Archiver une tache" ><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></button> ' +
             '<button id="del_btn" type="button" class="btn btn-default" title="Supprimer une tache" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button> ' +
-            '<a id="next" class="next btn btn-default" href="#" title="Taches suivantes">Suivant <span aria-hidden="true">&rarr;</span></a>' +
+            '<button id="next" type="button" class="next btn btn-default" title="Taches suivantes" ><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button> ' +
         '</div>';
     }
 
-    display()
+    display(u)
     {
-        return this.header() + '</div>'
+        console.log(u)
+        return this.header(u) + '<div id="tasksManager"></div><div id="box"></div>' + '</div>'
     }
 
     displayLogin()
@@ -114,6 +118,11 @@ class app
     '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> ' +
     '<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> ' +
     '<script src="js/bootstrap.min.js"></script> ' +
+    '<script src="js/moment.min.js"></script> ' +
+    '<script src="js/taskManager.js"></script>' +
+    '<script src="js/task.js"></script>' +
+    '<script src="js/user.js"></script>' +
+    '<script src="js/file.js"></script>' +
     '<script src="js/app.js"></script> ' +
     '<script src="js/ie10-viewport-bug-workaround.js"></script> ' +
   '</body> ' +
