@@ -4,5 +4,6 @@ module.exports={
   user     : 'root',
   password : 'root',
   //password : '',
-  database : 'lpm'
+  database : 'lpm',
+  multipleStatements: true
 }
