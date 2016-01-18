@@ -13,12 +13,13 @@ class task
 		this.creationUser = data.creationUser
 		this.creationDate = data.creationDate
 		this.accountableUser = data.accountableUser
-		this.updateDate = date("Y-m-d H:i:s")
+		this.updateDate = global.moment().format("YYYY-MM-DD HH:mm:ss")
 		this.priority = data.priority
 		this.valid = data.valid
     }
 
-    update(){
+    update()
+    {
 		var sql = "UPDATE `task` SET `name` = '" + this.title + "', " +
 					"`id_user_responsible` = '" + this.id_user + "'," +
 					"`id_user_add` = '" + this.creationUser + "'," +
@@ -30,7 +31,10 @@ class task
 					"`priority` = '" + this.priority + "'," +
 					"`valid` = '" + this.valid + "'," +
 					"`comments` = '" + this.description + "'" +
-		 		"WHERE `id` = " + this.id
+		 		" WHERE `id` = " + this.id
+		console.log(sql)
+		global.connection.query(sql)
+		global.json.tasks
 		//res = mysqli->query($sql);
 		return this;
 	}
@@ -41,7 +45,7 @@ class task
 			this.day = date("Y-m-d");
 		}
 		if(this.creationDate==""){
-			this.creationDate = date("Y-m-d H:i:s");
+			this.creationDate = global.moment().format("YYYY-MM-DD HH:mm:ss")
 		}
 		if(this.creationUser == ""){
 			this.creationUser = this.accountableUser;
@@ -76,7 +80,7 @@ class task
 					"'" + this.priority + "'," +
 					"'" + this.valid + "'," +
 					"'" + this.description + "'" +
-				)";" +
+				");"
 		//$res = SQL::$mysqli->query($sql);
 
 		//$this->id = SQL::$mysqli->insert_id;
@@ -89,4 +93,4 @@ class task
 		//$res = SQL::$mysqli->query($sql);
 	}
 }
-module.exports=app
+module.exports=task

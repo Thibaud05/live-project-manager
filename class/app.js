@@ -1,8 +1,4 @@
 'use strict'
-var task = require('./class/task.js');
-var release = require('./class/release.js');
-var file = require('./class/file.js');
-
 class app
 {
     constructor()
@@ -12,73 +8,91 @@ class app
         this.appVersion = "v1"
     }
 
-    controller()
+    controller(socket)
     {
         socket.on('setData', function (data)
         {
-            var t = new task(data)
-            t.update()
-        }
+            console.log('setData')
+            console.log(data)
+            var t = new global.task(data)
+           // t.update()
+        })
 
         socket.on('updateTask', function (datas)
         {
-            for (var data of datas) {
-                var t = new task(data)
+            console.log('updateTask')
+            for(var i= 0; i < datas.length; i++)
+            {
+                var data = datas[i]
+                var t = new global.task(data)
                 t.update()
             }
-        }
+        })
 
         socket.on('moveTask', function (datas)
         {
-            for (var data of datas) {
-                var t = new task(data)
+            console.log(datas)
+            
+            console.log(datas.length)
+
+            for(var i= 0; i < datas.length; i++)
+            {
+                console.log("test")
+               var data = datas[i]
+
+                var t = new global.task(data)
                 t.update()
             }
-        }
+            
+        })
 
         socket.on('setDataFiles', function (data)
         {
             fileData = data.files[0];
             fileData.id = "";
-            var f = new file(fileData);
+            var f = new global.file(fileData);
             f.id_task = data.taskId;
             f.add()
-        }
+        })
 
         socket.on('delDataFiles', function (data)
         {
-            f = new file(data)
+            f = new global.file(data)
             f.del()
-        }
+        })
 
         socket.on('addTask', function (data)
         {
-            t = new task(data)
+            t = new global.task(data)
             task.add()
-        }
+        })
 
         socket.on('setRelease', function (data)
         {
-            var r = new release(data)
+            var r = new global.release(data)
             r.update()
-        }
+        })
 
         socket.on('delTask', function (datas){
-            for (var data of datas) {
-                var t = new task(data);
+            for(var i= 0; i < datas.length; i++)
+            {
+                var data = datas[i]
+                var t = new global.task(data);
                 t.del()
             }
-        }
+        })
 
         socket.on('duplicateTask', function (datas)
         {
             var arr = [];
-            for (var data of datas) {
-                var t = new task(data)
-                arr[] = t->add()
+            for(var i= 0; i < datas.length; i++)
+            {
+                var data = datas[i]
+                var t = new global.task(data)
+                arr.push(t.add())
             }
-            arr
-        }
+            //arr
+        })
     }
 
     login(data)

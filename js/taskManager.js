@@ -46,7 +46,7 @@ tasksManager.prototype = {
     // LOAD DATA
 
     getData: function(data){
-      console.log(data)
+      //console.log(data)
         this.connectUserId = data.connectUserId;
         this.fullUrl = data.fullUrl;
         this.tasks = [];
@@ -305,7 +305,7 @@ tasksManager.prototype = {
 
       var html = ''
       var tabTask = this.tasks[key];
-      console.log(key)
+      //console.log(key)
       if(tabTask){
         console.log("rendretask")
         for (var i = 0; i < tabTask.length; i++){
@@ -365,7 +365,7 @@ tasksManager.prototype = {
     // DISPLAY COMPONANT
 
     render: function(){
-      log(this.tasks)
+      //log(this.tasks)
 
       var self = this;
       var html = "";
@@ -471,7 +471,8 @@ tasksManager.prototype = {
             t.priority = pos
             tasksUpdate.push(t)
           })
-          socket.emit('moveTask', JSON.stringify(tasksUpdate));
+          log(tasksUpdate)
+          socket.emit('moveTask', tasksUpdate);
           socket.on('moveTask', function (data) {
             log("saved");
           });

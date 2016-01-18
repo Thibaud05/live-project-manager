@@ -2,9 +2,10 @@ var app = require('./class/app.js');
 var user = require('./class/user.js');
 var config = require('./config.js');
 
-var release = require('./class/release.js'); 
-
-
+global.task = require('./class/task.js');
+global.release = require('./class/release.js');
+global.file = require('./class/file.js');
+global.moment = require('./js/moment.min.js')
 
 var app = new app()
 
@@ -29,10 +30,6 @@ appExpress.get('/', function (req, res) {
   //res.sendFile(__dirname + '/index.html');
 });
 
-
-
-
-
 var sqls = [
   "SELECT * FROM `type`",
   "SELECT * FROM `release`",
@@ -43,24 +40,24 @@ var sqls = [
 connection.query(sqls.join(";"), function(err, r, fields) {
   if (err) throw err;
   
-  var json = {taskTypes:r[0],releases:r[1],users:r[2],tasks_files:r[3],tasks:r[4]}
+  global.json = {taskTypes:r[0],releases:r[1],users:r[2],tasks_files:r[3],tasks:r[4]}
 
   for (var data of r[2]) {
     var u = new user(data)
     app.users.push(u)
   }
-  app.controller()
 });  
 
 io.on('connection', function (socket) {
   var u = null
+  app.controller(socket)
   socket.emit('news', { hello: 'world' });
   socket.on('login', function (data) {
     u = app.login(new user(data))
-            console.log(u)
+    //console.log(u)
     var html = app.display(u)
-    json.connectUserId = u.id
-    socket.emit('logged',{logged:u.logged,html:html,data:json});
+    global.json.connectUserId = u.id
+    socket.emit('logged',{logged:u.logged,html:html,data:global.json});
     io.emit('changeNbUser',app.getNbUserLogged());
   });
 });
@@ -68,5 +65,3 @@ io.on('connection', function (socket) {
 
  
 //connection.end();
-
-var myRelease = new release({id:42,name:"2.5",id_type:"1",day:"2016-01-18"})
