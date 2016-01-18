@@ -2,6 +2,10 @@ var app = require('./class/app.js');
 var user = require('./class/user.js');
 var config = require('./config.js');
 
+var release = require('./class/release.js'); 
+
+
+
 var app = new app()
 
 var mysql      = require('mysql');
@@ -10,6 +14,9 @@ var express = require('express')
 var appExpress = express();
 var server = require('http').Server(appExpress);
 var io = require('socket.io')(server);
+
+connection.connect();
+global.connection = connection
 
 server.listen(3000);
 
@@ -22,14 +29,17 @@ appExpress.get('/', function (req, res) {
   //res.sendFile(__dirname + '/index.html');
 });
 
-connection.connect();
+
+
+
+
 var sqls = [
   "SELECT * FROM `type`",
   "SELECT * FROM `release`",
   "SELECT * FROM `user`",
   "SELECT * FROM `task_file`",
   "SELECT * FROM `task`"]
-console.log(sqls.join(";"))
+//console.log(sqls.join(";"))
 connection.query(sqls.join(";"), function(err, r, fields) {
   if (err) throw err;
   
@@ -57,5 +67,6 @@ io.on('connection', function (socket) {
 
 
  
-connection.end();
+//connection.end();
 
+var myRelease = new release({id:42,name:"2.5",id_type:"1",day:"2016-01-18"})
