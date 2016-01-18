@@ -16,6 +16,8 @@ var appExpress = express();
 var server = require('http').Server(appExpress);
 var io = require('socket.io')(server);
 
+global.io = io
+
 connection.connect();
 global.connection = connection
 

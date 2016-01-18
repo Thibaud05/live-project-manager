@@ -20,6 +20,7 @@
     this.week;
     this.firstDayWeek;
     this.dates;
+    this.datesIndex
     this.offset;
     this.selectedTasks = {};
     this.connectUserId;
@@ -35,10 +36,13 @@ tasksManager.prototype = {
       this.week = this.now.week();
       this.firstDayWeek = this.now.day(1);
       this.dates = [];
+      this.datesIndex = [];
       for (var i = 0; i < this.nbdays; i++){
         var offset = Math.floor(i / this.dayPerWeek);
         offset = offset * (7-this.dayPerWeek);
-        this.dates[i] = this.firstDayWeek.clone().add(i + offset,'d').format('YYYY-MM-DD');
+        var d = this.firstDayWeek.clone().add(i + offset,'d').format('YYYY-MM-DD');
+        this.dates[i] = d
+        this.datesIndex[d] = i
       }
     },
 
@@ -433,6 +437,16 @@ tasksManager.prototype = {
     // JQUERY INITIALISATION
 
     activate :function(){
+      var self = this
+      socket.on('moveTask', function (task) {
+        console.log(task.id)
+        var selectedTask = $(".task[tid="+ task.id +"]")
+        console.log(selectedTask)
+        log("saved");
+        
+        var cible = $(".connectedSortable[di="+ self.datesIndex[task.day] +"][uid="+ task.id_user +"]")
+        log(cible);
+      });
 
       // Task drag and drop
       var self = this
@@ -473,9 +487,6 @@ tasksManager.prototype = {
           })
           log(tasksUpdate)
           socket.emit('moveTask', tasksUpdate);
-          socket.on('moveTask', function (data) {
-            log("saved");
-          });
         },
         receive: function( event, ui ) {
           log("recive");

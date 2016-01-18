@@ -41,7 +41,8 @@ class app
                var data = datas[i]
 
                 var t = new global.task(data)
-                t.update()
+                
+                io.emit('moveTask',t.update());
             }
             
         })

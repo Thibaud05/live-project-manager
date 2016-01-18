@@ -34,7 +34,7 @@ class task
 		 		" WHERE `id` = " + this.id
 		console.log(sql)
 		global.connection.query(sql)
-		global.json.tasks
+		//global.json.tasks
 		//res = mysqli->query($sql);
 		return this;
 	}
