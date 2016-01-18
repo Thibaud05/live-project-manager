@@ -1,4 +1,8 @@
 'use strict'
+var task = require('./class/task.js');
+var release = require('./class/release.js');
+var file = require('./class/file.js');
+
 class app
 {
     constructor()
@@ -6,6 +10,75 @@ class app
         this.users = []
         this.usersLogged = 0
         this.appVersion = "v1"
+    }
+
+    controller()
+    {
+        socket.on('setData', function (data)
+        {
+            var t = new task(data)
+            t.update()
+        }
+
+        socket.on('updateTask', function (datas)
+        {
+            for (var data of datas) {
+                var t = new task(data)
+                t.update()
+            }
+        }
+
+        socket.on('moveTask', function (datas)
+        {
+            for (var data of datas) {
+                var t = new task(data)
+                t.update()
+            }
+        }
+
+        socket.on('setDataFiles', function (data)
+        {
+            fileData = data.files[0];
+            fileData.id = "";
+            var f = new file(fileData);
+            f.id_task = data.taskId;
+            f.add()
+        }
+
+        socket.on('delDataFiles', function (data)
+        {
+            f = new file(data)
+            f.del()
+        }
+
+        socket.on('addTask', function (data)
+        {
+            t = new task(data)
+            task.add()
+        }
+
+        socket.on('setRelease', function (data)
+        {
+            var r = new release(data)
+            r.update()
+        }
+
+        socket.on('delTask', function (datas){
+            for (var data of datas) {
+                var t = new task(data);
+                t.del()
+            }
+        }
+
+        socket.on('duplicateTask', function (datas)
+        {
+            var arr = [];
+            for (var data of datas) {
+                var t = new task(data)
+                arr[] = t->add()
+            }
+            arr
+        }
     }
 
     login(data)

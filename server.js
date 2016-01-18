@@ -39,21 +39,23 @@ connection.query(sqls.join(";"), function(err, r, fields) {
     var u = new user(data)
     app.users.push(u)
   }
+  app.controller()
+});  
 
-  io.on('connection', function (socket) {
-    var u = null
-    socket.emit('news', { hello: 'world' });
-    socket.on('login', function (data) {
-      u = app.login(new user(data))
-              console.log(u)
-      var html = app.display(u)
-      json.connectUserId = u.id
-      socket.emit('logged',{logged:u.logged,html:html,data:json});
-      io.emit('changeNbUser',app.getNbUserLogged());
-    });
+io.on('connection', function (socket) {
+  var u = null
+  socket.emit('news', { hello: 'world' });
+  socket.on('login', function (data) {
+    u = app.login(new user(data))
+            console.log(u)
+    var html = app.display(u)
+    json.connectUserId = u.id
+    socket.emit('logged',{logged:u.logged,html:html,data:json});
+    io.emit('changeNbUser',app.getNbUserLogged());
   });
-
 });
+
+
  
 connection.end();
 
