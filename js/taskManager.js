@@ -441,13 +441,24 @@ tasksManager.prototype = {
       socket.on('moveTask', function (task) {
         console.log(task.id)
         var selectedTask = $(".task[tid="+ task.id +"]")
+        if (selectedTask) {
+          selectedTask.remove()
+        }
         console.log(selectedTask)
         log("saved");
         
         var cible = $(".connectedSortable[di="+ self.datesIndex[task.day] +"][uid="+ task.id_user +"]")
+        if(cible){
+          var html = self.renderTask(task.id_user + ":" + task.day);
+          cible.append(html)
+        }
         log(cible);
+        cible.append(selectedTask)
+        self.tasksById[task.id] = task;
       });
-
+      socket.on('setData', function (data) {
+        log("saved");
+      });
       // Task drag and drop
       var self = this
 
@@ -494,10 +505,7 @@ tasksManager.prototype = {
           t.day = self.dates[$(this).attr("di")];
           t.id_user = $(this).attr("uid");
           t.creationUser = self.connectUserId;
-          socket.emit('setData', JSON.stringify(t));
-          socket.on('setData', function (data) {
-            log("saved");
-          });
+          socket.emit('setData', t);
         }
       }).disableSelection();
 
