@@ -21,5 +21,15 @@ class user
     {
         return this.firstName + " " + this.lastName
     }
+
+    getKey()
+    {
+        var key = this.id + "%:#" + this.email + "/$!" + this.password
+        global.cryptoJs.MD5(key).toString(global.cryptoJs.enc.Base64)
+    }
+
+    saveKey(){
+        res.cookie('key', this.getKey() ,{ maxAge: 1000 * 360 * 24 * 365 });
+    }
 }
 module.exports=user;

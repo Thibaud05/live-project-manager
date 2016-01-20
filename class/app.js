@@ -4,6 +4,7 @@ class app
     constructor()
     {
         this.users = []
+        this.usersKey = {}
         this.usersLogged = 0
         this.appVersion = "v1"
     }
@@ -95,6 +96,20 @@ class app
             //arr
         })
     }
+    autoLogin(req,res)
+    {
+      if(req.cookies.key!=undefined){
+        console.log(req.cookies.key)
+        var html = app.display(u)
+        global.data.connectUserId = u.id
+        socket.emit('logged',{logged:u.logged,html:html,data:global.data});
+      }
+
+
+
+
+
+    }
 
     login(data)
     {
@@ -105,6 +120,7 @@ class app
                     this.usersLogged ++
                 }
                 user.logged = true
+                user.saveKey()
                 newUser = user
             }
         }
