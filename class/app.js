@@ -31,15 +31,15 @@ class app
 
         socket.on('moveTask', function (datas)
         {
+            console.log("SERVER MOVE TASK")
             console.log(datas)
             
-            console.log(datas.length)
+            console.log(datas.length)       
 
             for(var i= 0; i < datas.length; i++)
             {
                 console.log("test")
                var data = datas[i]
-
                 var t = new global.task(data)
                 
                 io.emit('moveTask',t.update());

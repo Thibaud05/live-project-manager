@@ -133,6 +133,7 @@ function appInit(data) {
   tm.getData(data)
   tm.render()
   tm.activate()
+  tm.sockets()
 
   $('.strip').animate({"margin-left": "0",opacity:1},{duration: 500, easing:"easeOutCubic",
     complete: function() {

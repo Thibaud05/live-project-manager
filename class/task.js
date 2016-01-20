@@ -5,14 +5,14 @@ class task
     constructor(data)
     {
 		this.id = data.id
-		this.id_user = data.id_user
+		this.userId = data.userId
 		this.title = data.title
-		this.id_type = data.id_type
+		this.typeId = data.typeId
 		this.day = data.day
 		this.description = data.description
-		this.creationUser = data.creationUser
+		this.creationUserId = data.creationUserId
 		this.creationDate = data.creationDate
-		this.accountableUser = data.accountableUser
+		this.accountableUserId = data.accountableUserId
 		this.updateDate = global.moment().format("YYYY-MM-DD HH:mm:ss")
 		this.priority = data.priority
 		this.valid = data.valid
@@ -20,20 +20,21 @@ class task
 
     update()
     {
-		var sql = "UPDATE `task` SET `name` = '" + this.title + "', " +
-					"`id_user_responsible` = '" + this.id_user + "'," +
-					"`id_user_add` = '" + this.creationUser + "'," +
-					"`id_user_accountable` = '" + this.accountableUser + "'," +
-					"`id_type` = '" + this.id_type + "'," +
-					"`date_finish` = '" + this.day + "'," +
-					"`date_update` = '" + this.updateDate + "'," +
-					"`date_creation` = '" + this.creationDate + "'," +
+		var sql = "UPDATE `task` SET `title` = '" + this.title + "', " +
+					"`userId` = '" + this.userId + "'," +
+					"`creationUserId` = '" + this.creationUserId + "'," +
+					"`accountableUserId` = '" + this.accountableUserId + "'," +
+					"`typeId` = '" + this.typeId + "'," +
+					"`day` = '" + this.day + "'," +
+					"`updateDate` = '" + this.updateDate + "'," +
+					"`creationDate` = '" + this.creationDate + "'," +
 					"`priority` = '" + this.priority + "'," +
 					"`valid` = '" + this.valid + "'," +
-					"`comments` = '" + this.description + "'" +
+					"`description` = '" + this.description + "'" +
 		 		" WHERE `id` = " + this.id
 		console.log(sql)
 		global.connection.query(sql)
+		global.data.tasks[this.id] = this
 		//global.json.tasks
 		//res = mysqli->query($sql);
 		return this;
@@ -47,35 +48,35 @@ class task
 		if(this.creationDate==""){
 			this.creationDate = global.moment().format("YYYY-MM-DD HH:mm:ss")
 		}
-		if(this.creationUser == ""){
-			this.creationUser = this.accountableUser;
+		if(this.creationUserId == ""){
+			this.creationUserId = this.accountableUserId;
 		}
-		if(this.id_user == ""){
-			this.id_user = 1;
+		if(this.userId == ""){
+			this.userId = 1;
 		}
-		if(this.id_type == ""){
-			this.id_type = 1;
+		if(this.typeId == ""){
+			this.typeId = 1;
 		}
 		var sql = "INSERT INTO `task` (" +
-					"`name`, " +
-					"`id_user_responsible`, " +
-					"`id_type`, " +
-					"`date_finish`, " +
-					"`date_update`, " +
-					"`id_user_add`," +
-					"`id_user_accountable`," +
-					"`date_creation`," +
+					"`title`, " +
+					"`userId`, " +
+					"`idType`, " +
+					"`day`, " +
+					"`updateDate`, " +
+					"`creationUserId`," +
+					"`accountableUserId`," +
+					"`creationDate`," +
 					"`priority`," +
 					"`valid`," +
-					"`comments`" +
+					"`description`" +
 				") VALUES (" +
 					"'" + this.title + "'," +
-					"'" + this.id_user + "'," +
-					"'" + this.id_type + "'," +
+					"'" + this.userId + "'," +
+					"'" + this.idType + "'," +
 					"'" + this.day + "'," +
 					"'" + this.updateDate + "'," +
-					"'" + this.creationUser + "'," +
-					"'" + this.accountableUser + "'," +
+					"'" + this.creationUserId + "'," +
+					"'" + this.accountableUserId + "'," +
 					"'" + this.creationDate + "'," +
 					"'" + this.priority + "'," +
 					"'" + this.valid + "'," +

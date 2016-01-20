@@ -1,1 +1,7 @@
 ALTER TABLE `user` CHANGE `firstname` `firstName` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, CHANGE `lastname` `lastName` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
+
+ALTER TABLE `task` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, CHANGE `name` `title` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, CHANGE `id_user_add` `creationUserId` INT(11) NOT NULL, CHANGE `id_user_responsible` `userId` INT(11) NOT NULL, CHANGE `id_user_accountable` `id_user_accountable` INT(11) NOT NULL, CHANGE `id_status` `statusId` INT(11) NOT NULL, CHANGE `id_type` `typeId` INT(11) NOT NULL, CHANGE `id_cat` `catId` INT(11) NOT NULL, CHANGE `id_subcat` `subcatId` INT(11) NOT NULL, CHANGE `priority` `priority` INT(11) NOT NULL, CHANGE `version` `version` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, CHANGE `comments` `comments` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, CHANGE `comments_valid` `comments_valid` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, CHANGE `date_creation` `creationDate` DATETIME NOT NULL, CHANGE `date_update` `updateDate` DATETIME NOT NULL, CHANGE `date_finish` `day` DATE NOT NULL, CHANGE `valid` `valid` INT(11) NOT NULL;
+
+ALTER TABLE `task` CHANGE `id_user_accountable` `accountableUserId` INT(11) NOT NULL;
+
+ALTER TABLE `task` CHANGE `comments` `description` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;

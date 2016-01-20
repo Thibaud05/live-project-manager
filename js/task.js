@@ -10,15 +10,15 @@
     this.isOpen = false;
     this.isDraging = false;
     this.id = data.id;
-    this.id_type = data.id_type;
-    this.id_user = data.id_user_responsible;
-    this.day = moment(data.date_finish).format('YYYY-MM-DD');
-    this.creationDate = data.date_creation;
-    this.creationUser = data.id_user_add;
-    this.accountableUser = data.id_user_accountable;
-    this.updateDate = data.date_update;
-    this.title = data.name;
-    this.description = data.comments;
+    this.typeId = data.typeId;
+    this.userId = data.userId;
+    this.day = moment(data.day).format('YYYY-MM-DD');
+    this.creationDate = data.creationDate;
+    this.creationUserId = data.creationUserId;
+    this.accountableUserId = data.accountableUserId;
+    this.updateDate = data.updateDate;
+    this.title = data.title;
+    this.description = data.description;
     this.files = [];
     this.priority = data.priority
     this.w = 0
@@ -29,17 +29,20 @@
 }
 
 task.prototype = {
-    open: function(htmlTask){
-      var htmlTitle = htmlTask.children(".contener").children("span")
-      htmlTask.parent().enableSelection(); 
+    open: function(htmlTask)
+    {
       var self = this
+      var htmlTitle = htmlTask.children(".contener").children("span")
       var description = this.description;
       var taskId = this.id;
+
+      htmlTask.parent().enableSelection(); 
+
       if (description == ""){description = "Sans descriptif";}
       if (this.title == ""){htmlTask.htmlTitle.html("Sans titre");}
       
-      
       var p = htmlTask.position();
+
       htmlTask.css("position","absolute");
       this.initPosition = p;
       this.w = htmlTask.width();
@@ -249,7 +252,7 @@ task.prototype = {
     // affichage du nom de l'utilisateur
 
     getCreationUser :function(){
-      var user = tasksManager.getUser(this.creationUser);
+      var user = tasksManager.getUser(this.creationUserId);
       if (user != undefined){
         return user.getName();
       }
@@ -259,7 +262,7 @@ task.prototype = {
     // affichage du nom de l'utilisateur
 
     getEditUser :function(){
-      var user = tasksManager.getUser(this.accountableUser);
+      var user = tasksManager.getUser(this.accountableUserId);
       if (user != undefined){
         return user.getName();
       }
@@ -269,7 +272,7 @@ task.prototype = {
     // Sauvegarde d'une tache
 
     save :function(htmlTask){
-      this.accountableUser = tasksManager.connectUserId;
+      this.accountableUserId = tasksManager.connectUserId;
       $.ajax({
         url: "data.php",
         data: {

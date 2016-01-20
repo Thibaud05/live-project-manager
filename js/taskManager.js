@@ -90,19 +90,20 @@ tasksManager.prototype = {
         });
         data.tasks.map(function(data,key) {
           //log(data);
-          var t = new task(data);
+          if(data!=undefined){
+            var t = new task(data);
 
-          if(tasks_files[t.id] != undefined ){
-            t.files = tasks_files[t.id];
-            //log(t.files);
-          }
-          self.tasksById[t.id] = t;
-          var k = t.id_user + ":" + t.day;
-          if(self.tasks[k] != undefined ){
-            self.tasks[k].push(t);
-
-          }else{
-            self.tasks[k] = new Array(t);
+            if(tasks_files[t.id] != undefined ){
+              t.files = tasks_files[t.id];
+              //log(t.files);
+            }
+            self.tasksById[t.id] = t;
+            var k = t.userId + ":" + t.day;
+            if(self.tasks[k] != undefined ){
+              self.tasks[k].push(t);
+            }else{
+              self.tasks[k] = new Array(t);
+            }
           }
         });
     },
@@ -144,7 +145,7 @@ tasksManager.prototype = {
 
       this.tasksById.map(function(t,key) {
         if (t){
-          var k = t.id_user + ":" + t.day;
+          var k = t.userId + ":" + t.day;
           if(self.tasks[k] == undefined ){
             self.tasks[k] = new Array();
           }
@@ -235,8 +236,8 @@ tasksManager.prototype = {
       var duplicatedTasksId = [];
       for (var key in this.selectedTasks) {
         var t = this.tasksById[key]
-        var lowPriority =  this.tasks[t.id_user + ":" + t.day].length;
-        duplicatedTasksId.push({"id":"","id_user":t.id_user,"title":t.title,"id_type":t.id_type,"day":t.day,"description":t.description,"creationUser":this.connectUserId,"priority":lowPriority,"accountableUser":this.connectUserId,"creationDate":"","valid":false});
+        var lowPriority =  this.tasks[t.userId + ":" + t.day].length;
+        duplicatedTasksId.push({"id":"","id_user":t.userId,"title":t.title,"typeId":t.typeId,"day":t.day,"description":t.description,"creationUserId":this.connectUserId,"priority":lowPriority,"accountableUserId":this.connectUserId,"creationDate":"","valid":false});
       }
       socket.emit('duplicateTask', JSON.stringify(duplicatedTasksId));
       socket.on('duplicateTask', function (data) {
@@ -289,7 +290,6 @@ tasksManager.prototype = {
       var extendTasks = [];
       for (var key in this.selectedTasks) {
         var t = this.tasksById[key]
-          t.id_type 
 
 
         this.selectedTasks[key].find( ".ok" ).toggleClass("hidden")
@@ -305,7 +305,7 @@ tasksManager.prototype = {
     /////////////////////
     // DISPLAY TASK
 
-    renderTask: function(key){
+    renderTasks: function(key){
 
       var html = ''
       var tabTask = this.tasks[key];
@@ -315,21 +315,27 @@ tasksManager.prototype = {
         for (var i = 0; i < tabTask.length; i++){
           var t = tabTask[i];
           if(t!=undefined){
-            var color = this.taskTypes[t.id_type].color;
-            var env = '';
-            if(t.id_type!=5 && t.id_type!=6){
-               env = '<div class="env">' + this.getLastRelease(t.id_type) + '</div>'
-            }
-            var validClass = "ok"
-            log(t.valid)
-            if(t.valid!=1){
-              validClass = "ok hidden"
-            }
-            html += '<li class="ui-state-default task ' + color + '" tid = "' + t.id + '" >'+ env +'<div class="contener"><span class="title">' + t.title + '</span><div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></div></li>';
+            html += this.renderTask(t)
           }
         }
       }
       return html;
+    },
+
+    renderTask: function(task){
+        var color = this.taskTypes[task.typeId].color;
+        var env = '';
+        if(task.typeId!=5 && task.typeId!=6){
+           env = '<div class="env">' + this.getLastRelease(task.typeId) + '</div>'
+        }
+        var validClass = "ok"
+        if(task.valid!=1){
+          validClass = "ok hidden"
+        }
+        var html = '<li class="ui-state-default task ' + color + '" tid = "' + task.id + '" >'+ env 
+        + '<div class="contener"><span class="title">' + task.title + '</span>'
+        + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></div></li>';
+      return html
     },
 
     /////////////////////
@@ -359,7 +365,7 @@ tasksManager.prototype = {
       html = '<div class="panel panel-default box">';
       html += '<div class="panel-heading">' + type + '</div>';
       html +=   '<div class="panel-body">';
-      html +=     '<ul class="connectedSortable" di = "' + type + '" uid ="' + idType + '">' + this.renderTask(idType + ":0000-00-00") + '</ul>';
+      html +=     '<ul class="connectedSortable" di = "' + type + '" uid ="' + idType + '">' + this.renderTasks(idType + ":0000-00-00") + '</ul>';
       html +=   '</div>';
       html += '</div>';
       return html;
@@ -413,7 +419,7 @@ tasksManager.prototype = {
             var index = i % self.dayPerWeek;
             var css = ( index==0 ) ? ' class="leftSep"' : '';
             line += '<td' + css + '><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
-            line += self.renderTask(user.id + ":" + self.dates[i]);
+            line += self.renderTasks(user.id + ":" + self.dates[i]);
             line += '</div></td>';
           }
           line += "</tr>";
@@ -433,12 +439,22 @@ tasksManager.prototype = {
       $("#box").html(this.renderBox("ALPHA",4) + this.renderBox("DEV",1) +  this.renderBox("QA",2) + this.renderBox("PRD",3));
     },
 
-    /////////////////////
-    // JQUERY INITIALISATION
 
-    activate :function(){
+    sockets :function(){
       var self = this
-      socket.on('moveTask', function (task) {
+
+      socket.on('moveTask', function (task)
+      {
+        log("///// ALL MOVE TASK")
+        log(task)
+        var k = task.userId + ":" + task.day
+        self.tasks[k]
+
+        if(self.tasks[k] != undefined ){
+          self.tasks[k].push(task);
+        }else{
+          self.tasks[k] = new Array(task);
+        }
         console.log(task.id)
         var selectedTask = $(".task[tid="+ task.id +"]")
         if (selectedTask) {
@@ -447,18 +463,31 @@ tasksManager.prototype = {
         console.log(selectedTask)
         log("saved");
         
-        var cible = $(".connectedSortable[di="+ self.datesIndex[task.day] +"][uid="+ task.id_user +"]")
+        var cible = $(".connectedSortable[di="+ self.datesIndex[task.day] +"][uid="+ task.userId +"]")
         if(cible){
-          var html = self.renderTask(task.id_user + ":" + task.day);
-          cible.append(html)
+          var htmlTask = self.renderTask(task);
+          log("html");
+          log(htmlTask);
+          cible.append(htmlTask)
         }
+        log("cible");
         log(cible);
-        cible.append(selectedTask)
         self.tasksById[task.id] = task;
       });
-      socket.on('setData', function (data) {
+
+      socket.on('setData', function (data)
+      {
         log("saved");
       });
+    },
+
+
+
+
+    /////////////////////
+    // JQUERY INITIALISATION
+
+    activate :function(){
       // Task drag and drop
       var self = this
 
@@ -488,7 +517,7 @@ tasksManager.prototype = {
           t.isDraging = false;
         },
         update:function( event, ui ) {
-          log("update")
+          log("CLIENT MOVE TASK")
           var tasksToUpdate = $(this).sortable('toArray', {attribute: 'tid'})
           var tasksUpdate = []
           tasksToUpdate.map(function(id,pos){
@@ -503,8 +532,8 @@ tasksManager.prototype = {
           log("recive");
           var t = self.tasksById[ui.item.attr("tid")];
           t.day = self.dates[$(this).attr("di")];
-          t.id_user = $(this).attr("uid");
-          t.creationUser = self.connectUserId;
+          t.userId = $(this).attr("uid");
+          t.creationUserId = self.connectUserId;
           socket.emit('setData', t);
         }
       }).disableSelection();
@@ -556,7 +585,7 @@ tasksManager.prototype = {
           var element = $( this );
           var idTask = element.attr("tid");
           var t = self.tasksById[idTask];
-          var color = self.taskTypes[t.id_type].color;
+          var color = self.taskTypes[t.typeId].color;
           if(color == "pink"){
             return "";
           }

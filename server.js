@@ -42,7 +42,16 @@ var sqls = [
 connection.query(sqls.join(";"), function(err, r, fields) {
   if (err) throw err;
   
-  global.json = {taskTypes:r[0],releases:r[1],users:r[2],tasks_files:r[3],tasks:r[4]}
+
+  var indexedTasks = []
+  for (var i=0; i<r[4].length;i++){
+    var t = r[4][i]
+    indexedTasks[t.id] = t
+  }
+//console.log(indexedTasks)
+//console.log(indexedTasks)
+global.data = {taskTypes:r[0],releases:r[1],users:r[2],tasks_files:r[3],tasks:indexedTasks}
+  
 
   for (var data of r[2]) {
     var u = new user(data)
@@ -58,8 +67,8 @@ io.on('connection', function (socket) {
     u = app.login(new user(data))
     //console.log(u)
     var html = app.display(u)
-    global.json.connectUserId = u.id
-    socket.emit('logged',{logged:u.logged,html:html,data:global.json});
+    global.data.connectUserId = u.id
+    socket.emit('logged',{logged:u.logged,html:html,data:global.data});
     io.emit('changeNbUser',app.getNbUserLogged());
   });
 });
