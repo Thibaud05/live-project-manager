@@ -28,8 +28,11 @@ class user
         global.cryptoJs.MD5(key).toString(global.cryptoJs.enc.Base64)
     }
 
-    saveKey(){
-        res.cookie('key', this.getKey() ,{ maxAge: 1000 * 360 * 24 * 365 });
+    saveKey(socket){
+        var date = new Date();
+        date.setTime(date.getTime()+(1000 * 360 * 24 * 365)); // set day value to expiry
+        var expires = "; expires="+date.toGMTString();
+        socket.handshake.headers.cookie = "key="+this.getKey()+expires+"; path=/";
     }
 }
 module.exports=user;

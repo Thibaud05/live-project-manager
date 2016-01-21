@@ -95,19 +95,23 @@ class app
             }
             //arr
         })
+        this.socket = socket
     }
-    autoLogin(req,res)
+
+    autoLogin()
     {
-      if(req.cookies.key!=undefined){
-        console.log(req.cookies.key)
-        var html = app.display(u)
-        global.data.connectUserId = u.id
-        socket.emit('logged',{logged:u.logged,html:html,data:global.data});
-      }
-
-
-
-
+        var cookie = this.socket.handshake.headers.cookie.key
+        console.log(cookie)
+        console.log("----------------")
+        if( cookie != undefined ){
+            var userID = usersKey[cookie]
+            if( userID != undefined ){
+               u = users[userID]
+                var html = app.display(u)
+                global.data.connectUserId = u.id
+                socket.emit('logged',{logged:u.logged,html:html,data:global.data});
+            }
+        }
 
     }
 
@@ -120,7 +124,7 @@ class app
                     this.usersLogged ++
                 }
                 user.logged = true
-                user.saveKey()
+                user.saveKey(this.socket)
                 newUser = user
             }
         }

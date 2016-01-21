@@ -16,21 +16,22 @@ var express = require('express')
 var appExpress = express();
 var server = require('http').Server(appExpress);
 var io = require('socket.io')(server);
-var cookieParser = require('cookie-parser')
+//var cookieParser = require('socket.io-cookie');
 
+//var cookieParser = require('cookie-parser')
+//io.use(cookieParser);
 global.io = io
 
 connection.connect();
 global.connection = connection
 
 server.listen(3000);
-appExpress.use(cookieParser('$E5%gP1+r='));
+//appExpress.use(cookieParser('$E5%gP1+r='));
 appExpress.use("/css", express.static(__dirname + '/css'));
 appExpress.use("/js", express.static(__dirname + '/js'));
 appExpress.use("/img", express.static(__dirname + '/img'));
 
 appExpress.get('/', function (req, res) {
-  app.autoLogin(req, res)
   res.send(app.displayLogin())
 });
 
@@ -65,6 +66,7 @@ global.data = {taskTypes:r[0],releases:r[1],users:r[2],tasks_files:r[3],tasks:in
 io.on('connection', function (socket) {
   var u = null
   app.controller(socket)
+  app.autoLogin()
   socket.emit('news', { hello: 'world' });
   socket.on('login', function (data) {
     u = app.login(new user(data))
