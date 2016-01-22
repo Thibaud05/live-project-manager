@@ -25,24 +25,39 @@ socket.on('news', function (data) {
 });
 
 socket.on('logged', function (json) {
-    if(json.logged){
-      $('.form-signin').animate({opacity: 0, marginTop: "0px"},{
-        duration: 500,
-        easing: "easeOutCubic",
-        complete: function() {
-          console.log("ok1");
-          $('body').html(json.html)
-          $('.strip').css({ "margin-left": "-200px",opacity:0})
-          $('.bar').css({ opacity: 0 ,top:-50})
-          $('.bar').animate({opacity: 1,top: 0},{
-            duration: 500,
-            easing: "easeOutCubic",
-            complete: function() {
-              appInit(json.data)
-            }
-          })
-        }
-      });   
+  var data = json.obj
+    if(data.logged){
+      createCookie("key", data.key, { expires : 30 })
+      if(data.autoLog){
+            $('body').html(data.html)
+            $('.strip').css({ "margin-left": "-200px",opacity:0})
+            $('.bar').css({ opacity: 0 ,top:-50})
+            $('.bar').animate({opacity: 1,top: 0},{
+              duration: 500,
+              easing: "easeOutCubic",
+              complete: function() {
+                appInit(json.data)
+              }
+            })
+      }else{
+        $('.form-signin').animate({opacity: 0, marginTop: "0px"},{
+          duration: 500,
+          easing: "easeOutCubic",
+          complete: function() {
+            console.log("ok1");
+            $('body').html(data.html)
+            $('.strip').css({ "margin-left": "-200px",opacity:0})
+            $('.bar').css({ opacity: 0 ,top:-50})
+            $('.bar').animate({opacity: 1,top: 0},{
+              duration: 500,
+              easing: "easeOutCubic",
+              complete: function() {
+                appInit(json.data)
+              }
+            })
+          }
+        });   
+    }
     }else{
       $('.form-signin').effect( "shake" );
       $("#inputPassword").val('').focus();
@@ -207,3 +222,17 @@ function appInit(data) {
     });
   }); 
 };
+
+
+function createCookie(name, value, days) {
+    var expires;
+
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    } else {
+        expires = "";
+    }
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
+}

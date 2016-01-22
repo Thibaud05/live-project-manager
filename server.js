@@ -16,17 +16,17 @@ var express = require('express')
 var appExpress = express();
 var server = require('http').Server(appExpress);
 var io = require('socket.io')(server);
-//var cookieParser = require('socket.io-cookie');
+var cookieParser = require('socket.io-cookie');
 
 //var cookieParser = require('cookie-parser')
-//io.use(cookieParser);
+io.use(cookieParser);
 global.io = io
 
 connection.connect();
 global.connection = connection
 
 server.listen(3000);
-//appExpress.use(cookieParser('$E5%gP1+r='));
+//appExpress.use(cookieParser());
 appExpress.use("/css", express.static(__dirname + '/css'));
 appExpress.use("/js", express.static(__dirname + '/js'));
 appExpress.use("/img", express.static(__dirname + '/img'));
@@ -59,7 +59,7 @@ global.data = {taskTypes:r[0],releases:r[1],users:r[2],tasks_files:r[3],tasks:in
   for (var data of r[2]) {
     var u = new user(data)
     app.users.push(u)
-    app.usersKey[u.getKey()] = u.id
+    app.usersKey[u.getKey()] = u
   }
 });  
 
@@ -73,7 +73,8 @@ io.on('connection', function (socket) {
     //console.log(u)
     var html = app.display(u)
     global.data.connectUserId = u.id
-    socket.emit('logged',{logged:u.logged,html:html,data:global.data});
+    var obj = {logged:u.logged,key:u.getKey(),html:html}
+    socket.emit('logged',{obj:obj,data:global.data});
     io.emit('changeNbUser',app.getNbUserLogged());
   });
 });

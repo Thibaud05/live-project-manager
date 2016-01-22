@@ -25,7 +25,7 @@ class user
     getKey()
     {
         var key = this.id + "%:#" + this.email + "/$!" + this.password
-        global.cryptoJs.MD5(key).toString(global.cryptoJs.enc.Base64)
+        return global.cryptoJs.MD5(key).toString(global.cryptoJs.enc.Base64)
     }
 
     saveKey(socket){

@@ -100,16 +100,16 @@ class app
 
     autoLogin()
     {
-        var cookie = this.socket.handshake.headers.cookie.key
-        console.log(cookie)
-        console.log("----------------")
+       var cookie = this.socket.handshake.headers.cookie.key
         if( cookie != undefined ){
-            var userID = usersKey[cookie]
-            if( userID != undefined ){
-               u = users[userID]
-                var html = app.display(u)
+            var u = this.usersKey[cookie]
+            if( u != undefined ){
+                console.log(u)
+                this.logged(u)
+                var html = this.display(u)
                 global.data.connectUserId = u.id
-                socket.emit('logged',{logged:u.logged,html:html,data:global.data});
+                var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1}
+                this.socket.emit('logged',{obj:obj,data:global.data});
             }
         }
 
@@ -120,15 +120,20 @@ class app
         var newUser = data
         for (var user of this.users) {
             if( data.email == user.email && data.password == user.password ){
-                if( !user.logged ){
-                    this.usersLogged ++
-                }
-                user.logged = true
-                user.saveKey(this.socket)
+                this.logged(user)
                 newUser = user
             }
         }
         return newUser
+    }
+
+    logged(user)
+    {
+        if( !user.logged ){
+            this.usersLogged ++
+            user.logged = true
+        }
+        //user.saveKey(this.socket)
     }
 
     getNbUserLogged()
