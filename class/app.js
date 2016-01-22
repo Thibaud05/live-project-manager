@@ -101,8 +101,10 @@ class app
     autoLogin()
     {
        var cookie = this.socket.handshake.headers.cookie.key
+       console.log(this.socket.handshake)
         if( cookie != undefined ){
             var u = this.usersKey[cookie]
+            console.log(u)
             if( u != undefined ){
                 console.log(u)
                 this.logged(u)
@@ -138,13 +140,28 @@ class app
 
     getNbUserLogged()
     {
-        var str = this.usersLogged 
+        return this.usersLogged
+        /*var str = this.usersLogged 
         if(str < 2){
             str += " utilisateur connecté"
         }else{
             str += " utilisateurs connectés"
         }
-        return str
+        return str*/
+    }
+
+    getUsersList()
+    {
+        var html = ""
+        for (var user of this.users)
+        {
+            var ico = "glyphicon-remove-sign"
+            if(user.logged==1){
+                ico = "glyphicon-ok-sign"
+            }
+            html += '<li><a href="#"><span class="glyphicon ' + ico + '" aria-hidden="true"></span>' + user.firstName + '</a></li>'
+        }
+        return html
     }
 
     header(u)
@@ -152,7 +169,11 @@ class app
         console.log(u.getFullName())
         return '<div class="bar"><div class="stripHead"></div>' +
                 '<div class="head">' +
-                '<div class="logoLpm"><img src="img/lpm.png" /></div>' + this.barContent() + 
+                '<div class="logoLpm"><img src="img/lpm.png" /></div>' + 
+                '<div id="online" class="dropdown"><button type="button" id="dropdownMenu1" class="btn btn-default dropdown-toggle" title="Utilisateurs connectés" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
+                '<span class="glyphicon glyphicon-user" aria-hidden="true"></span><span id="usersLogged">' + this.usersLogged + '</span> <span class="caret"></span></button>' +
+                '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="usersList">'+ this.getUsersList() +'</ul></div>' +
+                this.barContent() + 
                     '<ul class="nav navbar-right" role="tablist">' +
                       '<li role="presentation" class="dropdown">' +
                         '<a id="user" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' +

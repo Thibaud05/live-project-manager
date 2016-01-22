@@ -64,8 +64,9 @@ socket.on('logged', function (json) {
     }
 })
 
-socket.on('changeNbUser', function (html) {
-  $('#usersLogged').html(html)
+socket.on('changeNbUser', function (data) {
+  $('#usersLogged').html(data.nb)
+  $('#usersList').html(data.list)
 })
 
 

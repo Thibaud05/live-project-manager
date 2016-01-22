@@ -431,3 +431,21 @@ td.firstCol{
 #tasksManagerHead .table{
     margin-bottom: 0;
 }
+#online {
+    float: left;
+    margin-top: 4px;
+}
+#online .glyphicon-user {
+    border-right: 1px solid;
+    padding-right: 10px;
+    margin-right: 10px;
+}
+.glyphicon-ok-sign , .glyphicon-remove-sign{
+    margin-right: 15px;
+    font-size: 10px;
+    color: #4CAF50;
+    top: 0;
+}
+.glyphicon-remove-sign{
+    color: #ccc;    
+}
