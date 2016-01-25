@@ -17,6 +17,7 @@ var appExpress = express();
 var server = require('http').Server(appExpress);
 var io = require('socket.io')(server);
 var cookieParser = require('socket.io-cookie');
+var fileUpload = require('socketio-file-upload')
 
 //var cookieParser = require('cookie-parser')
 io.use(cookieParser);
@@ -31,9 +32,18 @@ appExpress.use("/css", express.static(__dirname + '/css'));
 appExpress.use("/js", express.static(__dirname + '/js'));
 appExpress.use("/img", express.static(__dirname + '/img'));
 
+appExpress.use(fileUpload.router)
+
 appExpress.get('/', function (req, res) {
   res.send(app.displayLogin())
 });
+
+appExpress.get('/uploadTest', function (req, res) {
+  res.sendFile(__dirname + '/testupload.html');
+});
+
+
+
 
 var sqls = [
   "SELECT * FROM `type`",
@@ -78,8 +88,18 @@ io.on('connection', function (socket) {
     socket.emit('logged',{obj:obj,data:global.data});
     io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
   });
-});
 
+  var uploader = new fileUpload();
+  uploader.dir = "/srv/uploads";
+  uploader.listen(socket);
+
+  uploader.on("saved", function(event){
+      console.log(event.file);
+  });
+  uploader.on("error", function(event){
+      console.log("Error from uploader", event);
+  });
+});
 
  
 //connection.end();
