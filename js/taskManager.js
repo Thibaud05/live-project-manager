@@ -224,9 +224,6 @@ tasksManager.prototype = {
         }
       });
       socket.emit('delTask', JSON.stringify(removedTasksId));
-      socket.on('delTask', function (data) {
-        log("taskRemoved");
-      });
     },
 
     /////////////////////
@@ -239,10 +236,7 @@ tasksManager.prototype = {
         var lowPriority =  this.tasks[t.userId + ":" + t.day].length;
         duplicatedTasksId.push({"id":"","id_user":t.userId,"title":t.title,"typeId":t.typeId,"day":t.day,"description":t.description,"creationUserId":this.connectUserId,"priority":lowPriority,"accountableUserId":this.connectUserId,"creationDate":"","valid":false});
       }
-      socket.emit('duplicateTask', JSON.stringify(duplicatedTasksId));
-      socket.on('duplicateTask', function (data) {
-         tasksManager.addTasks(data);
-      });
+      socket.emit('duplicateTask', duplicatedTasksId);
     },
     /////////////////////
     // valid task TASK
@@ -256,10 +250,7 @@ tasksManager.prototype = {
         this.tasksById[key] = t
         validTasks.push(t);
       }
-      socket.emit('updateTask', JSON.stringify(validTasks));
-      socket.on('updateTask', function (data) {
-         log('taskUpdated')
-      });
+      socket.emit('updateTask', validTasks);
     },
 
     /////////////////////
@@ -278,9 +269,6 @@ tasksManager.prototype = {
         delete this.selectedTasks[id];
       }
       socket.emit('updateTask', JSON.stringify(archivedTasks));
-      socket.on('updateTask', function (data) {
-         log('taskUpdated')
-      });
     },
 
     /////////////////////
@@ -298,9 +286,6 @@ tasksManager.prototype = {
         validTasks.push(t);
       }
       socket.emit('updateTask', JSON.stringify(extendTasks));
-      socket.on('updateTask', function (data) {
-         log('taskUpdated')
-      });
     },
     /////////////////////
     // DISPLAY TASK
@@ -479,6 +464,36 @@ tasksManager.prototype = {
       {
         log("saved");
       });
+
+      socket.on('setRelease', function (data) {
+        log("saved");
+      });
+
+      socket.on('delTask', function (data) {
+        log("taskRemoved");
+      });
+
+      socket.on('duplicateTask', function (data) {
+         tasksManager.addTasks(data);
+      });
+
+      socket.on('updateTask', function (data) {
+        log("updateTask");
+        log(data)
+        var t = new task(data);
+        log(t)
+        var selectedTask = $(".task[tid="+ t.id +"]")
+        log(selectedTask)
+        if (selectedTask) {
+          if(t.valid == 0){
+            selectedTask.find( ".ok" ).addClass("hidden")
+          }else{
+            selectedTask.find( ".ok" ).removeClass("hidden")
+          }
+        }
+        self.tasksById[t.id].valid = t.valid
+      });
+
     },
 
 
@@ -605,9 +620,6 @@ tasksManager.prototype = {
           var release = self.releasesById[ui.item.attr("tid")];
           release.day = self.dates[$(this).attr("di")];
           socket.emit('setRelease', JSON.stringify(t));
-          socket.on('setRelease', function (data) {
-            log("saved");
-          });
         }
       }).disableSelection();
     },

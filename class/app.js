@@ -24,9 +24,12 @@ class app
             console.log('updateTask')
             for(var i= 0; i < datas.length; i++)
             {
-                var data = datas[i]
-                var t = new global.task(data)
-                t.update()
+               
+                    var data = datas[i]
+                if(data != undefined){
+                    var t = new global.task(data)
+                    io.emit('updateTask',t.update());
+                }
             }
         })
 
@@ -60,13 +63,16 @@ class app
         socket.on('delDataFiles', function (data)
         {
             f = new global.file(data)
+            var id = f.id
             f.del()
+            io.emit('delDataFiles',id);
         })
 
         socket.on('addTask', function (data)
         {
             t = new global.task(data)
             task.add()
+            io.emit('addTask',task);
         })
 
         socket.on('setRelease', function (data)
@@ -80,7 +86,9 @@ class app
             {
                 var data = datas[i]
                 var t = new global.task(data);
+                var id = t.id
                 t.del()
+                io.emit('delTask',id);
             }
         })
 
@@ -90,8 +98,11 @@ class app
             for(var i= 0; i < datas.length; i++)
             {
                 var data = datas[i]
-                var t = new global.task(data)
-                arr.push(t.add())
+                if(data != undefined){
+                    var t = new global.task(data)
+                    arr.push(t.add())
+                    io.emit('duplicateTask',t);
+                }
             }
             //arr
         })

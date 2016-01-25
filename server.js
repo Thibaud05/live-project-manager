@@ -90,7 +90,7 @@ io.on('connection', function (socket) {
   });
 
   var uploader = new fileUpload();
-  uploader.dir = "/srv/uploads";
+  uploader.dir = __dirname + "/uploads";
   uploader.listen(socket);
 
   uploader.on("saved", function(event){
