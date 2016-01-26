@@ -134,10 +134,11 @@ function log(msg){
   if(debug){
     console.log(msg);
   }
-}
+} 
+var tm
 function appInit(data) {
   console.log("init")
-  var tm = new tasksManager();
+  tm = new tasksManager();
 
   ////////////////////////////////////////////
   //

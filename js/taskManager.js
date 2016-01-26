@@ -462,7 +462,14 @@ tasksManager.prototype = {
 
       socket.on('setData', function (data)
       {
-        log("saved");
+        log("setdata")
+        log(data)
+        var t = new task(data);
+        var selectedTask = $(".task[tid="+ t.id +"]")
+        if (selectedTask) {
+          selectedTask.find( ".title" ).html(t.title)
+          selectedTask.find( ".desc" ).html(t.description)
+        }
       });
 
       socket.on('setRelease', function (data) {

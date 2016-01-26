@@ -16,7 +16,7 @@ class app
             console.log('setData')
             console.log(data)
             var t = new global.task(data)
-           // t.update()
+            io.emit('setData',t.update());
         })
 
         socket.on('updateTask', function (datas)

@@ -64,7 +64,7 @@ task.prototype = {
         $("body").css("overflow","hidden");
 
         var html = '<div id="taskDetail"><div id="closeTask">X</div>';
-
+/*
      html +='<div id="upload"><span class="btn fileinput-button"> \
         <i class="glyphicon glyphicon-plus"></i> \
         <input id="fileupload" type="file" name="files[]" multiple> \
@@ -73,6 +73,7 @@ task.prototype = {
         <div class="progress-bar progress-bar-success"></div> \
     </div> \
     </div>';
+*/
     html += self.displayFiles();
         moment.locale('fr');
         html += '<p><button type="button" class="btn btn-default" title="Repousser à la prochaine release"><span id="shifting_btn" class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button></p>';
@@ -85,18 +86,11 @@ task.prototype = {
         $('.removeFile').click(function(){
           var fid = $(this).attr('fid');
           var parent = $(this).parent();
-          $.ajax({
-              url: "data.php",
-              data: {
-                a: "delDataFiles",
-                obj:JSON.stringify(self.files[fid])
-              },
-              success: function( data ) {
-                parent.remove();
-                delete self.files.splice(fid, 1);
-              }
-            });
+          socket.emit('delDataFiles', self.files[fid]);
+          //parent.remove();
+          //delete self.files.splice(fid, 1);
         });
+        /*
     $('#fileupload').fileupload({
         url: 'server/',
         dataType: 'json',
@@ -147,7 +141,7 @@ task.prototype = {
         }
     }).prop('disabled', !$.support.fileInput)
         .parent().addClass($.support.fileInput ? undefined : 'disabled');
-
+*/
 
 
 
@@ -252,7 +246,7 @@ task.prototype = {
     // affichage du nom de l'utilisateur
 
     getCreationUser :function(){
-      var user = tasksManager.getUser(this.creationUserId);
+      var user = tm.getUser(this.creationUserId);
       if (user != undefined){
         return user.getName();
       }
@@ -262,7 +256,7 @@ task.prototype = {
     // affichage du nom de l'utilisateur
 
     getEditUser :function(){
-      var user = tasksManager.getUser(this.accountableUserId);
+      var user = tm.getUser(this.accountableUserId);
       if (user != undefined){
         return user.getName();
       }
@@ -272,17 +266,8 @@ task.prototype = {
     // Sauvegarde d'une tache
 
     save :function(htmlTask){
-      this.accountableUserId = tasksManager.connectUserId;
-      $.ajax({
-        url: "data.php",
-        data: {
-          a: "setData",
-          obj:JSON.stringify(this)
-        },
-        success: function( data ) {
-          tasksManager.save();
-        }
-      });
+      this.accountableUserId = tm.connectUserId;
+      socket.emit('setData', this);
     },
 
     displayFiles :function(){
