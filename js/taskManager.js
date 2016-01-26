@@ -234,7 +234,7 @@ tasksManager.prototype = {
       for (var key in this.selectedTasks) {
         var t = this.tasksById[key]
         var lowPriority =  this.tasks[t.userId + ":" + t.day].length;
-        duplicatedTasksId.push({"id":"","id_user":t.userId,"title":t.title,"typeId":t.typeId,"day":t.day,"description":t.description,"creationUserId":this.connectUserId,"priority":lowPriority,"accountableUserId":this.connectUserId,"creationDate":"","valid":false});
+        duplicatedTasksId.push({"id":"","userId":t.userId,"title":t.title,"typeId":t.typeId,"day":t.day,"description":t.description,"creationUserId":this.connectUserId,"priority":lowPriority,"accountableUserId":this.connectUserId,"creationDate":"","valid":false});
       }
       socket.emit('duplicateTask', duplicatedTasksId);
     },
@@ -481,7 +481,8 @@ tasksManager.prototype = {
       });
 
       socket.on('duplicateTask', function (data) {
-         tasksManager.addTasks(data);
+        var t = new task(data);
+        tm.addTask(t);
       });
 
       socket.on('updateTask', function (data) {

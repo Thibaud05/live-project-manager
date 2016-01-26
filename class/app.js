@@ -95,13 +95,23 @@ class app
         socket.on('duplicateTask', function (datas)
         {
             var arr = [];
+            console.log('duplicateTask')
             for(var i= 0; i < datas.length; i++)
             {
                 var data = datas[i]
                 if(data != undefined){
                     var t = new global.task(data)
-                    arr.push(t.add())
-                    io.emit('duplicateTask',t);
+                    console.log(t)
+                    t.onUpdateCompleted = function(){
+                        console.log("onUpdateCompleted custom")
+                        arr.push(this)
+                        console.log(this)
+                        io.emit('duplicateTask',this);
+                    }
+                    t.add()
+                    
+                    
+                    
                 }
             }
             //arr
@@ -112,12 +122,12 @@ class app
     autoLogin()
     {
        var cookie = this.socket.handshake.headers.cookie.key
-       console.log(this.socket.handshake)
+       //console.log(this.socket.handshake)
         if( cookie != undefined ){
             var u = this.usersKey[cookie]
-            console.log(u)
+            //console.log(u)
             if( u != undefined ){
-                console.log(u)
+                //console.log(u)
                 this.logged(u)
                 var html = this.display(u)
                 global.data.connectUserId = u.id

@@ -35,8 +35,7 @@ class task
 		console.log(sql)
 		global.connection.query(sql)
 		global.data.tasks[this.id] = this
-		//global.json.tasks
-		//res = mysqli->query($sql);
+
 		return this;
 	}
 
@@ -60,7 +59,7 @@ class task
 		var sql = "INSERT INTO `task` (" +
 					"`title`, " +
 					"`userId`, " +
-					"`idType`, " +
+					"`typeId`, " +
 					"`day`, " +
 					"`updateDate`, " +
 					"`creationUserId`," +
@@ -72,7 +71,7 @@ class task
 				") VALUES (" +
 					"'" + this.title + "'," +
 					"'" + this.userId + "'," +
-					"'" + this.idType + "'," +
+					"'" + this.typeId + "'," +
 					"'" + this.day + "'," +
 					"'" + this.updateDate + "'," +
 					"'" + this.creationUserId + "'," +
@@ -82,10 +81,25 @@ class task
 					"'" + this.valid + "'," +
 					"'" + this.description + "'" +
 				");"
-		//$res = SQL::$mysqli->query($sql);
+		console.log(sql)
+		global.connection.query(sql)
 
-		//$this->id = SQL::$mysqli->insert_id;
-		return this;
+		var self = this
+
+		global.connection.query(sql, function(err, result) {
+  			if (err) throw err;
+  			console.log(self)
+  			console.log(result.insertId);
+  			self.id = result.insertId;
+  			global.data.tasks[self.id] = self
+
+  			self.onUpdateCompleted()
+		});
+	}
+	
+	onUpdateCompleted()
+	{
+		console.log("onUpdateCompleted")
 	}
 
 	del()
