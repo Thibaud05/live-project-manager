@@ -105,7 +105,8 @@ class task
 	del()
 	{
 		var sql = "DELETE FROM `task` WHERE id = " + this.id;
-		//$res = SQL::$mysqli->query($sql);
+		global.connection.query(sql)
+		delete global.data.tasks[this.id];
 	}
 }
 module.exports=task

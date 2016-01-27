@@ -217,13 +217,10 @@ tasksManager.prototype = {
         var task =  self.tasksById[id];
         
         if(!task.isOpen){
-          t.remove();
-          delete self.tasksById[id];
-          delete self.selectedTasks[id];
           removedTasksId.push({"id":id,"id_user":"","title":"","id_type":"","day":""});
         }
       });
-      socket.emit('delTask', JSON.stringify(removedTasksId));
+      socket.emit('delTask', removedTasksId);
     },
 
     /////////////////////
@@ -476,7 +473,16 @@ tasksManager.prototype = {
         log("saved");
       });
 
-      socket.on('delTask', function (data) {
+      socket.on('delTask', function (id) {
+
+        var t =  self.tasksById[id];
+        var selectedTask = $(".task[tid="+ t.id +"]")
+        if (selectedTask) {
+          selectedTask.remove();
+        }
+        delete self.tasksById[id];
+        delete self.selectedTasks[id];
+
         log("taskRemoved");
       });
 
