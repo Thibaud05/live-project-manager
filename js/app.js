@@ -209,19 +209,8 @@ function appInit(data) {
   //////////////////////
   // Add a new task
 
-   $( "#addTask" ).click(function() {
-    var title = $("#addTask-title").val();
-    $.ajax({
-      url: "data.php",
-      dataType: "json",
-      data: {
-        a: "addTask",
-        obj:JSON.stringify({"id":"", "id_user":"", "title":title, "id_type":"", "day":""})
-      },
-      success: function( task ) {
-        tm.addTask(task);
-      }
-    });
+   $( "#add_btn" ).click(function() {
+    tm.newTask()
   }); 
 };
 

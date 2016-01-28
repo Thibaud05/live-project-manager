@@ -206,6 +206,30 @@ tasksManager.prototype = {
       });
     },
 
+    newTask: function()
+    {
+      var userId = this.connectUserId
+      var day = this.dates[0]
+      var lowPriority = 0
+      if (this.tasks[userId + ":" + day]!=undefined){
+        lowPriority =  this.tasks[userId + ":" + day].length;
+      }
+      var newTask = {
+        "id":"",
+        "userId":userId,
+        "title":"New task",
+        "typeId":this.taskTypes.length-1,
+        "day":day,
+        "description":"",
+        "creationUserId":userId,
+        "priority":lowPriority,
+        "accountableUserId":userId,
+        "creationDate":"",
+        "valid":false
+      };
+      socket.emit('addTask', newTask);
+    },
+
     /////////////////////
     // DELETE TASK
 
@@ -487,6 +511,11 @@ tasksManager.prototype = {
       });
 
       socket.on('duplicateTask', function (data) {
+        var t = new task(data);
+        tm.addTask(t);
+      });
+
+      socket.on('addTask', function (data) {
         var t = new task(data);
         tm.addTask(t);
       });

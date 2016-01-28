@@ -70,9 +70,14 @@ class app
 
         socket.on('addTask', function (data)
         {
-            t = new global.task(data)
-            task.add()
-            io.emit('addTask',task);
+            console.log("addTask")
+            var t = new global.task(data)
+            t.onUpdateCompleted = function(){
+                console.log(" add completed")
+                //arr.push(this)
+                io.emit('addTask',this);
+            }
+            t.add()
         })
 
         socket.on('setRelease', function (data)
@@ -215,6 +220,10 @@ class app
                 '<div class="strip"><div id="tasksManagerHead"></div></div></div><div class="page">';
     }
 
+    footer(){
+        return '</div>'
+    }
+
     barContent()
     {
         return '<div class="barContent"> ' +
@@ -231,7 +240,7 @@ class app
     display(u)
     {
         console.log(u)
-        return this.header(u) + '<div id="tasksManager"></div><div id="box"></div>' + '</div>'
+        return this.header(u) + '<div id="tasksManager"></div><div id="box"></div>' + this.footer()
     }
 
     displayLogin()
