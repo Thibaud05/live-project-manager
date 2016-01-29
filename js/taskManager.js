@@ -78,13 +78,13 @@ tasksManager.prototype = {
           self.releases[r.day] = r;
           self.releasesById[r.id] = r;
 
-          if(self.lastRelease[r.id_type]!=undefined){
-            if(moment(r.day)>moment(self.lastRelease[r.id_type].day) && moment(r.day)<moment()){
-               self.lastRelease[r.id_type] = r;
+          if(self.lastRelease[r.typeId]!=undefined){
+            if(moment(r.day)>moment(self.lastRelease[r.typeId].day) && moment(r.day)<moment()){
+               self.lastRelease[r.typeId] = r;
             }
           }else{
             if(moment(r.day)<moment()){
-              self.lastRelease[r.id_type] = r;
+              self.lastRelease[r.typeId] = r;
             }
           }
           
@@ -109,21 +109,21 @@ tasksManager.prototype = {
         });
     },
 
-    getNextRelease : function(id_type){
+    getNextRelease : function(typeId){
 
       var maxRelease = []
       var types = []
       this.releasesById.map(function(r,key){
         if (r){
           //console.log(r)
-          if(types[r.id_type]!=undefined){
-            var index = types[r.id_type]
+          if(types[r.typeId]!=undefined){
+            var index = types[r.typeId]
             if(maxRelease[index].day<r.day){
               maxRelease[index].day = r.day
             }
           }else{
-            maxRelease.push({"day":r.day,"id_type":r.id_type})
-            types[r.id_type] = types.length
+            maxRelease.push({"day":r.day,"typeId":r.typeId})
+            types[r.typeId] = types.length
           }
         }
       })
@@ -169,8 +169,8 @@ tasksManager.prototype = {
       }
     },
 
-    getLastRelease :function (id_type){
-      var r = this.lastRelease[id_type]
+    getLastRelease :function (typeId){
+      var r = this.lastRelease[typeId]
       if(r != undefined && r.name != "α") {
         return r.name;
       }else{
@@ -242,7 +242,7 @@ tasksManager.prototype = {
         var task =  self.tasksById[id];
         
         if(!task.isOpen){
-          removedTasksId.push({"id":id,"id_user":"","title":"","id_type":"","day":""});
+          removedTasksId.push({"id":id,"id_user":"","title":"","typeId":"","day":""});
         }
       });
       socket.emit('delTask', removedTasksId);
@@ -352,7 +352,7 @@ tasksManager.prototype = {
       var html = ''
       var release = this.releases[key];
       if(release){
-        var taskType = this.taskTypes[release.id_type];
+        var taskType = this.taskTypes[release.typeId];
         if(taskType){
           html += '<li class="ui-state-default release ' + taskType.color + '" tid = "' + release.id + '" ><span>';
           html += '<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> ';
@@ -495,7 +495,19 @@ tasksManager.prototype = {
       });
 
       socket.on('setRelease', function (data) {
-        log("saved");
+        log("release")
+          var r = self.releasesById[data.id];
+          self.releases[data.day] = r;
+          r.day = data.day;
+          var selectedRelease = $(".release[tid="+ r.id +"]")
+          if(selectedRelease){
+            selectedRelease.remove()
+          }
+          var cible = $(".releaseSlot[di="+ self.datesIndex[r.day] +"]")
+          if(cible){
+            var htmlRelease = self.renderRelease(r.day);
+            cible.append(htmlRelease)
+          }
       });
 
       socket.on('delTask', function (id) {
@@ -661,9 +673,9 @@ tasksManager.prototype = {
         revert:150,
         connectWith: ".releaseSlot",
         receive: function( event, ui ) {
-          var release = self.releasesById[ui.item.attr("tid")];
-          release.day = self.dates[$(this).attr("di")];
-          socket.emit('setRelease', JSON.stringify(t));
+          var r = self.releasesById[ui.item.attr("tid")];
+          r.day = self.dates[$(this).attr("di")];
+          socket.emit('setRelease', r);
         }
       }).disableSelection();
     },

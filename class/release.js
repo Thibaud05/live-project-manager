@@ -7,7 +7,7 @@ class release
         {
             this.id = data.id;
             this.name = data.name;
-            this.id_type = data.id_type;
+            this.typeId = data.typeId;
             this.day = data.day;
         }
     }
@@ -15,7 +15,7 @@ class release
     update(){
         var sql = "UPDATE `release` "
                 + "SET `name` = '" + this.name + "',"
-                    + "`id_type` = '" + this.id_type + "',"
+                    + "`typeId` = '" + this.typeId + "',"
                     + "`day` = '" + this.day + "'"
                 + "WHERE `id` = '" + this.id + "'"
         global.connection.query(sql)

@@ -84,6 +84,7 @@ class app
         {
             var r = new global.release(data)
             r.update()
+            io.emit('setRelease',r);
         })
 
         socket.on('delTask', function (datas){
