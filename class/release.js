@@ -19,6 +19,8 @@ class release
                     + "`day` = '" + this.day + "'"
                 + "WHERE `id` = '" + this.id + "'"
         global.connection.query(sql)
+        global.data.releases[this.id] = this
     }
+
 }
 module.exports=release;

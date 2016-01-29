@@ -73,21 +73,22 @@ tasksManager.prototype = {
           self.taskTypesByDate[taskType.day] = taskType;
         });
         data.releases.map(function(data,key) {
-          var r = data
-          r.day = moment(data.day).format('YYYY-MM-DD');
-          self.releases[r.day] = r;
-          self.releasesById[r.id] = r;
+          if(data!=undefined){
+            var r = data
+            r.day = moment(data.day).format('YYYY-MM-DD');
+            self.releases[r.day] = r;
+            self.releasesById[r.id] = r;
 
-          if(self.lastRelease[r.typeId]!=undefined){
-            if(moment(r.day)>moment(self.lastRelease[r.typeId].day) && moment(r.day)<moment()){
-               self.lastRelease[r.typeId] = r;
-            }
-          }else{
-            if(moment(r.day)<moment()){
-              self.lastRelease[r.typeId] = r;
+            if(self.lastRelease[r.typeId]!=undefined){
+              if(moment(r.day)>moment(self.lastRelease[r.typeId].day) && moment(r.day)<moment()){
+                 self.lastRelease[r.typeId] = r;
+              }
+            }else{
+              if(moment(r.day)<moment()){
+                self.lastRelease[r.typeId] = r;
+              }
             }
           }
-          
         });
         data.tasks.map(function(data,key) {
           //log(data);

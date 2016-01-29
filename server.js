@@ -61,9 +61,15 @@ connection.query(sqls.join(";"), function(err, r, fields) {
     var t = r[4][i]
     indexedTasks[t.id] = t
   }
+
+  var indexedReleases = []
+  for (var i=0; i<r[1].length;i++){
+    var r0 = r[1][i]
+    indexedReleases[r0.id] = r0
+  }
 //console.log(indexedTasks)
 //console.log(indexedTasks)
-global.data = {taskTypes:r[0],releases:r[1],users:r[2],tasks_files:r[3],tasks:indexedTasks}
+global.data = {taskTypes:r[0],releases:indexedReleases,users:r[2],tasks_files:r[3],tasks:indexedTasks}
   
 
   for (var data of r[2]) {
