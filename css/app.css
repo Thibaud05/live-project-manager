@@ -112,6 +112,7 @@ ul#menu3 {
 
     text-align: center;
     transition: background-color 0.5s;
+    margin-bottom: 1px;
   }
   .box .connectedSortable li {
   	margin: 1px 1px;
@@ -448,4 +449,7 @@ td.firstCol{
 }
 .glyphicon-remove-sign{
     color: #ccc;    
+}
+.connectedSortable li:last-child {
+    margin-bottom: 0;
 }

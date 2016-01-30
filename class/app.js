@@ -230,11 +230,11 @@ class app
         return '<div class="barContent"> ' +
             '<button id="prev" type="button" class="previous btn btn-default" title="Taches précédentes" ><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button> ' +
             '<button id="dropdownMenu2" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="Ajouter"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> ' +
-            '<ul class="dropdown-menu" aria-labelledby="dropdownMenu2"><li>' +
-            '<button id="add_btn" type="button" class="btn btn-default" title="Ajouter une tache">Ajouter une tache </button>' +
-            '<button id="add_btn_type" type="button" class="btn btn-default" title="Ajouter une tache">Ajouter un type de release </button>' +
-            '<button id="add_btn_release" type="button" class="btn btn-default" title="Ajouter une tache">Ajouter une release </button>' +
-            '</li></ul>' +
+            '<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">' +
+            '<li><a id="add_btn" href="#" title="Ajouter une tache">Ajouter une tache </a></li>' +
+            '<li><a id="add_btn_type" href="#" title="Ajouter une tache">Ajouter un type de release </a></li>' +
+            '<li><a id="add_btn_release" href="#" title="Ajouter une tache">Ajouter une release </a></li>' +
+            '</ul>' +
             '<button id="valid_btn" type="button" class="btn btn-default" title="Valider une tache" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button> ' +
             '<button id="duplicate_btn" type="button" class="btn btn-default" title="Copier une tache"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button> ' +
             '<button id="archive_btn" type="button" class="btn btn-default" title="Archiver une tache" ><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></button> ' +
