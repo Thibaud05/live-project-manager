@@ -231,9 +231,11 @@ class app
             '<button id="prev" type="button" class="previous btn btn-default" title="Taches précédentes" ><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button> ' +
             '<button id="dropdownMenu2" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="Ajouter"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> ' +
             '<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">' +
-            '<li><a id="add_btn" href="#" title="Ajouter une tache">Ajouter une tache </a></li>' +
-            '<li><a id="add_btn_type" href="#" title="Ajouter une tache">Ajouter un type de release </a></li>' +
-            '<li><a id="add_btn_release" href="#" title="Ajouter une tache">Ajouter une release </a></li>' +
+                '<li><a id="add_btn" href="#" title="Ajouter une tache">Ajouter une tache </a></li>' +
+                '<li><a id="add_btn_type" href="#" title="Ajouter une tache">Ajouter un type de release </a></li>' +
+                '<li>' + this.displayAddTypeForm() + '</li>' +
+                '<li><a id="add_btn_release" href="#" title="Ajouter une tache">Ajouter une release </a></li>' +
+                '<li>' + this.displayAddReleaseForm() + '</li>' +
             '</ul>' +
             '<button id="valid_btn" type="button" class="btn btn-default" title="Valider une tache" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button> ' +
             '<button id="duplicate_btn" type="button" class="btn btn-default" title="Copier une tache"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button> ' +
@@ -247,6 +249,27 @@ class app
     {
         console.log(u)
         return this.header(u) + '<div id="tasksManager"></div><div id="box"></div>' + this.footer()
+    }
+
+    displayAddReleaseForm()
+    {
+        return  '<form>' +
+                    '<select class="form-control">' +
+                        '<option>v2</option>' +
+                        '<option>v1</option>' +
+                    '</select>' +
+                    '<input type="text" class="form-control" placeholder="Title">' +
+                    '<button type="submit" class="btn btn-default">Ajouter</button>' +
+                '</form>'
+    }
+
+    displayAddTypeForm()
+    {
+        return  '<form>' +
+                    '<input type="text" class="form-control" placeholder="Title">' +
+                    '<input type="text" class="form-control" placeholder="Color">' +
+                    '<button type="submit" class="btn btn-default">Ajouter</button>' +
+                '</form>'
     }
 
     displayLogin()
