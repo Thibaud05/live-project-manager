@@ -232,10 +232,12 @@ class app
             '<button id="dropdownMenu2" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="Ajouter"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> ' +
             '<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">' +
                 '<li><a id="add_btn" href="#" title="Ajouter une tache">Ajouter une tache </a></li>' +
-                '<li><a id="add_btn_type" href="#" title="Ajouter une tache">Ajouter un type de release </a></li>' +
-                '<li>' + this.displayAddTypeForm() + '</li>' +
+                '<li role="separator" class="divider"></li>' + 
                 '<li><a id="add_btn_release" href="#" title="Ajouter une tache">Ajouter une release </a></li>' +
-                '<li>' + this.displayAddReleaseForm() + '</li>' +
+                this.displayAddReleaseForm() +
+                '<li role="separator" class="divider"></li>' + 
+                '<li><a id="add_btn_type" href="#" title="Ajouter une tache">Ajouter un type de release </a></li>' +
+                this.displayAddTypeForm() +
             '</ul>' +
             '<button id="valid_btn" type="button" class="btn btn-default" title="Valider une tache" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button> ' +
             '<button id="duplicate_btn" type="button" class="btn btn-default" title="Copier une tache"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button> ' +
@@ -253,23 +255,37 @@ class app
 
     displayAddReleaseForm()
     {
-        return  '<form>' +
+        return  '<li id="add_release" class="hidden"><form class="form-inline">' +
+                    '<select class="form-control">' +
+                        '<option>ALPHA</option>' +
+                        '<option>DEV</option>' +
+                        '<option>QA</option>' +
+                        '<option>PRD</option>' +
+                    '</select>' +
                     '<select class="form-control">' +
                         '<option>v2</option>' +
                         '<option>v1</option>' +
                     '</select>' +
-                    '<input type="text" class="form-control" placeholder="Title">' +
-                    '<button type="submit" class="btn btn-default">Ajouter</button>' +
-                '</form>'
+                    '<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>' +
+                '</form></li>'
     }
 
     displayAddTypeForm()
     {
-        return  '<form>' +
+        return  '<li id="add_type" class="hidden"><form class="form-inline">' +
                     '<input type="text" class="form-control" placeholder="Title">' +
-                    '<input type="text" class="form-control" placeholder="Color">' +
-                    '<button type="submit" class="btn btn-default">Ajouter</button>' +
-                '</form>'
+                    '<select class="form-control">' +
+                        '<option>red</option>' +
+                        '<option>indigo</option>' +
+                        '<option>blue</option>' +
+                        '<option>cyan</option>' +
+                        '<option>teal</option>' +
+                        '<option>green</option>' +
+                        '<option>lightGreen</option>' +
+                        '<option>yellow200</option>' +
+                    '</select>' +
+                    '<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>' +
+                '</form></li>'
     }
 
     displayLogin()

@@ -453,3 +453,7 @@ td.firstCol{
 .connectedSortable li:last-child {
     margin-bottom: 0;
 }
+
+.dropdown-menu form input{
+    border-radius: 0;
+}

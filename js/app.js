@@ -212,6 +212,20 @@ function appInit(data) {
    $( "#add_btn" ).click(function() {
     tm.newTask()
   }); 
+
+  $('.dropdown-menu').find('form').click(function (e) {
+    e.stopPropagation();
+  });
+
+  $('#add_btn_release').click(function (e) {
+    e.stopPropagation();
+    $('#add_release').toggleClass("hidden")
+  });
+
+  $('#add_btn_type').click(function (e) {
+    e.stopPropagation();
+    $('#add_type').toggleClass("hidden")
+  });
 };
 
 
