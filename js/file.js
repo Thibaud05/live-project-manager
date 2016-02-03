@@ -5,7 +5,7 @@
 //////////////////////////////////////////
 function file(data){
   this.id = data.id;
-  this.id_task = data.id_task;
+  this.taskId = data.taskId;
   this.name = data.title;
   this.type = data.type;
   this.fullUrl = tasksManager.fullUrl;

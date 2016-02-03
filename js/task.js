@@ -64,16 +64,16 @@ task.prototype = {
         $("body").css("overflow","hidden");
 
         var html = '<div id="taskDetail"><div id="closeTask">X</div>';
-/*
-     html +='<div id="upload"><span class="btn fileinput-button"> \
+
+     html +='<div id="upload"><button id="upload_btn" class="btn fileinput-button"><span > \
         <i class="glyphicon glyphicon-plus"></i> \
-        <input id="fileupload" type="file" name="files[]" multiple> \
-    </span> \
+         \
+    </span></button> \
                <div id="progress" class="progress"> \
         <div class="progress-bar progress-bar-success"></div> \
     </div> \
     </div>';
-*/
+
     html += self.displayFiles();
         moment.locale('fr');
         html += '<p><button type="button" class="btn btn-default" title="Repousser à la prochaine release"><span id="shifting_btn" class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button></p>';
@@ -90,7 +90,29 @@ task.prototype = {
           //parent.remove();
           //delete self.files.splice(fid, 1);
         });
-        /*
+        
+    var siofu = new SocketIOFileUpload(socket);
+
+    /*$(".fileinput-button").click(function(){
+      console.log("click")
+      siofu.prompt
+    });*/
+    //siofu.listenOnInput($("#upload_btn"));
+    document.getElementById("upload_btn").addEventListener("click", siofu.prompt, false);
+    //siofu.listenOnDrop($("#file"));
+
+    // Do something on upload progress:
+    siofu.addEventListener("progress", function(event){
+        var percent = event.bytesLoaded / event.file.size * 100;
+        console.log("File is", percent.toFixed(2), "percent loaded");
+    });
+
+    // Do something when a file is uploaded:
+    siofu.addEventListener("complete", function(event){
+        console.log(event.success);
+        console.log(event.file);
+    });
+       /* 
     $('#fileupload').fileupload({
         url: 'server/',
         dataType: 'json',
