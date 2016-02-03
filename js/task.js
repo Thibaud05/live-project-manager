@@ -101,42 +101,30 @@ task.prototype = {
     document.getElementById("upload_btn").addEventListener("click", siofu.prompt, false);
     //siofu.listenOnDrop($("#file"));
 
+    siofu.addEventListener("start", function(event){
+        console.log("startUpload");
+        $('#progress .progress-bar').css('width',0);
+    });
+
     // Do something on upload progress:
     siofu.addEventListener("progress", function(event){
         var percent = event.bytesLoaded / event.file.size * 100;
         console.log("File is", percent.toFixed(2), "percent loaded");
+        $('#progress .progress-bar').css('width',percent + '%');
     });
 
     // Do something when a file is uploaded:
     siofu.addEventListener("complete", function(event){
         console.log(event.success);
         console.log(event.file);
-    });
-       /* 
-    $('#fileupload').fileupload({
-        url: 'server/',
-        dataType: 'json',
-        done: function (e, data) {
-          $('#progress .progress-bar')
-            .delay(800)
-            .queue(function (next) {
+        socket.emit('setDataFiles', {files:event.file,taskId:taskId}));
+        $('#progress .progress-bar').delay(800).queue(function (next) {
             $(this).css('width',0);
               next();
             });
 
-
-            $.ajax({
-              url: "data.php",
-              data: {
-                a: "setDataFiles",
-                obj:JSON.stringify({files:data.result.files,taskId:taskId})
-              },
-              success: function( data ) {
-                data = $.parseJSON(data);
-                self.files[data.id] = new file(data);
-              }
-            });
-
+    });
+       /* 
 
             $.each(data.result.files, function (index, file) {
 
@@ -153,16 +141,7 @@ task.prototype = {
 
 
             });
-        },
-        progress : function (e, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#progress .progress-bar').css(
-                'width',
-                progress + '%'
-            );
-        }
-    }).prop('disabled', !$.support.fileInput)
-        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+        
 */
 
 
