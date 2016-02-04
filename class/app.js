@@ -71,7 +71,7 @@ class app
             var f = new global.file(data)
             var id = f.id
             f.del()
-            io.emit('delDataFiles',id);
+            io.emit('delDataFiles',f);
         })
 
         socket.on('addTask', function (data)

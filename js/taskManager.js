@@ -60,7 +60,7 @@ tasksManager.prototype = {
         });
         this.connectUser = this.getUser(this.connectUserId)
         var tasks_files = {};
-
+        //console.log(data)
         data.tasks_files.map(function(data,key ) {
           if(data!=undefined){
             if(tasks_files[data.taskId] == undefined ){
@@ -69,7 +69,7 @@ tasksManager.prototype = {
             tasks_files[data.taskId][data.id] = new file(data);
           }
         });
-
+        //console.log(tasks_files)
         data.taskTypes.map(function(taskType,key) {
           self.taskTypes[taskType.id] = taskType;
           self.taskTypesByDate[taskType.day] = taskType;
@@ -552,6 +552,16 @@ tasksManager.prototype = {
         }
         self.tasksById[t.id].valid = t.valid
       });
+
+      socket.on('delDataFiles', function (data) {
+        var id = data.id
+        var selectedFile = $(".file > a[fid="+ id +"]").parent()
+        if (selectedFile) {
+          selectedFile.remove();
+        }
+        console.log(data.taskId + ":" + data.id)
+        delete self.tasksById[data.taskId].files[id]
+      })
 
     },
 

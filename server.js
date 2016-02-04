@@ -59,8 +59,7 @@ connection.query(sqls.join(";"), function(err, r, fields) {
   var indexedTasks = indexById(r[4])
   var indexedReleases = indexById(r[1])
   var indexedTasksFiles = indexById(r[3])
-
-//console.log(indexedTasks)
+  //console.log(indexedTasksFiles)
 //console.log(indexedTasks)
 global.data = {taskTypes:r[0],releases:indexedReleases,users:r[2],tasks_files:indexedTasksFiles,tasks:indexedTasks}
   
