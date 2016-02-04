@@ -8,12 +8,12 @@ function file(data){
   this.taskId = data.taskId;
   this.name = data.title;
   this.type = data.type;
-  this.fullUrl = tasksManager.fullUrl;
+  this.fullUrl = "";
 }
 
 file.prototype = {
   buildUrl: function() {
-    var baseUrl = this.fullUrl + "/server/files/";
+    var baseUrl = this.fullUrl + "files/";
     this.url = baseUrl + this.name;
     this.thumbnailUrl = baseUrl + "thumbnail/" + this.name;
     return true

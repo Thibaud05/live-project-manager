@@ -31,6 +31,7 @@ server.listen(3000);
 appExpress.use("/css", express.static(__dirname + '/css'));
 appExpress.use("/js", express.static(__dirname + '/js'));
 appExpress.use("/img", express.static(__dirname + '/img'));
+appExpress.use("/files", express.static(__dirname + '/uploads'));
 
 appExpress.use(fileUpload.router)
 
@@ -55,21 +56,13 @@ var sqls = [
 connection.query(sqls.join(";"), function(err, r, fields) {
   if (err) throw err;
   
+  var indexedTasks = indexById(r[4])
+  var indexedReleases = indexById(r[1])
+  var indexedTasksFiles = indexById(r[3])
 
-  var indexedTasks = []
-  for (var i=0; i<r[4].length;i++){
-    var t = r[4][i]
-    indexedTasks[t.id] = t
-  }
-
-  var indexedReleases = []
-  for (var i=0; i<r[1].length;i++){
-    var r0 = r[1][i]
-    indexedReleases[r0.id] = r0
-  }
 //console.log(indexedTasks)
 //console.log(indexedTasks)
-global.data = {taskTypes:r[0],releases:indexedReleases,users:r[2],tasks_files:r[3],tasks:indexedTasks}
+global.data = {taskTypes:r[0],releases:indexedReleases,users:r[2],tasks_files:indexedTasksFiles,tasks:indexedTasks}
   
 
   for (var data of r[2]) {
@@ -107,5 +100,13 @@ io.on('connection', function (socket) {
   });
 });
 
- 
+function indexById(data){
+  var indexedData = []
+  for (var i=0; i<data.length;i++){
+    var obj = data[i]
+    indexedReleases[obj.id] = obj
+  }
+  return indexedData
+} 
+
 //connection.end();

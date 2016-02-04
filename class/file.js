@@ -31,7 +31,11 @@ class file
             self.dispatchEvent("added",self);
         });
     }
-
+    del(){
+        var sql = "DELETE FROM `task_file` WHERE id = " + this.id;
+        global.connection.query(sql)
+        delete global.data.tasks[this.id];
+    }
     registerEvent(eventName)
     {
       var event = new Event(eventName)
