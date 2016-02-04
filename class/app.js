@@ -68,7 +68,7 @@ class app
 
         socket.on('delDataFiles', function (data)
         {
-            f = new global.file(data)
+            var f = new global.file(data)
             var id = f.id
             f.del()
             io.emit('delDataFiles',id);

@@ -34,7 +34,7 @@ class file
     del(){
         var sql = "DELETE FROM `task_file` WHERE id = " + this.id;
         global.connection.query(sql)
-        delete global.data.tasks[this.id];
+        delete global.data.tasks_files[this.id];
     }
     registerEvent(eventName)
     {

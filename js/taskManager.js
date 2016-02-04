@@ -62,10 +62,12 @@ tasksManager.prototype = {
         var tasks_files = {};
 
         data.tasks_files.map(function(data,key ) {
-          if(tasks_files[data.taskId] == undefined ){
-            tasks_files[data.taskId] = [];
+          if(data!=undefined){
+            if(tasks_files[data.taskId] == undefined ){
+              tasks_files[data.taskId] = [];
+            }
+            tasks_files[data.taskId][data.id] = new file(data);
           }
-          tasks_files[data.taskId][data.id] = new file(data);
         });
 
         data.taskTypes.map(function(taskType,key) {

@@ -104,7 +104,7 @@ function indexById(data){
   var indexedData = []
   for (var i=0; i<data.length;i++){
     var obj = data[i]
-    indexedReleases[obj.id] = obj
+    indexedData[obj.id] = obj
   }
   return indexedData
 } 
