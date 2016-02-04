@@ -53,10 +53,16 @@ class app
 
         socket.on('setDataFiles', function (data)
         {
-            fileData = data.files[0];
-            fileData.id = "";
-            var f = new global.file(fileData);
-            f.id_task = data.taskId;
+            console.log("///setDataFiles")
+            console.log(data)
+            data.id = 0
+            var f = new global.file(data);
+            console.log("gogogo")
+            f.registerEvent("added")
+            f.addEventListener("added", function(e){
+                console.log("top fisnish")
+                console.log(e)
+            }, false); 
             f.add()
         })
 

@@ -7,3 +7,5 @@ ALTER TABLE `task` CHANGE `id_user_accountable` `accountableUserId` INT(11) NOT 
 ALTER TABLE `task` CHANGE `comments` `description` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
 
 ALTER TABLE `release` CHANGE `id_type` `typeId` INT(11) NOT NULL;
+
+ALTER TABLE `task_file` CHANGE `id_task` `taskId` INT(11) NOT NULL;

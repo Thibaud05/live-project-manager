@@ -115,36 +115,14 @@ task.prototype = {
 
     // Do something when a file is uploaded:
     siofu.addEventListener("complete", function(event){
-        console.log(event.success);
-        console.log(event.file);
-        socket.emit('setDataFiles', {files:event.file,taskId:taskId}));
+        socket.emit('setDataFiles', {title:event.file.name,type:event.file.type,taskId:taskId});
         $('#progress .progress-bar').delay(800).queue(function (next) {
             $(this).css('width',0);
               next();
             });
 
     });
-       /* 
-
-            $.each(data.result.files, function (index, file) {
-
-                if (file.url) {
-                  var thumbnail = "";
-                  if(file.thumbnailUrl){
-                      thumbnail = '<img src="' + file.thumbnailUrl + '" />';
-                  }
-                  html = '<a target="_blank" class="file" href="' + file.url + '" ><div class="content">' + thumbnail + '</div>' + file.name + '</a>';
-                } else if (file.error) {
-                  html  = '<span class="text-danger">' + file.error + '<br>' + error + '</span>'
-                }
-                $('#files').append(html);
-
-
-            });
-        
-*/
-
-
+    
 
         $("#closeTask").click(function() {
           self.close(htmlTask);

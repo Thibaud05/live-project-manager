@@ -100,7 +100,7 @@ io.on('connection', function (socket) {
   uploader.listen(socket);
 
   uploader.on("saved", function(event){
-      console.log(event.file);
+      //console.log(event.file);
   });
   uploader.on("error", function(event){
       console.log("Error from uploader", event);
