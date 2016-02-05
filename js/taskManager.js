@@ -714,5 +714,10 @@ tasksManager.prototype = {
       this.sync();
       this.render();
       this.activate();
+    },
+
+    logout(){
+      socket.emit('logout', connectUser);
     }
+
   }

@@ -65,6 +65,7 @@ socket.on('logged', function (json) {
 })
 
 socket.on('changeNbUser', function (data) {
+  log("chang nb")
   $('#usersLogged').html(data.nb)
   $('#usersList').html(data.list)
 })
@@ -226,8 +227,14 @@ function appInit(data) {
     e.stopPropagation();
     $('#add_type').toggleClass("hidden")
   });
-};
 
+  $('#logout').click(function (e) {
+    e.stopPropagation();
+    createCookie("key","",-1)
+    document.location.href=""
+  });
+
+};
 
 function createCookie(name, value, days) {
     var expires;

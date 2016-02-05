@@ -7,6 +7,7 @@ class app
         this.usersKey = {}
         this.usersLogged = 0
         this.appVersion = "v1"
+        this.userBySocket = {}
     }
 
     controller(socket)
@@ -141,6 +142,7 @@ class app
                 global.data.connectUserId = u.id
                 var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1}
                 this.socket.emit('logged',{obj:obj,data:global.data});
+                io.emit('changeNbUser',{nb:this.getNbUserLogged(),list:this.getUsersList()});
             }
         }
 
@@ -160,11 +162,26 @@ class app
 
     logged(user)
     {
+        user.addSocket( this.socket.id )
+        this.userBySocket[this.socket.id] = user
         if( !user.logged ){
             this.usersLogged ++
             user.logged = true
         }
         //user.saveKey(this.socket)
+    }
+    logout(socketId){
+        var user = this.userBySocket[socketId]
+        console.log(user)
+        if( user!= undefined && user.logged ){
+            user.delSocket(socketId)
+            delete this.userBySocket[socketId]
+            console.log(user)
+            if( !user.haveSocket() ){
+                this.usersLogged --
+                user.logged = false
+            }
+        }
     }
 
     getNbUserLogged()
@@ -214,7 +231,7 @@ class app
                           '<li role="separator" class="divider"></li>' +
                           '<li class="dropdown-header">' + this.appVersion + '</li>' +
                           '<li role="separator" class="divider"></li>' +
-                          '<li><a href="?logout">Déconnexion</a></li>' +
+                          '<li><a id="logout" href="#">Déconnexion</a></li>' +
                         '</ul>' +
                       '</li>' +
                     '</ul>' +

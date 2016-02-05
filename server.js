@@ -82,8 +82,16 @@ io.on('connection', function (socket) {
     //console.log(u)
     var html = app.display(u)
     global.data.connectUserId = u.id
+    socket.connectUserId = u.id
     var obj = {logged:u.logged,key:u.getKey(),html:html}
     socket.emit('logged',{obj:obj,data:global.data});
+    io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
+  });
+
+  socket.on('disconnect', function () {
+    console.log(socket.id)
+    app.logout(socket.id)
+    console.log("disconect")
     io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
   });
 
