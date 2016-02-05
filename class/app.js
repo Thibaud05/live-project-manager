@@ -60,8 +60,7 @@ class app
             console.log("gogogo")
             f.registerEvent("added")
             f.addEventListener("added", function(e){
-                console.log("top fisnish")
-                console.log(e)
+                io.emit('setDataFiles',f);
             }, false); 
             f.add()
         })
@@ -121,9 +120,6 @@ class app
                         io.emit('duplicateTask',this);
                     }
                     t.add()
-                    
-                    
-                    
                 }
             }
             //arr

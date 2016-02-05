@@ -537,12 +537,8 @@ tasksManager.prototype = {
       });
 
       socket.on('updateTask', function (data) {
-        log("updateTask");
-        log(data)
         var t = new task(data);
-        log(t)
         var selectedTask = $(".task[tid="+ t.id +"]")
-        log(selectedTask)
         if (selectedTask) {
           if(t.valid == 0){
             selectedTask.find( ".ok" ).addClass("hidden")
@@ -555,14 +551,29 @@ tasksManager.prototype = {
 
       socket.on('delDataFiles', function (data) {
         var id = data.id
-        var selectedFile = $(".file > a[fid="+ id +"]").parent()
+        var selectedFile = $(".file > a[fid=" + id + "]").parent()
         if (selectedFile) {
           selectedFile.remove();
         }
-        console.log(data.taskId + ":" + data.id)
         delete self.tasksById[data.taskId].files[id]
       })
+      socket.on('setDataFiles',function(data){
+        console.log('setDataFiles')
+        var f = new file(data)
+        var divFiles = $(".task[tid=" + f.taskId + "] .files")
+        if(divFiles){
+          divFiles.append(f.display())        
+          $('.removeFile').click(function(){
+            var fid = $(this).attr('fid');
+            var parent = $(this).parent();
+            socket.emit('delDataFiles',f);
+          });
+        }
+        self.tasksById[f.taskId].files[f.id] = f
 
+
+
+      })
     },
 
 

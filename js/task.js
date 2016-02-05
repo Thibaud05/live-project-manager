@@ -87,40 +87,41 @@ task.prototype = {
           var fid = $(this).attr('fid');
           var parent = $(this).parent();
           socket.emit('delDataFiles', self.files[fid]);
-          //parent.remove();
-          //delete self.files.splice(fid, 1);
         });
         
-    var siofu = new SocketIOFileUpload(socket);
+    self.siofu = new SocketIOFileUpload(socket);
 
     /*$(".fileinput-button").click(function(){
       console.log("click")
       siofu.prompt
     });*/
     //siofu.listenOnInput($("#upload_btn"));
-    document.getElementById("upload_btn").addEventListener("click", siofu.prompt, false);
+    $("#upload_btn").click(self.siofu.prompt)
+
     //siofu.listenOnDrop($("#file"));
 
-    siofu.addEventListener("start", function(event){
+    self.siofu.addEventListener("start", function(event){
         console.log("startUpload");
         $('#progress .progress-bar').css('width',0);
     });
 
     // Do something on upload progress:
-    siofu.addEventListener("progress", function(event){
+    self.siofu.addEventListener("progress", function(event){
         var percent = event.bytesLoaded / event.file.size * 100;
         console.log("File is", percent.toFixed(2), "percent loaded");
         $('#progress .progress-bar').css('width',percent + '%');
     });
 
     // Do something when a file is uploaded:
-    siofu.addEventListener("complete", function(event){
+    self.siofu.addEventListener("complete", function(event){
+
+        if(event.success){
         socket.emit('setDataFiles', {title:event.file.name,type:event.file.type,taskId:taskId});
         $('#progress .progress-bar').delay(800).queue(function (next) {
             $(this).css('width',0);
               next();
             });
-
+        }
     });
     
 
@@ -190,6 +191,13 @@ task.prototype = {
     // masquage du details de la tache
 
     close: function(htmlTask){
+      $("#upload_btn").off()
+      this.siofu.removeEventListener("start")
+      this.siofu.removeEventListener("progress")
+      this.siofu.removeEventListener("complete")
+      this.siofu.destroy();
+      this.siofu = null;
+
       var htmlTitle = htmlTask.children(".contener").children("span")
       var p = this.initPosition;
       var w = this.w;
