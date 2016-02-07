@@ -22,14 +22,24 @@ class app
 
         socket.on('updateTask', function (datas)
         {
-            console.log('updateTask')
             for(var i= 0; i < datas.length; i++)
             {
-               
-                    var data = datas[i]
+                var data = datas[i]
                 if(data != undefined){
                     var t = new global.task(data)
                     io.emit('updateTask',t.update());
+                }
+            }
+        })
+
+        socket.on('archiveTask', function (datas)
+        {
+            for(var i= 0; i < datas.length; i++)
+            {
+                var data = datas[i]
+                if(data != undefined){
+                    var t = new global.task(data)
+                    io.emit('archiveTask',t.update());
                 }
             }
         })

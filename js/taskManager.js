@@ -286,14 +286,13 @@ tasksManager.prototype = {
       for (var key in this.selectedTasks) {
         var t = this.tasksById[key]
         var id = t.id
-        t.id_user = 5
+        t.userId = 5
         t.day = '0000-00-00'
         archivedTasks.push(t);
         this.selectedTasks[key].remove();
-        delete this.tasksById[id];
         delete this.selectedTasks[id];
       }
-      socket.emit('updateTask', JSON.stringify(archivedTasks));
+      socket.emit('archiveTask', archivedTasks);
     },
 
     /////////////////////
@@ -547,6 +546,15 @@ tasksManager.prototype = {
           }
         }
         self.tasksById[t.id].valid = t.valid
+      });
+
+      socket.on('archiveTask', function (data) {
+        var t = new task(data);
+        var selectedTask = $(".task[tid="+ t.id +"]")
+        if (selectedTask) {
+          selectedTask.remove();
+        }
+        self.tasksById[t.id] = t
       });
 
       socket.on('delDataFiles', function (data) {
