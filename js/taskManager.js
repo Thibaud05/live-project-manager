@@ -114,29 +114,31 @@ tasksManager.prototype = {
 
     getNextRelease : function(typeId){
 
-      var maxRelease = []
-      var types = []
+      var maxRelease = {}
       this.releasesById.map(function(r,key){
         if (r){
-          //console.log(r)
-          if(types[r.typeId]!=undefined){
-            var index = types[r.typeId]
-            if(maxRelease[index].day<r.day){
-              maxRelease[index].day = r.day
+          if(maxRelease[r.typeId]!=undefined){
+            if(maxRelease[r.typeId] < r.day){
+              maxRelease[r.typeId] = r.day
             }
           }else{
-            maxRelease.push({"day":r.day,"typeId":r.typeId})
-            types[r.typeId] = types.length
+            maxRelease[r.typeId] = r.day)
           }
         }
       })
+      var actualReleaseDate = maxRelease[typeId]
+      var nextRelease = {}
 
-
-      //console.log("ok")
-
-      //console.log(maxRelease)
-
-      return 1
+      for (var id in maxRelease) {
+        var releaseDate = maxRelease[id]
+        if(moment(releaseDate)>moment(actualReleaseDate)){
+          if(nextRelease.id == undefined || moment(releaseDate)<moment(nextRelease.day)){
+            nextRelease = {"id":id,"day":releaseDate}
+          }
+        }
+      }
+      
+      return nextRelease.id
     },
 
     /////////////////////

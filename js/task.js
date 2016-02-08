@@ -91,10 +91,9 @@ task.prototype = {
         
     self.siofu = new SocketIOFileUpload(socket);
 
-    /*$(".fileinput-button").click(function(){
-      console.log("click")
-      siofu.prompt
-    });*/
+    $("#shifting_btn").off().click(function(){
+      console.log(app.getNextRelease(self.typeId))
+    });
     //siofu.listenOnInput($("#upload_btn"));
     $("#upload_btn").click(self.siofu.prompt)
 
