@@ -1,33 +1,31 @@
-var app = require('./class/app.js');
-var user = require('./class/user.js');
-var config = require('./config.js');
+var app         = require('./class/app.js');
+var user        = require('./class/user.js');
+var config      = require('./config.js');
 global.cryptoJs = require("crypto-js");
+global.task     = require('./class/task.js');
+global.release  = require('./class/release.js');
+global.file     = require('./class/file.js');
+global.moment   = require('./js/moment.min.js')
 
-global.task = require('./class/task.js');
-global.release = require('./class/release.js');
-global.file = require('./class/file.js');
-global.moment = require('./js/moment.min.js')
+var mysql        = require('mysql');
+var connection   = mysql.createConnection(config);
+var express      = require('express')
+var appExpress   = express();
+var server       = require('http').Server(appExpress);
+var io           = require('socket.io')(server);
+var cookieParser = require('socket.io-cookie');
+var fileUpload   = require('socketio-file-upload')
+//var lwip         = require('lwip')
 
 var app = new app()
 
-var mysql      = require('mysql');
-var connection = mysql.createConnection(config);
-var express = require('express')
-var appExpress = express();
-var server = require('http').Server(appExpress);
-var io = require('socket.io')(server);
-var cookieParser = require('socket.io-cookie');
-var fileUpload = require('socketio-file-upload')
-
-//var cookieParser = require('cookie-parser')
 io.use(cookieParser);
 global.io = io
-
 connection.connect();
 global.connection = connection
 
 server.listen(3000);
-//appExpress.use(cookieParser());
+
 appExpress.use("/css", express.static(__dirname + '/css'));
 appExpress.use("/js", express.static(__dirname + '/js'));
 appExpress.use("/img", express.static(__dirname + '/img'));
