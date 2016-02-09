@@ -20,6 +20,12 @@ class app
             io.emit('setData',t.update());
         })
 
+        socket.on('changeRelease', function (data)
+        {
+            data.t.typeId = data.typeId
+            var t = new global.task(data.t)
+            io.emit('changeRelease',t.update());
+        })
         socket.on('updateTask', function (datas)
         {
             for(var i= 0; i < datas.length; i++)

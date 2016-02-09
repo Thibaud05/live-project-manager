@@ -457,3 +457,13 @@ td.firstCol{
 .dropdown-menu form input{
     border-radius: 0;
 }
+.task .btn-default{
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.task .btn-default:hover{
+    background-color: #fff;
+}
+.task .btn-default:hover,.task .btn-default:focus{
+    background-color: #fff;
+    color: #000;
+}

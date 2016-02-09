@@ -76,7 +76,10 @@ task.prototype = {
 
     html += self.displayFiles();
         moment.locale('fr');
-        html += '<p><button type="button" class="btn btn-default" title="Repousser à la prochaine release"><span id="shifting_btn" class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button></p>';
+        html += '<p><button id="shifting_prev" type="button" class="btn btn-default" title="Avancer à la release précédente">' +
+        '<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>';
+                html += ' <button id="shifting_next" type="button" class="btn btn-default" title="Repousser à la prochaine release">' +
+        '<span  class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button></p>';
         html += '<p>Créer par ' + self.getEditUser() + " "+ moment(self.creationDate).fromNow() + '<p>';
         html += '<p>Edité par ' + self.getCreationUser() + " "+ moment(self.updateDate).fromNow() + '<p>';
         html += '<p class="desc">' + description + '<p>';
@@ -91,8 +94,18 @@ task.prototype = {
         
     self.siofu = new SocketIOFileUpload(socket);
 
-    $("#shifting_btn").off().click(function(){
-      console.log(app.getNextRelease(self.typeId))
+    $("#shifting_prev").click(function(){
+      var prev = tm.getNextRelease(self.typeId,true)
+      if(prev){
+        socket.emit('changeRelease', {"t":self,"typeId":prev});
+      }
+    });
+
+    $("#shifting_next").click(function(){
+      var next = tm.getNextRelease(self.typeId,false)
+      if(next){
+        socket.emit('changeRelease', {"t":self,"typeId":next});
+      }
     });
     //siofu.listenOnInput($("#upload_btn"));
     $("#upload_btn").click(self.siofu.prompt)
@@ -191,6 +204,8 @@ task.prototype = {
 
     close: function(htmlTask){
       $("#upload_btn").off()
+      $("#shifting_prev").off()
+      $("#shifting_next").off()
       this.siofu.removeEventListener("start")
       this.siofu.removeEventListener("progress")
       this.siofu.removeEventListener("complete")

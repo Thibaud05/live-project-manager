@@ -112,8 +112,8 @@ tasksManager.prototype = {
         });
     },
 
-    getNextRelease : function(typeId){
-
+    getNextRelease : function(typeId,getPrev){
+      console.log("getNextR2")
       var maxRelease = {}
       this.releasesById.map(function(r,key){
         if (r){
@@ -122,23 +122,37 @@ tasksManager.prototype = {
               maxRelease[r.typeId] = r.day
             }
           }else{
-            maxRelease[r.typeId] = r.day)
+            maxRelease[r.typeId] = r.day
           }
         }
       })
       var actualReleaseDate = maxRelease[typeId]
       var nextRelease = {}
-
       for (var id in maxRelease) {
         var releaseDate = maxRelease[id]
-        if(moment(releaseDate)>moment(actualReleaseDate)){
-          if(nextRelease.id == undefined || moment(releaseDate)<moment(nextRelease.day)){
-            nextRelease = {"id":id,"day":releaseDate}
+        if(getPrev){
+          if(moment(releaseDate)<moment(actualReleaseDate)){
+                //console.log(releaseDate)
+            if(nextRelease.id == undefined || moment(releaseDate)>moment(nextRelease.day)){
+              nextRelease = {"id":id,"day":releaseDate}
+            }
+          }
+        }else{
+          if(moment(releaseDate)>moment(actualReleaseDate)){
+                //console.log(releaseDate)
+            if(nextRelease.id == undefined || moment(releaseDate)<moment(nextRelease.day)){
+              nextRelease = {"id":id,"day":releaseDate}
+            }
           }
         }
+
+
       }
-      
-      return nextRelease.id
+      if(nextRelease.id== undefined){
+        return false
+      }else{
+        return nextRelease.id
+      }
     },
 
     /////////////////////
@@ -332,7 +346,6 @@ tasksManager.prototype = {
       }
       return html;
     },
-
     renderTask: function(task){
         var color = this.taskTypes[task.typeId].color;
         var env = '';
@@ -584,6 +597,40 @@ tasksManager.prototype = {
 
 
       })
+    /////////////////////
+        /////////////////////
+            /////////////////////
+                /////////////////////
+                    /////////////////////
+                        /////////////////////
+                            /////////////////////
+                                /////////////////////
+                                    /////////////////////
+                                        /////////////////////
+                                            /////////////////////
+                                                /////////////////////
+                                                    /////////////////////
+                                                        /////////////////////
+
+      socket.on('changeRelease',function(data){
+        console.log('changeRelease')
+        var t = new task(data);
+        var selectedTask = $(".task[tid="+ t.id +"]")
+        if(selectedTask){
+
+          var oldTypeID = self.tasksById[t.id].typeId
+          console.log("oldTypeID " + oldTypeID)
+          console.log("TypeID " + t.typeId)
+          var oldColor = self.taskTypes[oldTypeID].color;
+          var newColor = self.taskTypes[t.typeId].color;
+          var newEnv = self.getLastRelease(t.typeId)
+          selectedTask.removeClass( oldColor )
+          selectedTask.addClass( newColor )
+          selectedTask.find( ".env" ).html(newEnv)
+        }
+        self.tasksById[t.id].typeId = t.typeId
+      })
+
     },
 
 
