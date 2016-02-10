@@ -232,25 +232,32 @@ class app
         return '<div class="bar"><div class="stripHead"></div>' +
                 '<div class="head">' +
                 '<div class="logoLpm"><img src="img/lpm.png" /></div>' + 
-                '<div id="online" class="dropdown"><button type="button" id="dropdownMenu1" class="btn btn-default dropdown-toggle" title="Utilisateurs connectés" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
+                '<div id="online" class="dropdown"><button type="button" id="dropdownMenu1" class="btn dropdown-primary" title="Utilisateurs connectés" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
                 '<span class="glyphicon glyphicon-user" aria-hidden="true"></span><span id="usersLogged">' + this.usersLogged + '</span> <span class="caret"></span></button>' +
                 '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="usersList">'+ this.getUsersList() +'</ul></div>' +
                 this.barContent() + 
-                    '<ul class="nav navbar-right" role="tablist">' +
-                      '<li role="presentation" class="dropdown">' +
-                        '<a id="user" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' +
-                           u.getFullName() +
-                          '<span class="caret"></span>' +
+                    '<div class="nav navbar-right" id="user"><span class="name">' +
+                      u.firstName + 
+                        '</span><a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' + 
+                          u.getAvatar(32) +
                         '</a>' +
-                        '<ul id="menu3" class="dropdown-menu" aria-labelledby="user">' +
-                          '<li><a href="#">Mon compte</a></li>' +
+                        '<div id="menu3" class="dropdown-menu" aria-labelledby="user">' +
+                        '<div class="panel panel-default"><div class="panel-body">' + 
+                        '<div class="row"><div class="col-md-4">' +
+                        '<div style="background:url(img/user/1.jpg);width:96px;height:96px;overflow: hidden;" class="img-circle"><span class="edit">Modifier</span></div>' + 
+                        '</div>' + 
+                        '<div class="col-md-8">' + 
+                        '<b>' + u.getFullName() + '</b><br>' + 
+                        '<i>' + u.email + '</i><br>' + 
+                        '<a href="#">Mon compte</a>' +
+                        '</div></div></div><div class="panel-footer">'+ this.appVersion + '<a id="logout" class="btn btn-default pull-right" href="#">Déconnexion</a><div class="clearfix"></div></div></div>' +
+                          /*'<li><a href="#">Mon compte</a></li>' +
                           '<li role="separator" class="divider"></li>' +
                           '<li class="dropdown-header">' + this.appVersion + '</li>' +
                           '<li role="separator" class="divider"></li>' +
                           '<li><a id="logout" href="#">Déconnexion</a></li>' +
-                        '</ul>' +
-                      '</li>' +
-                    '</ul>' +
+                        */'</div>' +
+                      '</div>' +
                 '<div class="clear"></div>' +
                 '</div>' +
                 '<div class="strip"><div id="tasksManagerHead"></div></div></div><div class="page">';
@@ -263,8 +270,8 @@ class app
     barContent()
     {
         return '<div class="barContent"> ' +
-            '<button id="prev" type="button" class="previous btn btn-default" title="Taches précédentes" ><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button> ' +
-            '<button id="dropdownMenu2" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="Ajouter"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> ' +
+            '<button id="prev" type="button" class="previous btn btn-primary" title="Taches précédentes" ><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button> ' +
+            '<button id="dropdownMenu2" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="Ajouter"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> ' +
             '<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">' +
                 '<li><a id="add_btn" href="#" title="Ajouter une tache">Ajouter une tache </a></li>' +
                 '<li role="separator" class="divider"></li>' + 
@@ -274,11 +281,11 @@ class app
                 '<li><a id="add_btn_type" href="#" title="Ajouter une tache">Ajouter un type de release </a></li>' +
                 this.displayAddTypeForm() +
             '</ul>' +
-            '<button id="valid_btn" type="button" class="btn btn-default" title="Valider une tache" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button> ' +
-            '<button id="duplicate_btn" type="button" class="btn btn-default" title="Copier une tache"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button> ' +
-            '<button id="archive_btn" type="button" class="btn btn-default" title="Archiver une tache" ><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></button> ' +
-            '<button id="del_btn" type="button" class="btn btn-default" title="Supprimer une tache" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button> ' +
-            '<button id="next" type="button" class="next btn btn-default" title="Taches suivantes" ><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button> ' +
+            '<button id="valid_btn" type="button" class="btn btn-primary" title="Valider une tache" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button> ' +
+            '<button id="duplicate_btn" type="button" class="btn btn-primary" title="Copier une tache"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button> ' +
+            '<button id="archive_btn" type="button" class="btn btn-primary" title="Archiver une tache" ><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></button> ' +
+            '<button id="del_btn" type="button" class="btn btn-primary" title="Supprimer une tache" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button> ' +
+            '<button id="next" type="button" class="next btn btn-primary" title="Taches suivantes" ><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button> ' +
         '</div>';
     }
 
@@ -356,7 +363,7 @@ class app
                 '<label for="inputPassword" class="sr-only">Password</label> ' +
                 '<input name="password" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required=""> ' +
                 '<br> ' +
-                '<button type="submit" id="btn-submit" class="btn btn-lg btn-default btn-block">Connexion</button> ' +
+                '<button type="submit" id="btn-submit" class="btn btn-lg btn-primary btn-block">Connexion</button> ' +
             '</form> ' +
         '</div> ' +
     '</div> <!-- /container --> ' +

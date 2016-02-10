@@ -23,6 +23,11 @@ class user
         return this.firstName + " " + this.lastName
     }
 
+    getAvatar(size)
+    {
+        return '<img class="img-circle" src="img/user/' + this.id + '.jpg" width="' + size + '" height="' + size + '" />' 
+    }
+
     getKey()
     {
         var key = this.id + "%:#" + this.email + "/$!" + this.password

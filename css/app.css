@@ -25,21 +25,45 @@ body{
     opacity: 0;
     background-color: #fff;
 }
-ul.nav.navbar-right {
+.nav.navbar-right {
     margin-right: 20px;
 }
-ul#menu3 {
-    margin-top: 25px;
+#menu3 {
+    margin-top: 14px;
     border-radius: 0;
     border: 0;
+    top: auto;
+    width: 350px;
+    padding-bottom: 0;
+}
+#menu3 i {
+    color: #bbb;
+    font-size: 12px;
+}
+#menu3 .panel{
+    margin-bottom: 0;
+    border: 0;
+}
+#menu3 .edit {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    width: 96px;
+    display: block;
+    margin-top: 76px;
+    text-align: center;
+    font-size: 10px;
+    padding: 3px;
 }
 #user{
     margin-top: 10px;
-    color: #fff;
 }
 .nav .open>a, .nav .open>a:focus, .nav .open>a:hover,
-#user:hover{
+#user a:hover{
     background-color: transparent;;
+}
+#user .name{
+    color: #fff;
+    padding-right: 10px;
 }
 .clear{
 	clear: both;
@@ -388,18 +412,18 @@ td.firstCol{
     position: absolute;
     margin-top: 4px;
 }
-.bar .btn-default {
+.bar .btn-primary {
     height: 40px;
     border-radius: 0;
     padding-left: 15px;
     padding-right: 15px;
 }
-.btn-default {
+.btn-primary {
     color: #fff;
     background-color: #303F9F;
     border-color: transparent;
 }
-.btn-default:hover, .btn-default:focus {
+.btn-primary:hover, .btn-primary:focus {
     color: #3F51B5;
     background-color: #fff;
     border-color: transparent;

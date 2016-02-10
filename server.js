@@ -7,6 +7,7 @@ global.release  = require('./class/release.js');
 global.file     = require('./class/file.js');
 global.moment   = require('./js/moment.min.js')
 
+var fs           = require("fs");
 var mysql        = require('mysql');
 var connection   = mysql.createConnection(config);
 var express      = require('express')
@@ -98,7 +99,18 @@ io.on('connection', function (socket) {
   uploader.listen(socket);
 
   uploader.on("saved", function(event){
-      //console.log(event.file);
+      console.log(event.file);
+      var imgPath = __dirname + "/uploads/" +  event.file.name
+      app.userBySocket[socket.id].id
+      var imgPathThumb = __dirname + "/img/user/" + app.userBySocket[socket.id].id + ".jpg"
+      lwip.open(imgPath, function(err, image){
+        image.contain(96, 96,'white', function(err, image){     
+             image.writeFile(imgPathThumb, function(err){
+              fs.unlink(imgPath)
+              console.log("ok")
+            });
+        });
+      });
   });
   uploader.on("error", function(event){
       console.log("Error from uploader", event);
