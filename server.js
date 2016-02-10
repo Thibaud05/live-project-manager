@@ -15,7 +15,7 @@ var server       = require('http').Server(appExpress);
 var io           = require('socket.io')(server);
 var cookieParser = require('socket.io-cookie');
 var fileUpload   = require('socketio-file-upload')
-//var lwip         = require('lwip')
+var lwip         = require('lwip')
 
 var app = new app()
 
