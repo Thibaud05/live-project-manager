@@ -1,4 +1,5 @@
 var socket = io.connect('http://localhost:3000');
+var avatarUpload = new SocketIOFileUpload(socket);
 $(function () {
 
   $('.form-signin').css({ opacity: 0 ,marginTop: "0px"})
@@ -69,8 +70,6 @@ socket.on('changeNbUser', function (data) {
   $('#usersLogged').html(data.nb)
   $('#usersList').html(data.list)
 })
-
-
 
 moment.locale('fr', {
     months : "janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre".split("_"),
@@ -232,6 +231,13 @@ function appInit(data) {
     e.stopPropagation();
     createCookie("key","",-1)
     document.location.href=""
+  });
+
+  $('#editAvatar').click(function (e) {
+    e.stopPropagation();
+    console.log("ooo")
+    
+    avatarUpload.prompt(e)
   });
 
 };

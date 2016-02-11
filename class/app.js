@@ -203,13 +203,6 @@ class app
     getNbUserLogged()
     {
         return this.usersLogged
-        /*var str = this.usersLogged 
-        if(str < 2){
-            str += " utilisateur connecté"
-        }else{
-            str += " utilisateurs connectés"
-        }
-        return str*/
     }
 
     getUsersList()
@@ -232,8 +225,8 @@ class app
         return '<div class="bar"><div class="stripHead"></div>' +
                 '<div class="head">' +
                 '<div class="logoLpm"><img src="img/lpm.png" /></div>' + 
-                '<div id="online" class="dropdown"><button type="button" id="dropdownMenu1" class="btn dropdown-primary" title="Utilisateurs connectés" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
-                '<span class="glyphicon glyphicon-user" aria-hidden="true"></span><span id="usersLogged">' + this.usersLogged + '</span> <span class="caret"></span></button>' +
+                '<div id="online" class="dropdown"><button type="button" id="dropdownMenu1" class="btn btn-user dropdown-primary" title="Utilisateurs connectés" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
+                '<span class="glyphicon glyphicon-user" aria-hidden="true"></span><span id="usersLogged">' + this.usersLogged + '</span></button>' +
                 '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="usersList">'+ this.getUsersList() +'</ul></div>' +
                 this.barContent() + 
                     '<div class="nav navbar-right" id="user"><span class="name">' +
@@ -244,19 +237,14 @@ class app
                         '<div id="menu3" class="dropdown-menu" aria-labelledby="user">' +
                         '<div class="panel panel-default"><div class="panel-body">' + 
                         '<div class="row"><div class="col-md-4">' +
-                        '<div style="background:url(img/user/1.jpg);width:96px;height:96px;overflow: hidden;" class="img-circle"><span class="edit">Modifier</span></div>' + 
+                        '<a id="editAvatar" href="#"><div style="background:url(img/user/1.jpg);width:96px;height:96px;overflow: hidden;" class="img-circle"><span class="edit">Modifier</span></div></a>' + 
                         '</div>' + 
                         '<div class="col-md-8">' + 
                         '<b>' + u.getFullName() + '</b><br>' + 
                         '<i>' + u.email + '</i><br>' + 
                         '<a href="#">Mon compte</a>' +
                         '</div></div></div><div class="panel-footer">'+ this.appVersion + '<a id="logout" class="btn btn-default pull-right" href="#">Déconnexion</a><div class="clearfix"></div></div></div>' +
-                          /*'<li><a href="#">Mon compte</a></li>' +
-                          '<li role="separator" class="divider"></li>' +
-                          '<li class="dropdown-header">' + this.appVersion + '</li>' +
-                          '<li role="separator" class="divider"></li>' +
-                          '<li><a id="logout" href="#">Déconnexion</a></li>' +
-                        */'</div>' +
+                        '</div>' +
                       '</div>' +
                 '<div class="clear"></div>' +
                 '</div>' +

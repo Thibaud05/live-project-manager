@@ -54,6 +54,9 @@ body{
     font-size: 10px;
     padding: 3px;
 }
+#editAvatar,#editAvatar:hover,#editAvatar:focus {
+    text-decoration: none;
+}
 #user{
     margin-top: 10px;
 }
@@ -460,11 +463,6 @@ td.firstCol{
     float: left;
     margin-top: 4px;
 }
-#online .glyphicon-user {
-    border-right: 1px solid;
-    padding-right: 10px;
-    margin-right: 10px;
-}
 .glyphicon-ok-sign , .glyphicon-remove-sign{
     margin-right: 15px;
     font-size: 10px;
@@ -490,4 +488,23 @@ td.firstCol{
 .task .btn-default:hover,.task .btn-default:focus{
     background-color: #fff;
     color: #000;
+}
+
+
+#usersLogged {
+    border: 1px solid #fff;
+    border-radius: 20px;
+    width: 15px;
+    height: 15px;
+    display: block;
+    font-size: 10px;
+    position: absolute;
+    top: 5px;
+    right: 0;
+}
+.btn-user {
+    margin-top:8px; 
+    background: none;
+    color: #fff;
+    font-size: 18px;
 }
