@@ -98,19 +98,24 @@ io.on('connection', function (socket) {
   uploader.dir = __dirname + "/uploads";
   uploader.listen(socket);
 
-  uploader.on("saved", function(event){
-      console.log(event.file);
-      var imgPath = __dirname + "/uploads/" +  event.file.name
+  socket.on('uploadAvatar', function (data) {
+      var imgPath = __dirname + "/uploads/" +  data.title
       app.userBySocket[socket.id].id
       var imgPathThumb = __dirname + "/img/user/" + app.userBySocket[socket.id].id + ".jpg"
       lwip.open(imgPath, function(err, image){
         image.contain(96, 96,'white', function(err, image){     
              image.writeFile(imgPathThumb, function(err){
               fs.unlink(imgPath)
-              console.log("ok")
+              console.log("ok run update")
+              socket.emit('updateAvatar',{})
             });
         });
       });
+  })
+
+  uploader.on("saved", function(event){
+      console.log(event.file);
+
   });
   uploader.on("error", function(event){
       console.log("Error from uploader", event);

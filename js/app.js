@@ -236,10 +236,24 @@ function appInit(data) {
   $('#editAvatar').click(function (e) {
     e.stopPropagation();
     console.log("ooo")
-    
-    avatarUpload.prompt(e)
-  });
+    //
+    avatarUpload.prompt()
+    $('#user > a').dropdown('toggle')
 
+  });
+  avatarUpload.addEventListener("progress", function(event){
+      var percent = event.bytesLoaded / event.file.size * 100;
+      $('#editAvatar .progressBar').css('width',percent + '%');
+  });
+  avatarUpload.addEventListener("complete", function(event){
+     if(event.success){
+        socket.emit('uploadAvatar', {title:event.file.name,type:event.file.type});
+         $('#editAvatar .progressBar').delay(800).queue(function (next) {
+            $(this).css('width',0);
+              next();
+            });
+        }
+  })
 };
 
 function createCookie(name, value, days) {

@@ -237,7 +237,7 @@ class app
                         '<div id="menu3" class="dropdown-menu" aria-labelledby="user">' +
                         '<div class="panel panel-default"><div class="panel-body">' + 
                         '<div class="row"><div class="col-md-4">' +
-                        '<a id="editAvatar" href="#"><div style="background:url(img/user/1.jpg);width:96px;height:96px;overflow: hidden;" class="img-circle"><span class="edit">Modifier</span></div></a>' + 
+                        '<a id="editAvatar" href="#"><div style="background:url(img/user/1.jpg);width:96px;height:96px;overflow: hidden;" class="img-circle bgAvatar"><span class="edit">Modifier</span><div class="progressBar"></div></div></a>' + 
                         '</div>' + 
                         '<div class="col-md-8">' + 
                         '<b>' + u.getFullName() + '</b><br>' + 

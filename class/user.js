@@ -25,7 +25,7 @@ class user
 
     getAvatar(size)
     {
-        return '<img class="img-circle" src="img/user/' + this.id + '.jpg" width="' + size + '" height="' + size + '" />' 
+        return '<img class="img-circle avatar" src="img/user/' + this.id + '.jpg" width="' + size + '" height="' + size + '" />' 
     }
 
     getKey()

@@ -597,6 +597,13 @@ tasksManager.prototype = {
 
 
       })
+              
+      socket.on('updateAvatar',function(data){
+          console.log("updateAvatar")
+          var url = 'img/user/1.jpg?' + moment().unix()
+          $(".avatar").attr("src", url )
+          $(".bgAvatar").css("background","url(" + url + ")")
+        })
     /////////////////////
         /////////////////////
             /////////////////////

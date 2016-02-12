@@ -57,6 +57,17 @@ body{
 #editAvatar,#editAvatar:hover,#editAvatar:focus {
     text-decoration: none;
 }
+
+#editAvatar .progressBar {
+    background: #2CEF08;
+    height: 3px;
+    margin-top: -23px;
+    width: 0%;
+}
+
+
+
+
 #user{
     margin-top: 10px;
 }
