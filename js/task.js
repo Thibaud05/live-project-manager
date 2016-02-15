@@ -12,7 +12,11 @@
     this.id = data.id;
     this.typeId = data.typeId;
     this.userId = data.userId;
-    this.day = moment(data.day).format('YYYY-MM-DD');
+    if(data.day != "0000-00-00"){
+      this.day = moment(data.day).format('YYYY-MM-DD');
+    }else{
+      this.day = data.day
+    }
     this.creationDate = data.creationDate;
     this.creationUserId = data.creationUserId;
     this.accountableUserId = data.accountableUserId;

@@ -20,6 +20,9 @@ class task
 
     update()
     {
+    	if(this.day== undefined){
+			this.day = "0000-00-00";
+		}
 		var sql = "UPDATE `task` SET `title` = '" + this.title + "', " +
 					"`userId` = '" + this.userId + "'," +
 					"`creationUserId` = '" + this.creationUserId + "'," +

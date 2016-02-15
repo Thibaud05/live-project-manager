@@ -37,6 +37,7 @@ tasksManager.prototype = {
       this.firstDayWeek = this.now.day(1);
       this.dates = [];
       this.datesIndex = [];
+      this.datesIndex["0000-00-00"] = -1;
       for (var i = 0; i < this.nbdays; i++){
         var offset = Math.floor(i / this.dayPerWeek);
         offset = offset * (7-this.dayPerWeek);
@@ -389,7 +390,7 @@ tasksManager.prototype = {
       html = '<div class="panel panel-default box">';
       html += '<div class="panel-heading">' + type + '</div>';
       html +=   '<div class="panel-body">';
-      html +=     '<ul class="connectedSortable" di = "' + type + '" uid ="' + idType + '">' + this.renderTasks(idType + ":0000-00-00") + '</ul>';
+      html +=     '<ul class="connectedSortable" di = "-1" uid ="' + idType + '">' + this.renderTasks(idType + ":0000-00-00") + '</ul>';
       html +=   '</div>';
       html += '</div>';
       return html;
@@ -487,6 +488,7 @@ tasksManager.prototype = {
         console.log(selectedTask)
         log("saved");
         
+
         var cible = $(".connectedSortable[di="+ self.datesIndex[task.day] +"][uid="+ task.userId +"]")
         if(cible){
           var htmlTask = self.renderTask(task);
