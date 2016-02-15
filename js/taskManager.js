@@ -664,6 +664,7 @@ tasksManager.prototype = {
       $( ".connectedSortable" ).sortable({
         revert:150,
         cancel: ".disable-task",
+        placeholder: "ui-sortable-placeholder",
         connectWith: ".connectedSortable",
         start: function( event, ui ) {
           log("start")

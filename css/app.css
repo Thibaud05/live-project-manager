@@ -151,9 +151,11 @@ body{
     transition: background-color 0.5s;
     margin-bottom: 1px;
   }
-  .box .connectedSortable li {
-  	margin: 1px 1px;
-  }
+    li.ui-sortable-placeholder {
+        display: block;  
+        background-color: #ddd;
+        width:  100%:;
+    }
   .ui-state-default{
   	background: none;
   	color: #fff;
