@@ -1,9 +1,8 @@
-  //////////////////////////////////////////
-  //
-  //  TASKMANAGER OBJECT
-  //
-  //////////////////////////////////////////
-
+/**
+ *
+ * TASKMANAGER OBJECT
+ *
+ */
   function tasksManager(){
     this.tasks = [];
     this.tasksById = [];
@@ -29,9 +28,12 @@
     this.select = false;
     this.lastRelease = []
 }
-    /////////////////////
-    // CONTROLLER
 tasksManager.prototype = {
+  /**
+ *
+ * CONTROLLER
+ *
+ */
     init: function(){
       this.week = this.now.week();
       this.firstDayWeek = this.now.day(1);
@@ -46,10 +48,11 @@ tasksManager.prototype = {
         this.datesIndex[d] = i
       }
     },
-
-    /////////////////////
-    // LOAD DATA
-
+/**
+ *
+ * LOAD DATA
+ *
+ */
     getData: function(data){
       //console.log(data)
         this.connectUserId = data.connectUserId;
@@ -112,9 +115,12 @@ tasksManager.prototype = {
           }
         });
     },
-
+/**
+ *
+ * get the next release
+ *
+ */
     getNextRelease : function(typeId,getPrev){
-      console.log("getNextR2")
       var maxRelease = {}
       this.releasesById.map(function(r,key){
         if (r){
@@ -155,10 +161,11 @@ tasksManager.prototype = {
         return nextRelease.id
       }
     },
-
-    /////////////////////
-    // SYNCRONISE DATA
-
+/**
+ *
+ * SYNCRONISE DATA
+ *
+ */
     sync: function(){
 
       var self = this
@@ -183,12 +190,21 @@ tasksManager.prototype = {
       });
 
     },
+/**
+ *
+ * GET USER
+ *
+ */
     getUser :function (id){
       if(this.users[id] != undefined) {
         return this.users[id];
       }
     },
-
+/**
+ *
+ * GET LAST RELEASE
+ *
+ */
     getLastRelease :function (typeId){
       var r = this.lastRelease[typeId]
       if(r != undefined && r.name != "α") {
@@ -196,10 +212,11 @@ tasksManager.prototype = {
       }else{
         return "ALPHA";
       }
-    },
-    /////////////////////
-    // ADD TASK
-
+/**
+ *
+ * ADD TASK
+ *
+ */
     addTask :function (t){
       this.tasksById[t.id] = t;
       this.init();
@@ -207,7 +224,11 @@ tasksManager.prototype = {
       this.render();
       this.activate();
     },
-
+/**
+ *
+ * ADD MANY TASKS
+ *
+ */
     addTasks :function (datas){
       var self = this
       datas.map(function( data, key ) {
@@ -219,14 +240,25 @@ tasksManager.prototype = {
       this.render();
       this.activate();
     },
-
+/**
+ *
+ * SAVE INDICATOR
+ *
+ */
     save: function(){
-      $( "body" ).append('<div class="dataSaved"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>');
+      var html =  '<div class="dataSaved">'
+      html +=       '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>'
+      html +=     '</div>'
+      $( "body" ).append(html);
       $(".dataSaved").animate({opacity:1}).animate({opacity:0},400,function() {
         $(".dataSaved").remove();
       });
     },
-
+/**
+ *
+ * CREATE A NEW TASK
+ *
+ */
     newTask: function()
     {
       var userId = this.connectUserId
@@ -236,24 +268,25 @@ tasksManager.prototype = {
         lowPriority =  this.tasks[userId + ":" + day].length;
       }
       var newTask = {
-        "id":"",
-        "userId":userId,
-        "title":"New task",
-        "typeId":this.taskTypes.length-1,
-        "day":day,
-        "description":"",
-        "creationUserId":userId,
-        "priority":lowPriority,
-        "accountableUserId":userId,
-        "creationDate":"",
-        "valid":false
+        "id"                : "",
+        "userId"            : userId,
+        "title"             : "New task",
+        "typeId"            : this.taskTypes.length-1,
+        "day"               : day,
+        "description"       : "",
+        "creationUserId"    : userId,
+        "priority"          : lowPriority,
+        "accountableUserId" : userId,
+        "creationDate"      : "",
+        "valid"             : false
       };
       socket.emit('addTask', newTask);
     },
-
-    /////////////////////
-    // DELETE TASK
-
+/**
+ *
+ * Delete selected task
+ *
+ */
     delSelectedTasks: function (){
       var removedTasksId = [];
       var self = this
@@ -267,22 +300,37 @@ tasksManager.prototype = {
       });
       socket.emit('delTask', removedTasksId);
     },
-
-    /////////////////////
-    // DUPLICATE TASK
-
+/**
+ *
+ * Duplicte task
+ *
+ */
     duplicateTask: function (){
       var duplicatedTasksId = [];
       for (var key in this.selectedTasks) {
         var t = this.tasksById[key]
         var lowPriority =  this.tasks[t.userId + ":" + t.day].length;
-        duplicatedTasksId.push({"id":"","userId":t.userId,"title":t.title,"typeId":t.typeId,"day":t.day,"description":t.description,"creationUserId":this.connectUserId,"priority":lowPriority,"accountableUserId":this.connectUserId,"creationDate":"","valid":false});
+        duplicatedTasksId.push({
+          "id"               : "",
+          "userId"            : t.userId,
+          "title"             : t.title,
+          "typeId"            : t.typeId,
+          "day"               : t.day,
+          "description"       : t.description,
+          "creationUserId"    : this.connectUserId,
+          "priority"          : lowPriority,
+          "accountableUserId" : this.connectUserId,
+          "creationDate"      : "",
+          "valid"             : false
+        });
       }
       socket.emit('duplicateTask', duplicatedTasksId);
     },
-    /////////////////////
-    // valid task TASK
-
+/**
+ *
+ * Valid task
+ *
+ */
     validTask: function (){
       var validTasks = [];
       for (var key in this.selectedTasks) {
@@ -294,10 +342,11 @@ tasksManager.prototype = {
       }
       socket.emit('updateTask', validTasks);
     },
-
-    /////////////////////
-    // archive task task TASK
-
+/**
+ *
+ * Archive task
+ *
+ */
     archiveSelectedTasks: function (){
       var archivedTasks = [];
       for (var key in this.selectedTasks) {
@@ -311,10 +360,7 @@ tasksManager.prototype = {
       }
       socket.emit('archiveTask', archivedTasks);
     },
-
-    /////////////////////
-    // DUPLICATE TASK
-
+/*----------  DUPLICATE TASK  ----------*/
     extendTask: function (){
       var extendTasks = [];
       for (var key in this.selectedTasks) {
@@ -328,9 +374,11 @@ tasksManager.prototype = {
       }
       socket.emit('updateTask', JSON.stringify(extendTasks));
     },
-    /////////////////////
-    // DISPLAY TASK
-
+/**
+ *
+ * DISPLAY TASKS
+ *
+ */
     renderTasks: function(key){
 
       var html = ''
@@ -347,6 +395,11 @@ tasksManager.prototype = {
       }
       return html;
     },
+  /**
+ *
+ * DISPLAY TASK
+ *
+ */
     renderTask: function(task){
         var color = this.taskTypes[task.typeId].color;
         var env = '';
@@ -362,10 +415,11 @@ tasksManager.prototype = {
         + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></div></li>';
       return html
     },
-
-    /////////////////////
-    // DISPLAY RELEASE
-
+/**
+ *
+ * DISPLAY RELEASE
+ *
+ */
     renderRelease: function(key){
       var html = ''
       var release = this.releases[key];
@@ -382,23 +436,29 @@ tasksManager.prototype = {
     return html;
     },
 
-    /////////////////////
-    // DISPLAY BOX
-
+/**
+ *
+ * DISPLAY BOX
+ *
+ */
     renderBox: function(type,idType){
       var html = ''
       html = '<div class="panel panel-default box">';
       html += '<div class="panel-heading">' + type + '</div>';
       html +=   '<div class="panel-body">';
-      html +=     '<ul class="connectedSortable" di = "-1" uid ="' + idType + '">' + this.renderTasks(idType + ":0000-00-00") + '</ul>';
+      html +=     '<ul class="connectedSortable" di = "-1" uid ="' + idType + '">' 
+      html +=       this.renderTasks(idType + ":0000-00-00")
+      html +=     '</ul>'
       html +=   '</div>';
       html += '</div>';
       return html;
     },
 
-    /////////////////////
-    // DISPLAY COMPONANT
-
+/**
+ *
+ * DISPLAY COMPONANT
+ *
+ */
     render: function(){
       //log(this.tasks)
 
@@ -406,23 +466,25 @@ tasksManager.prototype = {
       var html = "";
       var htmlHead = "";
 
-      // Week row
+/*----------  Week row  ----------*/
       htmlHead += '<tr class="week"><td class="firstCol"></td>';
       for (i = 0; i < this.nbWeekPerScreen; i++){
         htmlHead += '<td class="leftSep" colspan="' + this.dayPerWeek + '">W' + (i + this.week) + '</td>';
       }
       htmlHead += "</tr>";
 
-      // Realeases row
+/*----------  Realeases row  ----------*/
       htmlHead += '<tr class="day"><td></td>';
       for (var i = 0; i < this.nbdays; i++){
         var index = i % this.dayPerWeek;
         var css = ( index==0 ) ? 'leftSep' : '';
-        htmlHead += '<td  class="' + css + '"><ul class="releaseSlot" di = "' + i + '">' + this.renderRelease(this.dates[i]) + '</ul></td>';
+        htmlHead += '<td  class="' + css + '">'
+        htmlHead +=   '<ul class="releaseSlot" di = "' + i + '">' + this.renderRelease(this.dates[i]) + '</ul>'
+        htmlHead += '</td>'
       }
       htmlHead += "</tr>";
 
-      // Days row
+/*----------  Days row  ----------*/
       htmlHead += '<tr class="day"><td></td>';
       for (var i = 0; i < this.nbdays; i++){
         var index = i % this.dayPerWeek;
@@ -432,7 +494,7 @@ tasksManager.prototype = {
       }
       htmlHead += "</tr>";
 
-      // Rows tasks
+/*----------  Rows tasks  ----------*/
       var lines = "";
       var firstLine = "";
       $.each( this.users, function( key, user ) {
@@ -464,57 +526,50 @@ tasksManager.prototype = {
       $("#box").html(this.renderBox("ALPHA",4) + this.renderBox("DEV",1) +  this.renderBox("QA",2) + this.renderBox("PRD",3));
     },
 
-
+/**
+ *
+ * Sockets
+ * Get all event from the server
+ *
+ */
     sockets :function(){
       var self = this
-
+/*----------  moveTask ----------*/
       socket.on('moveTask', function (task)
       {
-        log("///// ALL MOVE TASK")
-        log(task)
         var k = task.userId + ":" + task.day
         self.tasks[k]
-
         if(self.tasks[k] != undefined ){
           self.tasks[k].push(task);
         }else{
           self.tasks[k] = new Array(task);
         }
-        console.log(task.id)
         var selectedTask = $(".task[tid="+ task.id +"]")
         if (selectedTask) {
           selectedTask.remove()
         }
-        console.log(selectedTask)
-        log("saved");
-        
-
         var cible = $(".connectedSortable[di="+ self.datesIndex[task.day] +"][uid="+ task.userId +"]")
         if(cible){
           var htmlTask = self.renderTask(task);
-          log("html");
-          log(htmlTask);
           cible.append(htmlTask)
         }
-        log("cible");
-        log(cible);
         self.tasksById[task.id] = task;
-      });
+      })
 
+/*----------  setData  ----------*/
       socket.on('setData', function (data)
       {
-        log("setdata")
-        log(data)
         var t = new task(data);
         var selectedTask = $(".task[tid="+ t.id +"]")
         if (selectedTask) {
           selectedTask.find( ".title" ).html(t.title)
           selectedTask.find( ".desc" ).html(t.description)
         }
-      });
+      })
 
-      socket.on('setRelease', function (data) {
-        log("release")
+/*----------  setRelease  ----------*/
+      socket.on('setRelease', function (data)
+      {
           var r = self.releasesById[data.id];
           self.releases[data.day] = r;
           r.day = data.day;
@@ -527,10 +582,11 @@ tasksManager.prototype = {
             var htmlRelease = self.renderRelease(r.day);
             cible.append(htmlRelease)
           }
-      });
+      })
 
-      socket.on('delTask', function (id) {
-
+/*----------  delTask ----------*/
+      socket.on('delTask', function (id)
+      {
         var t =  self.tasksById[id];
         var selectedTask = $(".task[tid="+ t.id +"]")
         if (selectedTask) {
@@ -540,19 +596,25 @@ tasksManager.prototype = {
         delete self.selectedTasks[id];
 
         log("taskRemoved");
-      });
+      })
 
-      socket.on('duplicateTask', function (data) {
+/*----------  duplicateTask ----------*/
+      socket.on('duplicateTask', function (data)
+      {
         var t = new task(data);
         tm.addTask(t);
-      });
+      })
 
-      socket.on('addTask', function (data) {
+/*----------  addTask  ----------*/
+      socket.on('addTask', function (data)
+      {
         var t = new task(data);
         tm.addTask(t);
-      });
+      })
 
-      socket.on('updateTask', function (data) {
+/*----------  updateTask ----------*/
+      socket.on('updateTask', function (data)
+      {
         var t = new task(data);
         var selectedTask = $(".task[tid="+ t.id +"]")
         if (selectedTask) {
@@ -563,18 +625,22 @@ tasksManager.prototype = {
           }
         }
         self.tasksById[t.id].valid = t.valid
-      });
+      })
 
-      socket.on('archiveTask', function (data) {
+/*----------  archiveTask ----------*/
+      socket.on('archiveTask', function (data)
+      {
         var t = new task(data);
         var selectedTask = $(".task[tid="+ t.id +"]")
         if (selectedTask) {
           selectedTask.remove();
         }
         self.tasksById[t.id] = t
-      });
+      })
 
-      socket.on('delDataFiles', function (data) {
+/*----------  delDataFiles  ----------*/
+      socket.on('delDataFiles', function (data)
+      {
         var id = data.id
         var selectedFile = $(".file > a[fid=" + id + "]").parent()
         if (selectedFile) {
@@ -582,8 +648,10 @@ tasksManager.prototype = {
         }
         delete self.tasksById[data.taskId].files[id]
       })
-      socket.on('setDataFiles',function(data){
-        console.log('setDataFiles')
+
+/*----------  setDataFiles  ----------*/
+      socket.on('setDataFiles',function(data)
+      {
         var f = new file(data)
         var divFiles = $(".task[tid=" + f.taskId + "] .files")
         if(divFiles){
@@ -595,34 +663,19 @@ tasksManager.prototype = {
           });
         }
         self.tasksById[f.taskId].files[f.id] = f
-
-
-
       })
-              
-      socket.on('updateAvatar',function(data){
-          console.log("updateAvatar")
+
+/*----------  updateAvatar  ----------*/
+      socket.on('updateAvatar',function(data)
+      {
           var url = 'img/user/1.jpg?' + moment().unix()
           $(".avatar").attr("src", url )
           $(".bgAvatar").css("background","url(" + url + ")")
         })
-    /////////////////////
-        /////////////////////
-            /////////////////////
-                /////////////////////
-                    /////////////////////
-                        /////////////////////
-                            /////////////////////
-                                /////////////////////
-                                    /////////////////////
-                                        /////////////////////
-                                            /////////////////////
-                                                /////////////////////
-                                                    /////////////////////
-                                                        /////////////////////
 
-      socket.on('changeRelease',function(data){
-        console.log('changeRelease')
+/*----------  changeRelease  ----------*/
+      socket.on('changeRelease',function(data)
+      {
         var t = new task(data);
         var selectedTask = $(".task[tid="+ t.id +"]")
         if(selectedTask){
@@ -642,16 +695,14 @@ tasksManager.prototype = {
 
     },
 
-
-
-
-    /////////////////////
-    // JQUERY INITIALISATION
-
+/**
+ *
+ * JQUERY INITIALISATION
+ *
+ */
     activate :function(){
       // Task drag and drop
       var self = this
-
       $( "body" ).off().mousedown(function(e) {
           //log("click out")
           if(!self.select){
@@ -661,7 +712,7 @@ tasksManager.prototype = {
             });
           }
           self.select = false;
-      });
+      })
 
       $( ".connectedSortable" ).sortable({
         revert:150,
@@ -700,12 +751,8 @@ tasksManager.prototype = {
         }
       }).disableSelection();
 
-      // Task click
+/*----------  Task click ----------*/
       $( ".connectedSortable > li" ).mousedown(function(e,obj) {
-        //log(e)
-        //log(obj)
-        //log(this)
-        //log(self)
         log("down");
         //e.stopPropagation();
         self.select = true;
@@ -725,7 +772,7 @@ tasksManager.prototype = {
         }
       });
 
-      // Task double click
+/*----------  Task double click ----------*/
       $( ".connectedSortable > li" ).dblclick(function() {
         log("dbleclick");
         var id = $(this).attr("tid");
@@ -734,13 +781,11 @@ tasksManager.prototype = {
         $(this).removeClass('selected');
         if(! t.isOpen){
           t.open($(this));
-        }/*else{
-          task.close($(this));
-        }*/
+        }
       }
       });
 
-      // Task tooltip
+/*----------  Task tooltip  ----------*/
       $( ".task" ).tooltip({
         items: "li",
         content: function(){
@@ -759,7 +804,7 @@ tasksManager.prototype = {
         }
       });
 
-      // Release drag and drop
+/*----------  Release drag and drop  ----------*/
       $( ".releaseSlot" ).sortable({
         revert:150,
         connectWith: ".releaseSlot",
@@ -771,9 +816,11 @@ tasksManager.prototype = {
       }).disableSelection();
     },
 
-    /////////////////////
-    // CHANGE WEEK
-
+/**
+ *
+ * CHANGE WEEK
+ *
+ */
     changeInterval: function(nbWeek){
       log(this.now.format('MMMM Do YYYY'));
       this.now = this.now.add(nbWeek,'w');
@@ -782,7 +829,11 @@ tasksManager.prototype = {
       this.render();
       this.activate();
     },
-
+/**
+ *
+ * LOGOUT
+ *
+ */
     logout(){
       socket.emit('logout', connectUser);
     }
