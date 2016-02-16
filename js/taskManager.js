@@ -107,11 +107,10 @@ tasksManager.prototype = {
             }
             self.tasksById[t.id] = t;
             var k = t.userId + ":" + t.day;
-            if(self.tasks[k] != undefined ){
-              self.tasks[k].push(t);
-            }else{
-              self.tasks[k] = new Array(t);
+            if(self.tasks[k] == undefined ){
+              self.tasks[k] = new Array();
             }
+            self.tasks[k][t.priority] = t;
           }
         });
     },
@@ -212,6 +211,7 @@ tasksManager.prototype = {
       }else{
         return "ALPHA";
       }
+    },
 /**
  *
  * ADD TASK
@@ -539,11 +539,10 @@ tasksManager.prototype = {
       {
         var k = task.userId + ":" + task.day
         self.tasks[k]
-        if(self.tasks[k] != undefined ){
-          self.tasks[k].push(task);
-        }else{
-          self.tasks[k] = new Array(task);
+        if(self.tasks[k] == undefined ){
+          self.tasks[k] = new Array();
         }
+        self.tasks[k][task.priority] = task;
         var selectedTask = $(".task[tid="+ task.id +"]")
         if (selectedTask) {
           selectedTask.remove()

@@ -42,27 +42,25 @@ appExpress.get('/uploadTest', function (req, res) {
   res.sendFile(__dirname + '/testupload.html');
 });
 
-
-
-
 var sqls = [
   "SELECT * FROM `type`",
   "SELECT * FROM `release`",
   "SELECT * FROM `user`",
   "SELECT * FROM `task_file`",
   "SELECT * FROM `task`"]
-//console.log(sqls.join(";"))
+
 connection.query(sqls.join(";"), function(err, r, fields) {
   if (err) throw err;
-  
   var indexedTasks = indexById(r[4])
   var indexedReleases = indexById(r[1])
   var indexedTasksFiles = indexById(r[3])
-  //console.log(indexedTasksFiles)
-//console.log(indexedTasks)
-global.data = {taskTypes:r[0],releases:indexedReleases,users:r[2],tasks_files:indexedTasksFiles,tasks:indexedTasks}
-  
-
+  global.data = {
+    taskTypes   : r[0],
+    releases    : indexedReleases,
+    users       : r[2],
+    tasks_files : indexedTasksFiles,
+    tasks       : indexedTasks
+  }
   for (var data of r[2]) {
     var u = new user(data)
     app.users.push(u)
@@ -76,7 +74,9 @@ io.on('connection', function (socket) {
   app.controller(socket)
   app.autoLogin()
   socket.emit('news', { hello: 'world' });
-  socket.on('login', function (data) {
+
+  socket.on('login', function (data) 
+  {
     u = app.login(new user(data))
     //console.log(u)
     var html = app.display(u)
@@ -87,10 +87,9 @@ io.on('connection', function (socket) {
     io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
   });
 
-  socket.on('disconnect', function () {
-    console.log(socket.id)
+  socket.on('disconnect', function ()
+  {
     app.logout(socket.id)
-    console.log("disconect")
     io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
   });
 
@@ -98,7 +97,8 @@ io.on('connection', function (socket) {
   uploader.dir = __dirname + "/uploads";
   uploader.listen(socket);
 
-  socket.on('uploadAvatar', function (data) {
+  socket.on('uploadAvatar', function (data)
+  {
       var imgPath = __dirname + "/uploads/" +  data.title
       app.userBySocket[socket.id].id
       var imgPathThumb = __dirname + "/img/user/" + app.userBySocket[socket.id].id + ".jpg"
@@ -113,22 +113,24 @@ io.on('connection', function (socket) {
       });
   })
 
-  uploader.on("saved", function(event){
+  uploader.on("saved", function(event)
+  {
       console.log(event.file);
 
   });
-  uploader.on("error", function(event){
+  
+  uploader.on("error", function(event)
+  {
       console.log("Error from uploader", event);
   });
 });
 
-function indexById(data){
+function indexById(data)
+{
   var indexedData = []
   for (var i=0; i<data.length;i++){
     var obj = data[i]
     indexedData[obj.id] = obj
   }
   return indexedData
-} 
-
-//connection.end();
+}
