@@ -82,7 +82,10 @@ tasksManager.prototype = {
           if(data!=undefined){
             var r = data
             r.day = moment(data.day).format('YYYY-MM-DD');
-            self.releases[r.day] = r;
+            if (self.releases[r.day] == undefined){
+              self.releases[r.day] = new Array();
+            }
+            self.releases[r.day].push(r);
             self.releasesById[r.id] = r;
 
             if(self.lastRelease[r.typeId]!=undefined){
@@ -184,7 +187,10 @@ tasksManager.prototype = {
       this.releasesById.map(function(release,key) {
         if (release){
           var k =  release.day;
-          self.releases[k] = release;
+          if(self.releases[k] == undefined ){
+            self.releases[k] = new Array();
+          }
+          self.releases[k].push(release);
         }
       });
 
@@ -417,25 +423,39 @@ tasksManager.prototype = {
     },
 /**
  *
+ * DISPLAY RELEASES
+ *
+ */
+    renderReleases: function(key){
+      var html = ''
+      var tabRelease = this.releases[key];
+      if(tabRelease){
+        for (var i = 0; i < tabRelease.length; i++){
+          var r = tabRelease[i];
+          if(r!=undefined){
+            html += this.renderRelease(r)
+          }
+        } 
+      }
+      return html;
+    },
+/**
+ *
  * DISPLAY RELEASE
  *
  */
-    renderRelease: function(key){
+    renderRelease: function(release){
       var html = ''
-      var release = this.releases[key];
-      if(release){
-        var taskType = this.taskTypes[release.typeId];
-        if(taskType){
-          html += '<li class="ui-state-default release ' + taskType.color + '" tid = "' + release.id + '" ><span>';
-          html += '<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> ';
-          html +=  taskType.name + ' ' + release.name;
-          html += ' <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>';
-          html +=  '</span></li>';
-        }
+      var taskType = this.taskTypes[release.typeId];
+      if(taskType){
+        html += '<li class="ui-state-default release ' + taskType.color + '" tid = "' + release.id + '" ><span>';
+        html += '<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> ';
+        html +=  taskType.name + ' ' + release.name;
+        html += ' <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>';
+        html +=  '</span></li>';
       }
-    return html;
+      return html;
     },
-
 /**
  *
  * DISPLAY BOX
@@ -479,7 +499,7 @@ tasksManager.prototype = {
         var index = i % this.dayPerWeek;
         var css = ( index==0 ) ? 'leftSep' : '';
         htmlHead += '<td  class="' + css + '">'
-        htmlHead +=   '<ul class="releaseSlot" di = "' + i + '">' + this.renderRelease(this.dates[i]) + '</ul>'
+        htmlHead +=   '<ul class="releaseSlot" di = "' + i + '">' + this.renderReleases(this.dates[i]) + '</ul>'
         htmlHead += '</td>'
       }
       htmlHead += "</tr>";
@@ -570,7 +590,10 @@ tasksManager.prototype = {
       socket.on('setRelease', function (data)
       {
           var r = self.releasesById[data.id];
-          self.releases[data.day] = r;
+          if(self.releases[data.day] == undefined){
+            self.releases[data.day] = new Array();
+          }
+          self.releases[data.day].push(r);
           r.day = data.day;
           var selectedRelease = $(".release[tid="+ r.id +"]")
           if(selectedRelease){
@@ -578,7 +601,7 @@ tasksManager.prototype = {
           }
           var cible = $(".releaseSlot[di="+ self.datesIndex[r.day] +"]")
           if(cible){
-            var htmlRelease = self.renderRelease(r.day);
+            var htmlRelease = self.renderRelease(r);
             cible.append(htmlRelease)
           }
       })
