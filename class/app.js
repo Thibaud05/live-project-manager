@@ -141,6 +141,29 @@ class app
             }
             //arr
         })
+
+        socket.on('addRelease', function (data){
+            var sql = "INSERT INTO `type` (" +
+                        "`name`, " +
+                        "`color` " +
+                    ") VALUES (" +
+                        "'" + data.name + "'," +
+                        "'" + data.color + "'" +
+                    ");"
+            global.connection.query(sql, function(err, result) {
+                if (err) throw err;
+                var typeID = result.insertId;
+                var today = global.moment().format("YYYY-MM-DD")
+                var rAplha = new release({id:0,name:"α",typeId:typeID,day:today})
+                var rDEV = new release({id:0,name:"DEV",typeId:typeID,day:today})
+                var rQA = new release({id:0,name:"QA",typeId:typeID,day:today})
+                var rPRD = new release({id:0,name:"PRD",typeId:typeID,day:today})
+                rAplha.save()
+                rDEV.save()
+                rQA.save()
+                rPRD.save()
+            });
+        })
         this.socket = socket
     }
 
@@ -296,7 +319,7 @@ class app
                         '<option>v2</option>' +
                         '<option>v1</option>' +
                     '</select>' +
-                    '<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>' +
+                    '<a href="#" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>' +
                 '</form></li>'
     }
 
@@ -314,7 +337,7 @@ class app
                         '<option>lightGreen</option>' +
                         '<option>yellow200</option>' +
                     '</select>' +
-                    '<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>' +
+                    '<a href="#" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>' +
                 '</form></li>'
     }
 

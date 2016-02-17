@@ -222,6 +222,18 @@ function appInit(data) {
     $('#add_release').toggleClass("hidden")
   });
 
+ $('#add_release a').click(function (e) {
+  console.log("addRelease")
+ })
+ $('#add_type a').click(function (e) {
+  console.log("addRelease")
+  var name = $('#add_type input').val()
+  var color = $('#add_type select').val()
+  socket.emit('addRelease', {name:name,color:color});
+ })
+
+
+
   $('#add_btn_type').click(function (e) {
     e.stopPropagation();
     $('#add_type').toggleClass("hidden")

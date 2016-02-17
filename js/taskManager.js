@@ -715,6 +715,12 @@ tasksManager.prototype = {
         self.tasksById[t.id].typeId = t.typeId
       })
 
+/*----------  changeRelease  ----------*/
+      socket.on('addRelease',function(data)
+      {
+        console.log('addRelease')
+        console.log(data)
+      })
     },
 
 /**

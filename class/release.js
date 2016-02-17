@@ -22,5 +22,23 @@ class release
         global.data.releases[this.id] = this
     }
 
+    save(){
+        var sql = "INSERT INTO `release` (" +
+            "`name`, " +
+            "`typeId`, " +
+            "`day` " +
+        ") VALUES (" +
+            "'" + this.name + "'," +
+            "'" + this.typeId + "'," +
+            "'" + this.day + "'" +
+        ");"
+        global.connection.query(sql, function(err, result) {
+            if (err) throw err;
+            this.id = result.insertId;
+            global.data.releases[this.id] = this
+            io.emit('addRelease',this);
+        })
+    }
+
 }
 module.exports=release;

@@ -520,3 +520,14 @@ td.firstCol{
     color: #fff;
     font-size: 18px;
 }
+#add_release, #add_type {
+    padding: 3px 20px;
+}
+#add_release select.form-control, #add_type select.form-control{
+    border-radius: 0;
+    border-right: 0;
+}
+#add_release .btn,#add_type .btn{
+    height: 34px;
+    border-radius: 0;
+}
