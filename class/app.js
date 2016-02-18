@@ -213,13 +213,15 @@ class app
     }
     logout(socketId){
         var user = this.userBySocket[socketId]
-        this.socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:""});
         console.log(user)
         if( user!= undefined && user.logged ){
+            
+
             user.delSocket(socketId)
             delete this.userBySocket[socketId]
             console.log(user)
             if( !user.haveSocket() ){
+                this.socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:""});
                 this.usersLogged --
                 user.logged = false
             }
@@ -256,6 +258,7 @@ class app
                 '<div class="logoLpm"><img src="img/lpm.png" /></div>' + 
                 '<div id="online" class="dropdown"><button type="button" id="dropdownMenu1" class="btn btn-user dropdown-primary" title="Utilisateurs connectés" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
                 '<span class="glyphicon glyphicon-user" aria-hidden="true"></span><span id="usersLogged">' + this.usersLogged + '</span></button>' +
+                '<div id="config">' + this.displayConfig() + '</div>' +
                 '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="usersList">'+ this.getUsersList() +'</ul></div>' +
                 this.barContent() + 
                     '<div class="nav navbar-right" id="user"><span class="name">' +
@@ -271,7 +274,7 @@ class app
                         '<div class="col-md-8">' + 
                         '<b>' + u.getFullName() + '</b><br>' + 
                         '<i>' + u.email + '</i><br>' + 
-                        '<a href="#">Mon compte</a>' +
+                        '<a href="#" id="btnConfig">Configuration</a>' +
                         '</div></div></div><div class="panel-footer">'+ this.appVersion + '<a id="logout" class="btn btn-default pull-right" href="#">Déconnexion</a><div class="clearfix"></div></div></div>' +
                         '</div>' +
                       '</div>' +
@@ -345,6 +348,14 @@ class app
                     '</select>' +
                     '<a href="#" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>' +
                 '</form></li>'
+    }
+
+    displayConfig()
+    {
+        return '<div class="panel panel-default">' +
+          '<div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications center</h3></div>' +
+          '<div class="panel-body">Connexion / Déconnexion</div>' +
+        '</div>'
     }
 
     displayLogin()

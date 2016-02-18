@@ -265,6 +265,11 @@ function appInit(data) {
     document.location.href=""
   });
 
+  $('#btnConfig').click(function (e) {
+    e.stopPropagation();
+    $('#config').show();
+  });
+
   $('#editAvatar').click(function (e) {
     e.stopPropagation();
     console.log("ooo")
