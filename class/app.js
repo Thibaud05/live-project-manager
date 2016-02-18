@@ -143,6 +143,7 @@ class app
         })
 
         socket.on('addRelease', function (data){
+            console.log("socket addrelease")
             var sql = "INSERT INTO `type` (" +
                         "`name`, " +
                         "`color` " +
@@ -153,6 +154,7 @@ class app
             global.connection.query(sql, function(err, result) {
                 if (err) throw err;
                 var typeID = result.insertId;
+                io.emit('addType',{id:typeID,name:data.name,color:data.color});
                 var today = global.moment().format("YYYY-MM-DD")
                 var rAplha = new release({id:0,name:"α",typeId:typeID,day:today})
                 var rDEV = new release({id:0,name:"DEV",typeId:typeID,day:today})

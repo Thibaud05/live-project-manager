@@ -76,7 +76,6 @@ tasksManager.prototype = {
         //console.log(tasks_files)
         data.taskTypes.map(function(taskType,key) {
           self.taskTypes[taskType.id] = taskType;
-          self.taskTypesByDate[taskType.day] = taskType;
         });
         data.releases.map(function(data,key) {
           if(data!=undefined){
@@ -715,11 +714,30 @@ tasksManager.prototype = {
         self.tasksById[t.id].typeId = t.typeId
       })
 
-/*----------  changeRelease  ----------*/
-      socket.on('addRelease',function(data)
+/*----------  addRelease  ----------*/
+      socket.on('addRelease',function(r)
       {
-        console.log('addRelease')
-        console.log(data)
+          console.log(r)
+          // Ajout de la release dans le tableau de release indexé par id
+          self.releasesById[r.id] = r
+          console.log(self.releasesById)
+          // Ajout de la release dans le tableau de release indexé par jour
+          if(self.releases[r.day] == undefined){
+            self.releases[r.day] = new Array();
+          }
+          self.releases[r.day].push(r);
+
+          // Ajout dans le DOM
+          var cible = $(".releaseSlot[di="+ self.datesIndex[r.day] +"]")
+          if(cible){
+            var htmlRelease = self.renderRelease(r);
+            cible.append(htmlRelease)
+          }
+      })
+
+      socket.on('addType',function(taskType)
+      {
+          self.taskTypes[taskType.id] = taskType
       })
     },
 

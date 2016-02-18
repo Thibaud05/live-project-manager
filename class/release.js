@@ -32,11 +32,14 @@ class release
             "'" + this.typeId + "'," +
             "'" + this.day + "'" +
         ");"
+        var self = this 
         global.connection.query(sql, function(err, result) {
             if (err) throw err;
-            this.id = result.insertId;
-            global.data.releases[this.id] = this
-            io.emit('addRelease',this);
+            self.id = result.insertId;
+            global.data.releases[self.id] = self
+            console.log('addRelease' + self.name)
+            io.emit('addRelease',self);
+
         })
     }
 
