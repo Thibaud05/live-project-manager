@@ -213,6 +213,7 @@ class app
     }
     logout(socketId){
         var user = this.userBySocket[socketId]
+        this.socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:""});
         console.log(user)
         if( user!= undefined && user.logged ){
             user.delSocket(socketId)
@@ -239,7 +240,10 @@ class app
             if(user.logged==1){
                 ico = "glyphicon-ok-sign"
             }
-            html += '<li><a href="#"><span class="glyphicon ' + ico + '" aria-hidden="true"></span>' + user.firstName + '</a></li>'
+            if(html!=""){
+               html += '<li role="separator" class="divider"></li>' 
+            }
+            html += '<li><a href="#">' + user.getAvatar(32) + '<span class="glyphicon ' + ico + '" aria-hidden="true"></span>' + user.firstName + '</a></li>'
         }
         return html
     }

@@ -28,6 +28,11 @@ class user
         return '<img class="img-circle avatar" src="img/user/' + this.id + '.jpg" width="' + size + '" height="' + size + '" />' 
     }
 
+    getImg()
+    {
+        return "http://localhost:3000/img/user/" + this.id + ".jpg"
+    }
+
     getKey()
     {
         var key = this.id + "%:#" + this.email + "/$!" + this.password

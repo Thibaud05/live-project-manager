@@ -21,8 +21,28 @@ $(function () {
     });
 });
 
-socket.on('news', function (data) {
-  console.log(data);
+socket.on('notif', function (data) {
+  var options = {
+      body: data.body,
+      icon: data.icon,
+      tag: data.tag
+  }
+  if (!("Notification" in window)) {
+    alert("Ce navigateur ne supporte pas les notifications desktop");
+  }
+  else if (Notification.permission === "granted") {
+    var notification = new Notification(data.title,options);
+  }
+  else if (Notification.permission !== 'denied') {
+    Notification.requestPermission(function (permission) {
+      if(!('permission' in Notification)) {
+        Notification.permission = permission;
+      }
+      if (permission === "granted") {
+        var notification = new Notification(data.title,options);
+      }
+    });
+  }
 });
 
 socket.on('logged', function (json) {
