@@ -689,9 +689,11 @@ tasksManager.prototype = {
 /*----------  updateAvatar  ----------*/
       socket.on('updateAvatar',function(data)
       {
-          var url = 'img/user/'+ self.connectUserId +'.jpg?' + moment().unix()
-          $(".myAvatar").attr("src", url )
-          $(".bgAvatar").css("background","url(" + url + ")")
+          var url = 'img/user/'+ data.userId +'.jpg?' + moment().unix()
+          $(".avatar" + data.userId).attr("src", url )
+          if(self.connectUserId == data.userId){
+            $(".bgAvatar").css("background","url(" + url + ")")
+          }
         })
 
 /*----------  changeRelease  ----------*/

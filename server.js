@@ -86,14 +86,14 @@ io.on('connection', function (socket) {
     if(u.logged){
       socket.broadcast.emit('notif',{title:u.firstName + " est en ligne !",body:"Hello World !",icon:u.getImg(),tag:""});
       socket.emit('logged',{obj:obj,data:global.data});
-      io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
+      io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList(u)});
     }
   });
 
   socket.on('disconnect', function ()
   {
     app.logout(socket.id)
-    io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
+    io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList(u)});
   });
 
   var uploader = new fileUpload();
@@ -103,14 +103,14 @@ io.on('connection', function (socket) {
   socket.on('uploadAvatar', function (data)
   {
       var imgPath = __dirname + "/uploads/" +  data.title
-      app.userBySocket[socket.id].id
-      var imgPathThumb = __dirname + "/img/user/" + app.userBySocket[socket.id].id + ".jpg"
+      var userId = app.userBySocket[socket.id].id
+      var imgPathThumb = __dirname + "/img/user/" + userId + ".jpg"
       lwip.open(imgPath, function(err, image){
         image.contain(96, 96,'white', function(err, image){     
              image.writeFile(imgPathThumb, function(err){
               fs.unlink(imgPath)
               console.log("ok run update")
-              socket.emit('updateAvatar',{})
+              socket.emit('updateAvatar',{userId:userId})
             });
         });
       });

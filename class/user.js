@@ -27,7 +27,7 @@ class user
     {
         var cls = "avatar"
         if(userId==this.id){
-            cls += " myAvatar"
+            cls += " avatar" + this.id
         }
         return '<img class="img-circle ' + cls + '" src="img/user/' + this.id + '.jpg" width="' + size + '" height="' + size + '" />' 
     }

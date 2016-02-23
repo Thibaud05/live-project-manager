@@ -183,7 +183,7 @@ class app
                 global.data.connectUserId = u.id
                 var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1}
                 this.socket.emit('logged',{obj:obj,data:global.data});
-                io.emit('changeNbUser',{nb:this.getNbUserLogged(),list:this.getUsersList()});
+                io.emit('changeNbUser',{nb:this.getNbUserLogged(),list:this.getUsersList(u)});
             }
         }
 
