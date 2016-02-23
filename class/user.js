@@ -30,7 +30,7 @@ class user
 
     getImg()
     {
-        return "http://localhost:3000/img/user/" + this.id + ".jpg"
+        return global.config.url + "/img/user/" + this.id + ".jpg"
     }
 
     getKey()

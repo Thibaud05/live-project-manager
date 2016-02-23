@@ -24,7 +24,7 @@ io.use(cookieParser);
 global.io = io
 connection.connect();
 global.connection = connection
-
+global.config = config
 server.listen(3000);
 
 appExpress.use("/css", express.static(__dirname + '/css'));
@@ -83,10 +83,11 @@ io.on('connection', function (socket) {
     global.data.connectUserId = u.id
     socket.connectUserId = u.id
     var obj = {logged:u.logged,key:u.getKey(),html:html}
-    
-    socket.broadcast.emit('notif',{title:u.firstName + " est en ligne !",body:"Hello World !",icon:u.getImg(),tag:""});
-    socket.emit('logged',{obj:obj,data:global.data});
-    io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
+    if(u.logged){
+      socket.broadcast.emit('notif',{title:u.firstName + " est en ligne !",body:"Hello World !",icon:u.getImg(),tag:""});
+      socket.emit('logged',{obj:obj,data:global.data});
+      io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
+    }
   });
 
   socket.on('disconnect', function ()
