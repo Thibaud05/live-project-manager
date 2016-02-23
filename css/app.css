@@ -244,6 +244,24 @@ body{
 .connectedSortable > li.lightGreen.selected {
     background: #33691E;
 }
+.lightGreen{
+    background-color: #8BC34A;
+}
+.connectedSortable > li.lightGreen.selected {
+    background: #33691E;
+}
+.lime{
+    background-color: #CDDC39;
+}
+.connectedSortable > li.lime.selected {
+    background: #827717;
+}
+.amber{
+    background-color: #FFC107;
+}
+.connectedSortable > li.amber.selected {
+    background: #FF6F00;
+}
 .yellow200{
     background-color: #FFF59D;
     color:#000;
