@@ -23,9 +23,13 @@ class user
         return this.firstName + " " + this.lastName
     }
 
-    getAvatar(size)
+    getAvatar(size,userId)
     {
-        return '<img class="img-circle avatar" src="img/user/' + this.id + '.jpg" width="' + size + '" height="' + size + '" />' 
+        var cls = "avatar"
+        if(userId==this.id){
+            cls += " myAvatar"
+        }
+        return '<img class="img-circle ' + cls + '" src="img/user/' + this.id + '.jpg" width="' + size + '" height="' + size + '" />' 
     }
 
     getImg()

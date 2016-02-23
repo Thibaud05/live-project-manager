@@ -690,7 +690,7 @@ tasksManager.prototype = {
       socket.on('updateAvatar',function(data)
       {
           var url = 'img/user/'+ self.connectUserId +'.jpg?' + moment().unix()
-          $(".avatar").attr("src", url )
+          $(".myAvatar").attr("src", url )
           $(".bgAvatar").css("background","url(" + url + ")")
         })
 
