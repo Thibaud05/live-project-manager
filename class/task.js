@@ -23,7 +23,7 @@ class task
     	if(this.day== undefined){
 			this.day = "0000-00-00";
 		}
-		var sql = "UPDATE `task` SET `title` = '" + this.title + "', " +
+		var sql = "UPDATE `task` SET `title` = '" + global.escapeQuote(this.title) + "', " +
 					"`userId` = '" + this.userId + "'," +
 					"`creationUserId` = '" + this.creationUserId + "'," +
 					"`accountableUserId` = '" + this.accountableUserId + "'," +
@@ -33,7 +33,7 @@ class task
 					"`creationDate` = '" + this.creationDate + "'," +
 					"`priority` = '" + this.priority + "'," +
 					"`valid` = '" + this.valid + "'," +
-					"`description` = '" + this.description + "'" +
+					"`description` = '" + global.escapeQuote(this.description) + "'" +
 		 		" WHERE `id` = " + this.id
 		console.log(sql)
 		global.connection.query(sql)
@@ -72,7 +72,7 @@ class task
 					"`valid`," +
 					"`description`" +
 				") VALUES (" +
-					"'" + this.title + "'," +
+					"'" + global.escapeQuote(this.title) + "'," +
 					"'" + this.userId + "'," +
 					"'" + this.typeId + "'," +
 					"'" + this.day + "'," +
@@ -82,7 +82,7 @@ class task
 					"'" + this.creationDate + "'," +
 					"'" + this.priority + "'," +
 					"'" + this.valid + "'," +
-					"'" + this.description + "'" +
+					"'" + global.escapeQuote(this.description) + "'" +
 				");"
 		console.log(sql)
 		global.connection.query(sql)

@@ -1,6 +1,11 @@
 var app         = require('./class/app.js');
 var user        = require('./class/user.js');
 var config      = require('./config.js');
+
+global.escapeQuote = function (str) {
+  return str.replace(/\\([\s\S])|(')/g,"\\$1$2");
+}
+
 global.cryptoJs = require("crypto-js");
 global.task     = require('./class/task.js');
 global.release  = require('./class/release.js');

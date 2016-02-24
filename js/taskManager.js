@@ -98,10 +98,13 @@ tasksManager.prototype = {
             }
           }
         });
+        var nextPriority = 0;
         data.tasks.map(function(data,key) {
           //log(data);
+          
           if(data!=undefined){
             var t = new task(data);
+            t.priority = nextPriority
 
             if(tasks_files[t.id] != undefined ){
               t.files = tasks_files[t.id];
@@ -113,6 +116,7 @@ tasksManager.prototype = {
               self.tasks[k] = new Array();
             }
             self.tasks[k][t.priority] = t;
+            nextPriority ++
           }
         });
     },
