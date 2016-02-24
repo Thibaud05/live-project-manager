@@ -86,14 +86,14 @@ io.on('connection', function (socket) {
     if(u.logged){
       socket.broadcast.emit('notif',{title:u.firstName + " est en ligne !",body:"Hello World !",icon:u.getImg(),tag:""});
       socket.emit('logged',{obj:obj,data:global.data});
-      io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList(u)});
+      io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
     }
   });
 
   socket.on('disconnect', function ()
   {
     app.logout(socket.id)
-    io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList(u)});
+    io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
   });
 
   var uploader = new fileUpload();

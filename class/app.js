@@ -183,7 +183,7 @@ class app
                 global.data.connectUserId = u.id
                 var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1}
                 this.socket.emit('logged',{obj:obj,data:global.data});
-                io.emit('changeNbUser',{nb:this.getNbUserLogged(),list:this.getUsersList(u)});
+                io.emit('changeNbUser',{nb:this.getNbUserLogged(),list:this.getUsersList()});
             }
         }
 
@@ -233,7 +233,7 @@ class app
         return this.usersLogged
     }
 
-    getUsersList(u)
+    getUsersList()
     {
         var html = ""
         for (var user of this.users)
@@ -245,7 +245,7 @@ class app
             if(html!=""){
                html += '<li role="separator" class="divider"></li>' 
             }
-            html += '<li><a href="#">' + user.getAvatar(32,u.id) + '<span class="glyphicon ' + ico + '" aria-hidden="true"></span>' + user.firstName + '</a></li>'
+            html += '<li><a href="#">' + user.getAvatar(32) + '<span class="glyphicon ' + ico + '" aria-hidden="true"></span>' + user.firstName + '</a></li>'
         }
         return html
     }
@@ -259,12 +259,12 @@ class app
                 '<div id="online" class="dropdown"><button type="button" id="dropdownMenu1" class="btn btn-user dropdown-primary" title="Utilisateurs connectés" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
                 '<span class="glyphicon glyphicon-user" aria-hidden="true"></span><span id="usersLogged">' + this.usersLogged + '</span></button>' +
                 '<div id="config">' + this.displayConfig() + '</div>' +
-                '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="usersList">'+ this.getUsersList(u) +'</ul></div>' +
+                '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="usersList">'+ this.getUsersList() +'</ul></div>' +
                 this.barContent() + 
                     '<div class="nav navbar-right" id="user"><span class="name">' +
                       u.firstName + 
                         '</span><a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' + 
-                          u.getAvatar(32,u.id) +
+                          u.getAvatar(32) +
                         '</a>' +
                         '<div id="menu3" class="dropdown-menu" aria-labelledby="user">' +
                         '<div class="panel panel-default"><div class="panel-body">' + 
