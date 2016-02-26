@@ -84,8 +84,8 @@ class task
 					"'" + this.valid + "'," +
 					"'" + global.escapeQuote(this.description) + "'" +
 				");"
-		console.log(sql)
-		global.connection.query(sql)
+		//console.log(sql)
+		//global.connection.query(sql)
 
 		var self = this
 

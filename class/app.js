@@ -208,7 +208,7 @@ class app
         if( !user.logged ){
             this.usersLogged ++
             user.logged = true
-            socket.broadcast.emit('notif',{title:user.firstName + " est en ligne !",body:"Hello World !",icon:user.getImg(),tag:"connect"});
+            this.socket.broadcast.emit('notif',{title:user.firstName + " est en ligne !",body:"Hello World !",icon:user.getImg(),tag:"connect"});
         }
         //user.saveKey(this.socket)
     }
