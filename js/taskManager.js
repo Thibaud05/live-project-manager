@@ -558,24 +558,26 @@ tasksManager.prototype = {
     sockets :function(){
       var self = this
 /*----------  moveTask ----------*/
-      socket.on('moveTask', function (task)
+      socket.on('moveTask', function (data)
       {
-        var k = task.userId + ":" + task.day
-        self.tasks[k]
+        var t = new task(data);
+        var k = t.userId + ":" + t.day
+
         if(self.tasks[k] == undefined ){
           self.tasks[k] = new Array();
         }
-        self.tasks[k][task.priority] = task;
-        var selectedTask = $(".task[tid="+ task.id +"]")
+        self.tasks[k][t.priority] = t;
+        var selectedTask = $(".task[tid="+ t.id +"]")
         if (selectedTask) {
           selectedTask.remove()
         }
-        var cible = $(".connectedSortable[di="+ self.datesIndex[task.day] +"][uid="+ task.userId +"]")
+        var cible = $(".connectedSortable[di="+ self.datesIndex[t.day] +"][uid="+ t.userId +"]")
         if(cible){
-          var htmlTask = self.renderTask(task);
+          var htmlTask = self.renderTask(t);
           cible.append(htmlTask)
         }
-        self.tasksById[task.id] = task;
+        self.tasksById[t.id] = t;
+        self.activate();
       })
 
 /*----------  setData  ----------*/
