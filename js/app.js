@@ -201,9 +201,17 @@ function appInit(data) {
   $("#del_btn").mousedown(function() {
     tm.delSelectedTasks();
   });
+  $( "#del_btn" ).click(function() {
+    $( this ).blur()
+  }); 
+
   $("#archive_btn").mousedown(function() {
     tm.archiveSelectedTasks();
   });
+  $( "#archive_btn" ).click(function() {
+    $( this ).blur()
+  }); 
+
   $('html').keydown(function(e){
       if(e.keyCode == 46){
         tm.delSelectedTasks();
@@ -218,11 +226,19 @@ function appInit(data) {
     tm.duplicateTask()
   }); 
 
+  $( "#duplicate_btn" ).click(function() {
+    $( this ).blur()
+  }); 
+
   //////////////////////
   // valid selected task
 
    $( "#valid_btn" ).mousedown(function() {
     tm.validTask()
+  }); 
+
+  $( "#valid_btn" ).click(function() {
+    $( this ).blur()
   }); 
 
   //////////////////////
