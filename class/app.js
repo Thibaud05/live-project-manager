@@ -208,6 +208,7 @@ class app
         if( !user.logged ){
             this.usersLogged ++
             user.logged = true
+            socket.broadcast.emit('notif',{title:user.firstName + " est en ligne !",body:"Hello World !",icon:user.getImg(),tag:"connect"});
         }
         //user.saveKey(this.socket)
     }
@@ -221,7 +222,7 @@ class app
             delete this.userBySocket[socketId]
             console.log(user)
             if( !user.haveSocket() ){
-                this.socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:""});
+                this.socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:"deco"});
                 this.usersLogged --
                 user.logged = false
             }

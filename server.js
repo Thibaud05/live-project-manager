@@ -89,7 +89,6 @@ io.on('connection', function (socket) {
     socket.connectUserId = u.id
     var obj = {logged:u.logged,key:u.getKey(),html:html}
     if(u.logged){
-      socket.broadcast.emit('notif',{title:u.firstName + " est en ligne !",body:"Hello World !",icon:u.getImg(),tag:""});
       socket.emit('logged',{obj:obj,data:global.data});
       io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
     }

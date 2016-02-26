@@ -189,11 +189,12 @@ function appInit(data) {
 
    $( "#prev" ).click(function() {
     tm.changeInterval(-1);
+    $( this ).blur()
    });
    $( "#next" ).click(function() {
     tm.changeInterval(1);
-   });
-
+    $( this ).blur()
+   }); 
 
   //////////////////////
   // Remove selected task
