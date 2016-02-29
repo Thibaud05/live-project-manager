@@ -6,7 +6,8 @@ class app
         this.users = []
         this.usersKey = {}
         this.usersLogged = 0
-        this.appVersion = "v1"
+        this.appVersion = "v1.1.1"
+        this.ts = 111
         this.userBySocket = {}
     }
 
@@ -400,12 +401,12 @@ class app
     '<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> ' +
     '<script src="js/bootstrap.min.js"></script> ' +
     '<script src="js/moment.min.js"></script> ' +
-    '<script src="js/config.js"></script>' +
-    '<script src="js/taskManager.js"></script>' +
-    '<script src="js/task.js"></script>' +
-    '<script src="js/user.js"></script>' +
-    '<script src="js/file.js"></script>' +
-    '<script src="js/app.js"></script> ' +
+    '<script src="js/config.js?' + this.ts + '"></script>' +
+    '<script src="js/taskManager.js?' + this.ts + '"></script>' +
+    '<script src="js/task.js?' + this.ts + '"></script>' +
+    '<script src="js/user.js?' + this.ts + '"></script>' +
+    '<script src="js/file.js?' + this.ts + '"></script>' +
+    '<script src="js/app.js?' + this.ts + '"></script> ' +
     '<script src="js/ie10-viewport-bug-workaround.js"></script> ' +
   '</body> ' +
 '</html>';

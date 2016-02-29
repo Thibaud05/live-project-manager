@@ -590,9 +590,9 @@ tasksManager.prototype = {
           selectedTask.find( ".desc" ).html(t.getDescription())
         }
         var k = t.userId + ":" + t.day
-        t.isOpen = self.tasksById[t.id].isOpen
-        self.tasksById[t.id] = t;
-        self.tasks[k][t.priority] = t;
+        self.tasksById[t.id].title = t.title;
+        self.tasksById[t.id].description = t.description;
+        self.tasks[k][t.priority] = self.tasksById[t.id];
       })
 
 /*----------  setRelease  ----------*/
@@ -838,6 +838,7 @@ tasksManager.prototype = {
         if(!t.isDraging){
         $(this).removeClass('selected');
         if(! t.isOpen){
+
           t.open($(this));
         }
       }
