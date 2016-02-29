@@ -369,7 +369,7 @@ class app
     '<meta name="description" content=""> ' +
     '<meta name="author" content=""> ' +
     '<link rel="icon" href="../../favicon.ico"> ' +
-    '<title>Signin Template for Bootstrap</title> ' +
+    '<title>LPM - Live project manager</title> ' +
     '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> ' +
     '<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet"> ' +
     '<link href="css/signin.css" rel="stylesheet"> ' +

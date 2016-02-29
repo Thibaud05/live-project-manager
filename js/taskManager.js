@@ -589,6 +589,8 @@ tasksManager.prototype = {
           selectedTask.find( ".title" ).html(t.title)
           selectedTask.find( ".desc" ).html(t.description)
         }
+        self.tasksById[t.id] = t;
+        self.tasks[k][t.priority] = t;
       })
 
 /*----------  setRelease  ----------*/
