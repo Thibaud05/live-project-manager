@@ -33,6 +33,22 @@
 }
 
 task.prototype = {
+    getTitle : function(){
+      if (this.title == ""){
+        return "Sans titre"
+      }else{
+        return this.title
+      }
+    },
+
+    getDescription : function(){
+      if (this.description == ""){
+        return "Sans descriptif"
+      }else{
+        return this.description
+      }
+    },
+
     open: function(htmlTask)
     {
       var self = this

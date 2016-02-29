@@ -586,8 +586,8 @@ tasksManager.prototype = {
         var t = new task(data);
         var selectedTask = $(".task[tid="+ t.id +"]")
         if (selectedTask) {
-          selectedTask.find( ".title" ).html(t.title)
-          selectedTask.find( ".desc" ).html(t.description)
+          selectedTask.find( ".title" ).html(t.getTitle())
+          selectedTask.find( ".desc" ).html(t.getDescription())
         }
         var k = t.userId + ":" + t.day
         t.isOpen = self.tasksById[t.id].isOpen
