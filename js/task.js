@@ -160,7 +160,7 @@ task.prototype = {
                 content = $(this).val().replace(/\n\r?/g, '<br>');
                 parent.editMode = false;
                 self.description = content;
-                self.save(htmlTask);
+                self.save();
                 if (content == ""){content = "Sans descriptif";}
                 $(parent).html(content);
               });
@@ -191,7 +191,7 @@ task.prototype = {
             content = $(this).val();
             parent.editMode = false;
             self.title = content;
-            self.save(htmlTask);
+            self.save();
             if (content == ""){content = "Sans titre";}
             $(parent).html(content);
           });
@@ -270,7 +270,7 @@ task.prototype = {
     /////////////////////
     // Sauvegarde d'une tache
 
-    save :function(htmlTask){
+    save :function(){
       this.accountableUserId = tm.connectUserId;
       socket.emit('setData', this);
     },

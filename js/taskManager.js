@@ -589,6 +589,8 @@ tasksManager.prototype = {
           selectedTask.find( ".title" ).html(t.title)
           selectedTask.find( ".desc" ).html(t.description)
         }
+        var k = t.userId + ":" + t.day
+        t.isOpen = self.tasksById[t.id].isOpen
         self.tasksById[t.id] = t;
         self.tasks[k][t.priority] = t;
       })
