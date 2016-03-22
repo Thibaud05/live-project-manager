@@ -104,7 +104,7 @@ tasksManager.prototype = {
           
           if(data!=undefined){
             var t = new task(data);
-            t.priority = nextPriority
+            //t.priority = nextPriority
 
             if(tasks_files[t.id] != undefined ){
               t.files = tasks_files[t.id];
@@ -328,7 +328,7 @@ tasksManager.prototype = {
           "description"       : t.description,
           "creationUserId"    : this.connectUserId,
           "priority"          : lowPriority,
-          "accountableUserId" : this.connectUserId,
+          "accountableUserId" : t.userId,
           "creationDate"      : "",
           "valid"             : false
         });
@@ -369,20 +369,20 @@ tasksManager.prototype = {
       }
       socket.emit('archiveTask', archivedTasks);
     },
-/*----------  DUPLICATE TASK  ----------*/
-    extendTask: function (){
-      var extendTasks = [];
+
+/*----------  assign Accountable TASK  ----------*/
+    assignAccountable: function (userId){
+      console.log(userId)
+      var assignTasks = [];
       for (var key in this.selectedTasks) {
         var t = this.tasksById[key]
-
-
-        this.selectedTasks[key].find( ".ok" ).toggleClass("hidden")
-        t.valid = t.valid==1?0:1
+        t.creationUserId = userId
         this.tasksById[key] = t
-        validTasks.push(t);
+        assignTasks.push(t);
       }
-      socket.emit('updateTask', JSON.stringify(extendTasks));
+      socket.emit('updateTask', assignTasks);
     },
+
 /**
  *
  * DISPLAY TASKS
@@ -762,7 +762,7 @@ tasksManager.prototype = {
       // Task drag and drop
       var self = this
       $( "body" ).off().mousedown(function(e) {
-          //log("click out")
+          log("click out")
           if(!self.select){
             $.each(self.selectedTasks, function( key, t ) {
               t.removeClass('selected');
@@ -804,7 +804,7 @@ tasksManager.prototype = {
           var t = self.tasksById[ui.item.attr("tid")];
           t.day = self.dates[$(this).attr("di")];
           t.userId = $(this).attr("uid");
-          t.creationUserId = self.connectUserId;
+          //t.creationUserId = self.connectUserId;
           socket.emit('setData', t);
         }
       }).disableSelection();

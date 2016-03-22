@@ -53,6 +53,7 @@ task.prototype = {
     {
       var self = this
       var htmlTitle = htmlTask.children(".contener").children("span")
+      htmlTask.children(".contener").children("#taskDetail").remove();
       var description = this.description;
       var taskId = this.id;
 
@@ -100,8 +101,8 @@ task.prototype = {
         '<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>';
                 html += ' <button id="shifting_next" type="button" class="btn btn-default" title="Repousser à la prochaine release">' +
         '<span  class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button></p>';
-        html += '<p>Créer par ' + self.getEditUser() + " "+ moment(self.creationDate).fromNow() + '<p>';
-        html += '<p>Edité par ' + self.getCreationUser() + " "+ moment(self.updateDate).fromNow() + '<p>';
+        html += '<p>Responsable : ' + self.getCreationUser() + ", créer il y a "+ moment(self.creationDate).fromNow() + '<p>';
+        html += '<p>Attribué à ' + self.getEditUser() + '<p>';
         html += '<p class="desc">' + description + '<p>';
         html += '</div>';
         htmlTask.children(".contener").append(html);
@@ -287,7 +288,9 @@ task.prototype = {
     // Sauvegarde d'une tache
 
     save :function(){
-      this.accountableUserId = tm.connectUserId;
+      if(this.day != "0000-00-00"){
+        this.accountableUserId = this.userId
+      }
       socket.emit('setData', this);
     },
 

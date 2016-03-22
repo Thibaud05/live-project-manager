@@ -291,9 +291,9 @@ class app
 
     barContent()
     {
-        return '<div class="barContent"> ' +
-            '<button id="prev" type="button" class="previous btn btn-primary" title="Taches précédentes" ><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button> ' +
-            '<button id="dropdownMenu2" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="Ajouter"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> ' +
+        return '<div class="barContent btn-group">' +
+            this.displayBtn("prev","Taches précédentes","chevron-left") +
+            '<div class="btn-group" >' + this.displayBtn("dropdownMenu2","Ajouter","plus",true) + 
             '<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">' +
                 '<li><a id="add_btn" href="#" title="Ajouter une tache">Ajouter une tache </a></li>' +
                 '<li role="separator" class="divider"></li>' + 
@@ -302,12 +302,16 @@ class app
                 '<li role="separator" class="divider"></li>' + 
                 '<li><a id="add_btn_type" href="#" title="Ajouter une tache">Ajouter un type de release </a></li>' +
                 this.displayAddTypeForm() +
-            '</ul>' +
-            '<button id="valid_btn" type="button" class="btn btn-primary" title="Valider une tache" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button> ' +
-            '<button id="duplicate_btn" type="button" class="btn btn-primary" title="Copier une tache"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></button> ' +
-            '<button id="archive_btn" type="button" class="btn btn-primary" title="Archiver une tache" ><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></button> ' +
-            '<button id="del_btn" type="button" class="btn btn-primary" title="Supprimer une tache" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button> ' +
-            '<button id="next" type="button" class="next btn btn-primary" title="Taches suivantes" ><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button> ' +
+            '</ul></div>' +
+            '<div class="btn-group" >' + this.displayBtn("dropdownAccountable","Modifier le responsable","user",true) +
+            '<ul id="accountable" class="dropdown-menu" aria-labelledby="dropdownAccountable">' +
+                this.displayChangeAccountableForm() +
+            '</ul></div>' +
+            this.displayBtn("valid_btn","Valider une tache","ok") +
+            this.displayBtn("duplicate_btn","Copier une tache","duplicate") + 
+            this.displayBtn("archive_btn","Archiver une tache","folder-open") +
+            this.displayBtn("del_btn","Supprimer une tache","trash") + 
+            this.displayBtn("next","Taches suivantes","chevron-right") + 
         '</div>';
     }
 
@@ -315,6 +319,27 @@ class app
     {
         console.log(u)
         return this.header(u) + '<div id="tasksManager"></div><div id="box"></div>' + this.footer()
+    }
+
+    displayBtn(id,title,icon,toggle)
+    {
+        var toggle = typeof toggle !== 'undefined' ? toggle : false;
+        var toggleHtml = ''
+        if(toggle){
+            toggleHtml = ' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true'
+        }
+        return  '<button id="' + id + '" type="button" class="btn btn-primary' + toggleHtml + '" title="' + title + '" >' +
+                    '<span class="glyphicon glyphicon-' + icon + '" aria-hidden="true"></span>' +
+                '</button>'
+    }
+
+    displayChangeAccountableForm()
+    {
+        var html = ''
+        for (var user of this.users) {
+            html += '<li><a href="#" data-value="' + user.id + '">' + user.getFullName() + '</a></li>'
+        }
+        return html
     }
 
     displayAddReleaseForm()

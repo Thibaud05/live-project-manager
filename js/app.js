@@ -219,6 +219,22 @@ function appInit(data) {
       }
   }) 
 
+  //////////////////////
+  // Accountable selected task
+  $("#dropdownAccountable").mousedown(function() {
+    tm.select = true;
+    console.log("oups")
+  });
+
+  $("#accountable").on('mousedown', 'li a', function(){
+
+    var idUser = $(this).data('value')
+    tm.assignAccountable(idUser)
+  });
+
+  $("#accountable").on('click', 'li a', function(){
+    $( this ).blur()
+  });
 
   //////////////////////
   // Duplicate selected task

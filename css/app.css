@@ -448,6 +448,15 @@ td.firstCol{
     position: absolute;
     margin-top: 4px;
 }
+.barContent .btn{
+    margin-right: 10px;
+}
+.barContent .btn:last-child {
+    margin-right: 0;
+}
+
+
+
 .bar .btn-primary {
     height: 40px;
     border-radius: 0;

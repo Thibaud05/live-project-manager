@@ -23,6 +23,9 @@ class task
     	if(this.day== undefined){
 			this.day = "0000-00-00";
 		}
+		if(this.day != "0000-00-00" && this.userId != this.creationUserId){
+			this.accountableUserId = this.userId
+		}
 		var sql = "UPDATE `task` SET `title` = '" + global.escapeQuote(this.title) + "', " +
 					"`userId` = '" + this.userId + "'," +
 					"`creationUserId` = '" + this.creationUserId + "'," +
