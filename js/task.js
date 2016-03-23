@@ -101,7 +101,7 @@ task.prototype = {
         '<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>';
                 html += ' <button id="shifting_next" type="button" class="btn btn-default" title="Repousser à la prochaine release">' +
         '<span  class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button></p>';
-        html += '<p>Responsable : ' + self.getCreationUser() + ", créer il y a "+ moment(self.creationDate).fromNow() + '<p>';
+        html += '<p>Responsable : ' + self.getCreationUser() + ", créé "+ moment(self.creationDate).fromNow() + '<p>';
         html += '<p>Attribué à ' + self.getEditUser() + '<p>';
         html += '<p class="desc">' + description + '<p>';
         html += '</div>';
