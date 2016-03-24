@@ -170,14 +170,17 @@ function appInit(data) {
   tm.render()
   tm.activate()
   tm.sockets()
+  tm.disabledTaskBtn(true)
   $('.box').css({"margin-top": "-20px",opacity:0})
   $('.strip').animate({"margin-left": "0",opacity:1},{duration: 500, easing:"easeOutCubic",
     complete: function() {
+
       $('#tasksManager').css({"margin-top": "-200px",opacity:0})
       $('#tasksManager').animate({"margin-top": "0px",opacity:1},{duration: 500, easing:"easeOutCubic",
         complete: function() {
           
           $('.box').animate({"margin-top": "0px",opacity:1},{duration: 500, easing:"easeOutCubic"})
+
         }
       })
     }

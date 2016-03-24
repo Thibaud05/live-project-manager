@@ -768,6 +768,7 @@ tasksManager.prototype = {
               t.removeClass('selected');
               delete self.selectedTasks[t.attr("tid")];
             });
+            self.disabledTaskBtn(true)
           }
           self.select = false;
       })
@@ -814,6 +815,7 @@ tasksManager.prototype = {
         log("down");
         //e.stopPropagation();
         self.select = true;
+        self.disabledTaskBtn(false)
         var id = $(this).attr("tid");
         var t =  self.tasksById[id];
         if(! t.isOpen){
@@ -895,6 +897,13 @@ tasksManager.prototype = {
  */
     logout(){
       socket.emit('logout', connectUser);
-    }
+    },
 
+    disabledTaskBtn($disabled){
+      $( "#dropdownAccountable" ).prop( "disabled", $disabled )
+      $( "#valid_btn"           ).prop( "disabled", $disabled )
+      $( "#duplicate_btn"       ).prop( "disabled", $disabled )
+      $( "#archive_btn"         ).prop( "disabled", $disabled )
+      $( "#del_btn"             ).prop( "disabled", $disabled )
+    }
   }
