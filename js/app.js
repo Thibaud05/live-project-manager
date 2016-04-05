@@ -45,7 +45,7 @@ socket.on('notif', function (data) {
 socket.on('logged', function (json) {
   var data = json.obj
     if(data.logged){
-      createCookie("key", data.key, { expires : 30 })
+      createCookie("key", data.key,30)
       if(data.autoLog){
             $('body').html(data.html)
             $('.strip').css({ "margin-left": "-200px",opacity:0})
