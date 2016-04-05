@@ -258,7 +258,7 @@ task.prototype = {
         "text-align": "center"
       });
       htmlTitle.animate({
-        "font-size": "16px"
+        "font-size": "14px"
       });
       this.isOpen = false;
       htmlTask.removeClass('disable-task');
