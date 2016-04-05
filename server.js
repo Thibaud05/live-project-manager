@@ -88,8 +88,8 @@ io.on('connection', function (socket) {
     global.data.connectUserId = u.id
     socket.connectUserId = u.id
     var obj = {logged:u.logged,key:u.getKey(),html:html}
+    socket.emit('logged',{obj:obj,data:global.data});
     if(u.logged){
-      socket.emit('logged',{obj:obj,data:global.data});
       io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
     }
   });

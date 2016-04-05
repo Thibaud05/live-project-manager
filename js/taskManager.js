@@ -895,11 +895,11 @@ tasksManager.prototype = {
  * LOGOUT
  *
  */
-    logout(){
+    logout: function(){
       socket.emit('logout', connectUser);
     },
 
-    disabledTaskBtn($disabled){
+    disabledTaskBtn: function($disabled){
       $( "#dropdownAccountable" ).prop( "disabled", $disabled )
       $( "#valid_btn"           ).prop( "disabled", $disabled )
       $( "#duplicate_btn"       ).prop( "disabled", $disabled )

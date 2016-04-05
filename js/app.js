@@ -7,7 +7,6 @@ $(function () {
             easing: "easeOutCubic"
           })
 
-  console.log("ok");
     $('.form-signin').on('submit', function(e) {
         e.preventDefault();
  
@@ -15,7 +14,6 @@ $(function () {
  
         var email = $('#inputEmail').val();
         var password = $('#inputPassword').val();
-        
         socket.emit('login', { "email":email , "password":password });
     });
 });
@@ -64,7 +62,6 @@ socket.on('logged', function (json) {
           duration: 500,
           easing: "easeOutCubic",
           complete: function() {
-            console.log("ok1");
             $('body').html(data.html)
             $('.strip').css({ "margin-left": "-200px",opacity:0})
             $('.bar').css({ opacity: 0 ,top:-50})
