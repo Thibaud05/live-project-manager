@@ -53,7 +53,7 @@ task.prototype = {
     {
       var self = this
       var htmlTitle = htmlTask.children(".contener").children("span")
-      htmlTask.children(".contener").children("#taskDetail").remove();
+      htmlTask.find("#taskDetail").remove();
       var description = this.description;
       var taskId = this.id;
 
@@ -105,6 +105,8 @@ task.prototype = {
         html += '<p>Attribué à ' + self.getEditUser() + '<p>';
         html += '<p class="desc">' + description + '<p>';
         html += '</div>';
+
+        htmlTask.find("#taskDetail").remove();
         htmlTask.children(".contener").append(html);
 
         $('.removeFile').click(function(){

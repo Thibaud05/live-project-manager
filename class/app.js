@@ -172,7 +172,11 @@ class app
 
     autoLogin()
     {
-       var cookie = this.socket.handshake.headers.cookie.key
+
+       var cookie = null
+       if(this.socket.handshake.headers.cookie){
+        cookie = this.socket.handshake.headers.cookie.key
+       }
        //console.log(this.socket.handshake)
         if( cookie != undefined ){
             var u = this.usersKey[cookie]

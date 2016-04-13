@@ -2,6 +2,9 @@ html {overflow-y: scroll;}
 body{
 	margin: 0;
 }
+.form-signin{
+    opacity: 0;
+}
 .head{
 	background-color: #3F51B5;
 	padding: 5px;

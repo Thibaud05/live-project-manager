@@ -47,6 +47,7 @@ socket.on('logged', function (json) {
     if(data.logged){
       createCookie("key", data.key,30)
       if(data.autoLog){
+            $('.form-signin').remove()
             $('body').html(data.html)
             $('.strip').css({ "margin-left": "-200px",opacity:0})
             $('.bar').css({ opacity: 0 ,top:-50})
