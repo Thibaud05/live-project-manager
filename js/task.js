@@ -295,6 +295,23 @@ task.prototype = {
       }
       socket.emit('setData', this);
     },
+    update : function(data){
+        this.typeId = data.typeId;
+        this.userId = data.userId;
+        if(data.day != "0000-00-00"){
+          this.day = moment(data.day).format('YYYY-MM-DD');
+        }else{
+          this.day = data.day
+        }
+        this.creationDate = data.creationDate;
+        this.creationUserId = data.creationUserId;
+        this.accountableUserId = data.accountableUserId;
+        this.updateDate = data.updateDate;
+        this.title = data.title;
+        this.description = data.description;
+        this.priority = data.priority
+        this.valid = data.valid
+    },
 
     displayFiles :function(){
       var html = '<div id="files" class="files">';

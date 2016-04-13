@@ -560,7 +560,9 @@ tasksManager.prototype = {
 /*----------  moveTask ----------*/
       socket.on('moveTask', function (data)
       {
-        var t = new task(data);
+        var t = self.tasksById[data.id]
+        t.update(data)
+
         var k = t.userId + ":" + t.day
 
         if(self.tasks[k] == undefined ){
@@ -583,13 +585,15 @@ tasksManager.prototype = {
 /*----------  setData  ----------*/
       socket.on('setData', function (data)
       {
-        var t = new task(data);
+        var t = self.tasksById[data.id];
+        t.update(data)
+        var k = t.userId + ":" + t.day
         var selectedTask = $(".task[tid="+ t.id +"]")
+
         if (selectedTask) {
           selectedTask.find( ".title" ).html(t.getTitle())
           selectedTask.find( ".desc" ).html(t.getDescription())
         }
-        var k = t.userId + ":" + t.day
         self.tasksById[t.id].title = t.title;
         self.tasksById[t.id].description = t.description;
         self.tasks[k][t.priority] = self.tasksById[t.id];
@@ -646,7 +650,9 @@ tasksManager.prototype = {
 /*----------  updateTask ----------*/
       socket.on('updateTask', function (data)
       {
-        var t = new task(data);
+        var t = self.tasksById[data.id];
+        t.update(data)
+
         var selectedTask = $(".task[tid="+ t.id +"]")
         if (selectedTask) {
           if(t.valid == 0){
@@ -661,7 +667,8 @@ tasksManager.prototype = {
 /*----------  archiveTask ----------*/
       socket.on('archiveTask', function (data)
       {
-        var t = new task(data);
+        var t = self.tasksById[data.id];
+        t.update(data)
         var selectedTask = $(".task[tid="+ t.id +"]")
         if (selectedTask) {
           selectedTask.remove();
