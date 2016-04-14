@@ -6,8 +6,8 @@ class app
         this.users = []
         this.usersKey = {}
         this.usersLogged = 0
-        this.appVersion = "v1.1.1"
-        this.ts = 111
+        this.appVersion = "v1.1.3"
+        this.ts = 113
         this.userBySocket = {}
     }
 
@@ -403,7 +403,7 @@ class app
     '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> ' +
     '<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet"> ' +
     '<link href="css/signin.css" rel="stylesheet"> ' +
-    '<link href="css/app.css" rel="stylesheet"> ' +
+    '<link href="css/app.css?' + this.ts + '" rel="stylesheet"> ' +
     '<script src="/socket.io/socket.io.js"></script> ' +
     '<script src="/siofu/client.js"></script>' +
 

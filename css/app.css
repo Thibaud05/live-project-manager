@@ -26,10 +26,14 @@ body{
 }
 #tasksManager{
     opacity: 0;
+}
+#tasksManager .table{
     background-color: #fff;
 }
 .nav.navbar-right {
     margin-right: 20px;
+    float: right!important;
+
 }
 #menu3 {
     margin-top: 14px;
@@ -81,6 +85,7 @@ body{
 #user .name{
     color: #fff;
     padding-right: 10px;
+    display: none;
 }
 .clear{
 	clear: both;
@@ -446,7 +451,7 @@ td.firstCol{
     padding-top:151px;
 }
 .barContent {
-    margin-left: -275px;
+    margin-left: 0px;
     left: 50%;
     position: absolute;
     margin-top: 4px;
@@ -588,4 +593,27 @@ td.firstCol{
     right: 0px;
     -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
     box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+
+
+
+
+
+.barContent .btn {
+    display: none;
+}
+.barContent #prev, .barContent #next{
+    display: block;
+}
+
+@media (min-width: 768px){
+    #user .name {
+        display: initial;
+    }
+    .barContent {
+        margin-left: -230px;
+    }
+    .barContent .btn{
+        display: block;
+    }
 }
