@@ -285,6 +285,7 @@ class app
                         '</div>' +
                       '</div>' +
                 '<div class="clear"></div>' +
+                this.searchBar() + 
                 '</div>' +
                 '<div class="strip"><div id="tasksManagerHead"></div></div></div><div class="page">';
     }
@@ -307,6 +308,7 @@ class app
                 '<li><a id="add_btn_type" href="#" title="Ajouter une tache">Ajouter un type de release </a></li>' +
                 this.displayAddTypeForm() +
             '</ul></div>' +
+            this.displayBtn("search_btn","Rechercher","search") +
             '<div class="btn-group" >' + this.displayBtn("dropdownAccountable","Modifier le responsable","user",true) +
             '<ul id="accountable" class="dropdown-menu" aria-labelledby="dropdownAccountable">' +
                 this.displayChangeAccountableForm() +
@@ -317,6 +319,14 @@ class app
             this.displayBtn("del_btn","Supprimer une tache","trash") + 
             this.displayBtn("next","Taches suivantes","chevron-right") + 
         '</div>';
+    }
+
+    searchBar()
+    {
+        return  '<div id="search" class="container"><div class="input-group input-group-lg">' +
+                    '<input type="text" id="searchField" class="form-control" placeholder="Rechercher" aria-describedby="sizing-addon1">'+
+                    '<span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>'+
+                '</div></div>';
     }
 
     display(u)

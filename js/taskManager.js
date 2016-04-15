@@ -27,6 +27,7 @@
     this.fullUrl;
     this.select = false;
     this.lastRelease = []
+    this.searchValue = "";
 }
 tasksManager.prototype = {
   /**
@@ -178,11 +179,20 @@ tasksManager.prototype = {
 
       this.tasksById.map(function(t,key) {
         if (t){
-          var k = t.userId + ":" + t.day;
-          if(self.tasks[k] == undefined ){
-            self.tasks[k] = new Array();
+          var display = true;
+          if(self.searchValue != ""){
+            display = false;
+            if((t.title.contain(self.searchValue))||(t.description.contain(self.searchValue))){
+              display = true;
+            }
           }
-          self.tasks[k][t.priority] = t
+          if(display){
+            var k = t.userId + ":" + t.day;
+            if(self.tasks[k] == undefined ){
+              self.tasks[k] = new Array();
+            }
+            self.tasks[k][t.priority] = t
+          }
         }
       });
 
@@ -262,6 +272,18 @@ tasksManager.prototype = {
       $(".dataSaved").animate({opacity:1}).animate({opacity:0},400,function() {
         $(".dataSaved").remove();
       });
+    },
+/**
+ *
+ * SEARCH ENGINE 
+ *
+ */
+    search: function(value){
+      this.searchValue = value;
+      this.init();
+      this.sync();
+      this.render();
+      this.activate();
     },
 /**
  *
@@ -392,9 +414,7 @@ tasksManager.prototype = {
 
       var html = ''
       var tabTask = this.tasks[key];
-      //console.log(key)
       if(tabTask){
-        console.log("rendretask")
         for (var i = 0; i < tabTask.length; i++){
           var t = tabTask[i];
           if(t!=undefined){
@@ -464,16 +484,20 @@ tasksManager.prototype = {
  * DISPLAY BOX
  *
  */
-    renderBox: function(type,idType){
+    renderBox: function(type,idType){ 
       var html = ''
-      html = '<div class="panel panel-default box">';
-      html += '<div class="panel-heading">' + type + '</div>';
-      html +=   '<div class="panel-body">';
-      html +=     '<ul class="connectedSortable" di = "-1" uid ="' + idType + '">' 
-      html +=       this.renderTasks(idType + ":0000-00-00")
-      html +=     '</ul>'
-      html +=   '</div>';
-      html += '</div>';
+      var htmlTasks = this.renderTasks(idType + ":0000-00-00")
+      if(this.searchValue == "" || htmlTasks != ""){
+       
+        html = '<div class="panel panel-default box">';
+        html += '<div class="panel-heading">' + type + '</div>';
+        html +=   '<div class="panel-body">';
+        html +=     '<ul class="connectedSortable" di = "-1" uid ="' + idType + '">' 
+        html +=       this.renderTasks(idType + ":0000-00-00")
+        html +=     '</ul>'
+        html +=   '</div>';
+        html += '</div>';
+      }
       return html;
     },
 
@@ -522,21 +546,28 @@ tasksManager.prototype = {
       var firstLine = "";
       $.each( this.users, function( key, user ) {
         if(user){
-
+          var empltyLine = true
           var line  = "<tr>";
           line += '<td class="firstCol" >' + user.firstName + '</td>';
           for (i = 0; i < self.nbdays; i++){
             var index = i % self.dayPerWeek;
             var css = ( index==0 ) ? ' class="leftSep"' : '';
             line += '<td' + css + '><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
-            line += self.renderTasks(user.id + ":" + self.dates[i]);
+
+            var htmlTask = self.renderTasks(user.id + ":" + self.dates[i]);
+            if(htmlTask != ""){
+              empltyLine = false
+              line += htmlTask;
+            }
             line += '</div></td>';
           }
           line += "</tr>";
-          if(user.id == self.connectUserId){
-            firstLine = line;
-          }else{
-            lines += line;
+          if(self.searchValue == "" || !empltyLine){
+            if(user.id == self.connectUserId){
+              firstLine = line;
+            }else{
+              lines += line;
+            }
           }
         }
       });
@@ -546,7 +577,11 @@ tasksManager.prototype = {
       }
       $("#tasksManagerHead").html('<table class="table" width="100%" cellspacing="0">' + htmlHead + '</table>');
       $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
-      $("#box").html(this.renderBox("ALPHA",4) + this.renderBox("DEV",1) +  this.renderBox("QA",2) + this.renderBox("PRD",3));
+      var htmlBox = this.renderBox("ALPHA",4) + this.renderBox("DEV",1) +  this.renderBox("QA",2) + this.renderBox("PRD",3)
+      if(this.searchValue!=""){
+        htmlBox += this.renderBox("ARCHIVE",5)
+      }
+      $("#box").html(htmlBox);
     },
 
 /**

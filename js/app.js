@@ -199,6 +199,23 @@ function appInit(data) {
 
   //////////////////////
   // Remove selected task
+  var searchIsOpen = false 
+   $( "#search_btn" ).click(function() {
+    if(searchIsOpen){
+      $( "#search" ).hide()
+      $(".page").css("padding-top","151px")
+      searchIsOpen = false
+    }else{
+      $( "#search" ).show()
+      $(".page").css("padding-top","197px")
+      searchIsOpen = true
+    }
+    $( this ).blur()
+   });
+
+
+  //////////////////////
+  // Remove selected task
 
   $("#del_btn").mousedown(function() {
     tm.delSelectedTasks();
@@ -285,11 +302,28 @@ function appInit(data) {
   socket.emit('addRelease', {name:name,color:color});
  })
 
-
-
   $('#add_btn_type').click(function (e) {
     e.stopPropagation();
     $('#add_type').toggleClass("hidden")
+  });
+
+
+  var delay = (function(){
+    var timer = 0;
+    return function(callback, ms){
+      clearTimeout (timer);
+      timer = setTimeout(callback, ms);
+    };
+  })();
+
+  //////////////////////
+  // Search engine
+
+  $('#searchField').keyup(function() {
+      var field = $(this)
+      delay(function(){
+        tm.search(field.val())
+      }, 400 );
   });
 
   $('#logout').click(function (e) {
@@ -345,3 +379,7 @@ function createCookie(name, value, days) {
     }
     document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
 }
+
+String.prototype.contain = function (str) {
+    return this.toLowerCase().indexOf(str.toLowerCase()) > -1
+};
