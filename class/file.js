@@ -27,7 +27,7 @@ class file
         global.connection.query(sql, function(err, result) {
             if (err) throw err;
             self.id = result.insertId;
-            global.data.tasks[self.id] = self
+            global.data.tasks_files[self.id] = self
             self.dispatchEvent("added",self);
         });
     }

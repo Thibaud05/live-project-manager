@@ -71,11 +71,8 @@ class app
 
         socket.on('setDataFiles', function (data)
         {
-            console.log("///setDataFiles")
-            console.log(data)
             data.id = 0
             var f = new global.file(data);
-            console.log("gogogo")
             f.registerEvent("added")
             f.addEventListener("added", function(e){
                 io.emit('setDataFiles',f);
