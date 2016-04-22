@@ -48,3 +48,5 @@ config.js
 node_modules/
 configPRD.js
 js/config-prd.js
+uploads/*
+img/user/*
