@@ -631,6 +631,9 @@ tasksManager.prototype = {
         }
         self.tasksById[t.id].title = t.title;
         self.tasksById[t.id].description = t.description;
+        if(self.tasks[k] == undefined ){
+          self.tasks[k] = new Array();
+        }
         self.tasks[k][t.priority] = self.tasksById[t.id];
       })
 
