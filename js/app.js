@@ -2,11 +2,6 @@ var socket = io.connect(host);
 $(function () {
 
   $('.form-signin').css({ opacity: 0 ,marginTop: "0px"})
-  $('.form-signin').animate({opacity: 1,marginTop: "150px"},{
-            duration: 500,
-            easing: "easeOutCubic"
-          })
-
     $('.form-signin').on('submit', function(e) {
         e.preventDefault();
  
@@ -41,6 +36,13 @@ socket.on('notif', function (data) {
     });
   }
 });
+
+socket.on('displayLogin', function (data) {
+  $('.form-signin').animate({opacity: 1,marginTop: "150px"},{
+    duration: 500,
+    easing: "easeOutCubic"
+  })
+})
 
 socket.on('logged', function (json) {
   var data = json.obj

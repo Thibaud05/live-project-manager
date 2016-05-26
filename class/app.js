@@ -6,7 +6,7 @@ class app
         this.users = []
         this.usersKey = {}
         this.usersLogged = 0
-        this.appVersion = "v1.1.3"
+        this.appVersion = "v1.1.4"
         this.ts = 113
         this.userBySocket = {}
     }
@@ -186,8 +186,10 @@ class app
                 var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1}
                 this.socket.emit('logged',{obj:obj,data:global.data});
                 io.emit('changeNbUser',{nb:this.getNbUserLogged(),list:this.getUsersList()});
+                return true
             }
         }
+        return false
 
     }
 

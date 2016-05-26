@@ -77,7 +77,9 @@ io.on('connection', function (socket) {
   console.log("conect")
   var u = null
   app.controller(socket)
-  app.autoLogin()
+  if(!app.autoLogin()){
+    socket.emit('displayLogin',true);
+  }
   socket.emit('news', { hello: 'world' });
 
   socket.on('login', function (data) 
