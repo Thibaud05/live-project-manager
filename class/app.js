@@ -6,7 +6,7 @@ class app
         this.users = []
         this.usersKey = {}
         this.usersLogged = 0
-        this.appVersion = "v1.1.4"
+        this.appVersion = "v1.2.0"
         this.ts = 113
         this.userBySocket = {}
     }
@@ -142,27 +142,8 @@ class app
 
         socket.on('addRelease', function (data){
             console.log("socket addrelease")
-            var sql = "INSERT INTO `type` (" +
-                        "`name`, " +
-                        "`color` " +
-                    ") VALUES (" +
-                        "'" + data.name + "'," +
-                        "'" + data.color + "'" +
-                    ");"
-            global.connection.query(sql, function(err, result) {
-                if (err) throw err;
-                var typeID = result.insertId;
-                io.emit('addType',{id:typeID,name:data.name,color:data.color});
-                var today = global.moment().format("YYYY-MM-DD")
-                var rAplha = new release({id:0,name:"α",typeId:typeID,day:today})
-                var rDEV = new release({id:0,name:"DEV",typeId:typeID,day:today})
-                var rQA = new release({id:0,name:"QA",typeId:typeID,day:today})
-                var rPRD = new release({id:0,name:"PRD",typeId:typeID,day:today})
-                rAplha.save()
-                rDEV.save()
-                rQA.save()
-                rPRD.save()
-            });
+            var type = new global.type(data);
+            type.save();      
         })
         this.socket = socket
     }
@@ -183,9 +164,10 @@ class app
                 this.logged(u)
                 var html = this.display(u)
                 global.data.connectUserId = u.id
+                global.data.users[u.id].logged = true 
                 var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1}
                 this.socket.emit('logged',{obj:obj,data:global.data});
-                io.emit('changeNbUser',{nb:this.getNbUserLogged(),list:this.getUsersList()});
+                io.emit('loginUser',u.id);
                 return true
             }
         }
@@ -212,12 +194,13 @@ class app
         if( !user.logged ){
             this.usersLogged ++
             user.logged = true
-            this.socket.broadcast.emit('notif',{title:user.firstName + " est en ligne !",body:"Hello World !",icon:user.getImg(),tag:"connect"});
+            this.socket.broadcast.emit('notif',{title:user.firstName + " est en ligne !",body:"Hello World !",icon:user.getImg(),tag:"connect",userId:user.id});
         }
         //user.saveKey(this.socket)
     }
     logout(socketId){
         var user = this.userBySocket[socketId]
+        
         console.log(user)
         if( user!= undefined && user.logged ){
             
@@ -226,9 +209,11 @@ class app
             delete this.userBySocket[socketId]
             console.log(user)
             if( !user.haveSocket() ){
-                this.socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:"deco"});
+                this.socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:"deco",userId:user.id});
                 this.usersLogged --
                 user.logged = false
+                global.data.users[user.id].logged = false
+                io.emit('logoutUser',user.id);
             }
         }
     }
@@ -262,7 +247,7 @@ class app
                 '<div class="head">' +
                 '<div class="logoLpm"><img src="img/lpm.png" /></div>' + 
                 '<div id="online" class="dropdown"><button type="button" id="dropdownMenu1" class="btn btn-user dropdown-primary" title="Utilisateurs connectés" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
-                '<span class="glyphicon glyphicon-user" aria-hidden="true"></span><span id="usersLogged">' + this.usersLogged + '</span></button>' +
+                '<span class="glyphicon glyphicon-user" aria-hidden="true"></span><span id="usersLogged"></span></button>' +
                 '<div id="config">' + this.displayConfig() + '</div>' +
                 '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="usersList">'+ this.getUsersList() +'</ul></div>' +
                 this.barContent() + 
@@ -299,7 +284,8 @@ class app
             this.displayBtn("prev","Taches précédentes","chevron-left") +
             '<div class="btn-group" >' + this.displayBtn("dropdownMenu2","Ajouter","plus",true) + 
             '<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">' +
-                '<li><a id="add_btn" href="#" title="Ajouter une tache">Ajouter une tache </a></li>' +
+                '<li><a id="add_btn_task" href="#" title="Ajouter une tache">Ajouter une tache </a></li>' +
+                this.displayAddTask() +
                 '<li role="separator" class="divider"></li>' + 
                 '<li><a id="add_btn_release" href="#" title="Ajouter une tache">Ajouter une release </a></li>' +
                 this.displayAddReleaseForm() +
@@ -376,7 +362,9 @@ class app
     {
         return  '<li id="add_type" class="hidden"><form class="form-inline">' +
                     '<input type="text" class="form-control" placeholder="Title">' +
-                    '<select class="form-control">' +
+                    '<select class="form-control project">' +
+                    '</select>' +
+                    '<select class="form-control color">' +
                         '<option>red</option>' +
                         '<option>indigo</option>' +
                         '<option>blue</option>' +
@@ -388,6 +376,15 @@ class app
                     '</select>' +
                     '<a href="#" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>' +
                 '</form></li>'
+    }
+
+    displayAddTask()
+    {
+        return  '<li id="add_task" class="hidden"><form class="form-inline">' +
+            '<select class="form-control project">' +
+            '</select>' +
+            '<a href="#" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>' +
+        '</form></li>';
     }
 
     displayConfig()

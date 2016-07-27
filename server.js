@@ -8,6 +8,7 @@ global.escapeQuote = function (str) {
 
 global.cryptoJs = require("crypto-js");
 global.task     = require('./class/task.js');
+global.type     = require('./class/type.js')
 global.release  = require('./class/release.js');
 global.file     = require('./class/file.js');
 global.moment   = require('./js/moment.min.js')
@@ -52,25 +53,34 @@ var sqls = [
   "SELECT * FROM `release`",
   "SELECT * FROM `user`",
   "SELECT * FROM `task_file`",
-  "SELECT * FROM `task`"]
+  "SELECT * FROM `task`",
+  "SELECT * FROM `project`",
+  "SELECT * FROM `project_user`"
+  ]
 
 connection.query(sqls.join(";"), function(err, r, fields) {
   if (err) throw err;
   var indexedTasks = indexById(r[4])
   var indexedReleases = indexById(r[1])
   var indexedTasksFiles = indexById(r[3])
-  global.data = {
-    taskTypes   : r[0],
-    releases    : indexedReleases,
-    users       : r[2],
-    tasks_files : indexedTasksFiles,
-    tasks       : indexedTasks
-  }
+  var indexedProjects = indexById(r[5])
+  var indexedUsers = []
   for (var data of r[2]) {
     var u = new user(data)
     app.users.push(u)
     app.usersKey[u.getKey()] = u
+    indexedUsers[u.id] = u
   }
+  global.data = {
+    taskTypes   : r[0],
+    releases    : indexedReleases,
+    users       : indexedUsers,
+    tasks_files : indexedTasksFiles,
+    tasks       : indexedTasks,
+    projects    : indexedProjects,
+    projects_user: r[6]
+  }
+
 });  
 
 io.on('connection', function (socket) {
@@ -92,14 +102,14 @@ io.on('connection', function (socket) {
     var obj = {logged:u.logged,key:u.getKey(),html:html}
     socket.emit('logged',{obj:obj,data:global.data});
     if(u.logged){
-      io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
+      global.data.users[u.id].logged = true
+      io.emit('loginUser',u.id);
     }
   });
 
   socket.on('disconnect', function ()
   {
     app.logout(socket.id)
-    io.emit('changeNbUser',{nb:app.getNbUserLogged(),list:app.getUsersList()});
   });
 
   var uploader = new fileUpload();

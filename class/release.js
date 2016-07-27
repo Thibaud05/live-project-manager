@@ -9,6 +9,7 @@ class release
             this.name = data.name;
             this.typeId = data.typeId;
             this.day = data.day;
+            this.id_project = data.id_project
         }
     }
 

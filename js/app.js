@@ -19,21 +19,23 @@ socket.on('notif', function (data) {
       icon: data.icon,
       tag: data.tag
   }
-  if (!("Notification" in window)) {
-    alert("Ce navigateur ne supporte pas les notifications desktop");
-  }
-  else if (Notification.permission === "granted") {
-    var notification = new Notification(data.title,options);
-  }
-  else if (Notification.permission !== 'denied') {
-    Notification.requestPermission(function (permission) {
-      if(!('permission' in Notification)) {
-        Notification.permission = permission;
-      }
-      if (permission === "granted") {
-        var notification = new Notification(data.title,options);
-      }
-    });
+  if(tm.isUserDisplay(data.userId)){
+    if (!("Notification" in window)) {
+      alert("Ce navigateur ne supporte pas les notifications desktop");
+    }
+    else if (Notification.permission === "granted") {
+      var notification = new Notification(data.title,options);
+    }
+    else if (Notification.permission !== 'denied') {
+      Notification.requestPermission(function (permission) {
+        if(!('permission' in Notification)) {
+          Notification.permission = permission;
+        }
+        if (permission === "granted") {
+          var notification = new Notification(data.title,options);
+        }
+      });
+    }
   }
 });
 
@@ -84,11 +86,18 @@ socket.on('logged', function (json) {
     }
 })
 
-socket.on('changeNbUser', function (data) {
-  log("chang nb")
-  $('#usersLogged').html(data.nb)
-  $('#usersList').html(data.list)
+socket.on('loginUser', function (id_user) {
+  if( tm != undefined){
+    tm.users[id_user].logged = true
+    updateUserList()
+  }
 })
+
+socket.on('logoutUser', function (id_user) {
+  tm.users[id_user].logged = false
+  updateUserList()
+})
+
 
 moment.locale('fr', {
     months : "janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre".split("_"),
@@ -186,7 +195,7 @@ function appInit(data) {
     }
   })
 
-
+  updateUserList()
   //////////////////////
   // Week navigation
 
@@ -239,6 +248,20 @@ function appInit(data) {
       }
   }) 
 
+  $( "#online" ).after( tm.getProjects());
+
+  $("#projects").on('mousedown', 'li a', function(){
+    var idProject = $(this).data('value')
+    tm.toogleProject(idProject)
+    updateUserList()
+    $(this).children( ".glyphicon" ).toggleClass("glyphicon-eye-close").toggleClass("glyphicon-eye-open")
+  });
+
+
+
+
+
+
   //////////////////////
   // Accountable selected task
   $("#dropdownAccountable").mousedown(function() {
@@ -281,33 +304,47 @@ function appInit(data) {
   //////////////////////
   // Add a new task
 
-   $( "#add_btn" ).click(function() {
-    tm.newTask()
-  }); 
-
   $('.dropdown-menu').find('form').click(function (e) {
     e.stopPropagation();
   });
+
+  $( "#add_btn_task" ).click(function(e) {
+    e.stopPropagation();
+    $('#add_task .project option').remove();
+    $('#add_task .project').html(tm.getProjectList());
+    $('#add_task').toggleClass("hidden")
+  }); 
 
   $('#add_btn_release').click(function (e) {
     e.stopPropagation();
     $('#add_release').toggleClass("hidden")
   });
 
+  $('#add_btn_type').click(function (e) {
+    e.stopPropagation();
+    $('#add_type .project option').remove();
+    $('#add_type .project').html(tm.getProjectList());
+    $('#add_type').toggleClass("hidden")
+  });
+
+ $('#add_task a').click(function (e) {
+  console.log("addTask")
+  var project = $('#add_task .project').val()
+  tm.newTask(project);
+ })
+
  $('#add_release a').click(function (e) {
   console.log("addRelease")
  })
+
  $('#add_type a').click(function (e) {
   console.log("addRelease")
+  var id_project = $('#add_type .project').val()
   var name = $('#add_type input').val()
-  var color = $('#add_type select').val()
-  socket.emit('addRelease', {name:name,color:color});
+  var color = $('#add_type .color').val()
+  socket.emit('addRelease', {name:name,color:color,id_project:id_project});
  })
 
-  $('#add_btn_type').click(function (e) {
-    e.stopPropagation();
-    $('#add_type').toggleClass("hidden")
-  });
 
 
   var delay = (function(){
@@ -368,6 +405,12 @@ function appInit(data) {
   });
 
 };
+
+function updateUserList(){
+  var data = tm.getUsersList()
+  $('#usersLogged').html(data.nb)
+  $('#usersList').html(data.list)
+}
 
 function createCookie(name, value, days) {
     var expires;

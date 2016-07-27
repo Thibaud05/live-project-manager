@@ -4,6 +4,9 @@
  *
  */
   function tasksManager(){
+    this.userByProject = [];
+    this.projectByUser = [];
+    this.projectById = []
     this.tasks = [];
     this.tasksById = [];
     this.users = [];
@@ -11,6 +14,7 @@
     this.releasesById = [];
     this.taskTypes = [];
     this.taskTypesByDate = [];
+    this.taskTypeByProject = [];
     this.nbWeekPerScreen = 3;
     this.dayPerWeek = 5;
     this.nbdays = this.nbWeekPerScreen*this.dayPerWeek;
@@ -28,6 +32,7 @@
     this.select = false;
     this.lastRelease = []
     this.searchValue = "";
+    this.projectsId = {}
 }
 tasksManager.prototype = {
   /**
@@ -60,9 +65,11 @@ tasksManager.prototype = {
         this.fullUrl = data.fullUrl;
         this.tasks = [];
         var self = this
-        $.each( data.users, function( key, data ) {
-          self.users[data.id] = new user(data);
-        });
+        data.users.map(function(data,key) {
+          if(data!=undefined){
+            self.users[data.id] = new user(data)
+          }
+        })
         this.connectUser = this.getUser(this.connectUserId)
         var tasks_files = {};
         //console.log(data)
@@ -77,11 +84,34 @@ tasksManager.prototype = {
         //console.log(tasks_files)
         data.taskTypes.map(function(taskType,key) {
           self.taskTypes[taskType.id] = taskType;
+          self.taskTypeByProject[taskType.id_project] = taskType;
         });
+
+        data.projects.map(function(project,key) {
+          if(project!=undefined){
+            self.projectById[project.id] = project;
+          }
+        });
+
+        data.projects_user.map(function(pu,key) {
+
+          if(self.userByProject[pu.id_project] == undefined ){
+              self.userByProject[pu.id_project] = [];
+          }
+          self.userByProject[pu.id_project].push(pu.id_user)
+
+          if(self.projectByUser[pu.id_user] == undefined ){
+              self.projectByUser[pu.id_user] = [];
+          }
+          self.projectByUser[pu.id_user].push(pu.id_project)
+        });
+
         data.releases.map(function(data,key) {
           if(data!=undefined){
             var r = data
             r.day = moment(data.day).format('YYYY-MM-DD');
+            r.id_project = self.taskTypes[r.typeId].id_project;
+
             if (self.releases[r.day] == undefined){
               self.releases[r.day] = new Array();
             }
@@ -104,7 +134,9 @@ tasksManager.prototype = {
           //log(data);
           
           if(data!=undefined){
+            data.id_project = self.taskTypes[data.typeId].id_project;
             var t = new task(data);
+            
             //t.priority = nextPriority
 
             if(tasks_files[t.id] != undefined ){
@@ -120,6 +152,14 @@ tasksManager.prototype = {
             nextPriority ++
           }
         });
+      self.projectByUser[self.connectUser.id].map(function(projectId,key) {
+        self.projectsId[projectId] = true
+        self.userByProject[projectId].map(function(userId,key) {
+            self.users[userId].display = true
+        })
+      });
+
+
     },
 /**
  *
@@ -176,6 +216,22 @@ tasksManager.prototype = {
 
       var self = this
       this.tasks = [];
+
+
+      $.each( this.users, function( key, user ) {
+        if(user){
+          user.display = false
+        }
+      })
+
+      self.projectByUser[self.connectUser.id].map(function(projectId,key) {
+        if(self.projectsId[projectId]){
+          self.userByProject[projectId].map(function(userId,key) {
+              self.users[userId].display = true
+          })
+        }
+      });
+
 
       this.tasksById.map(function(t,key) {
         if (t){
@@ -237,6 +293,7 @@ tasksManager.prototype = {
  *
  */
     addTask :function (t){
+      t.id_project = this.taskTypes[t.typeId].id_project
       this.tasksById[t.id] = t;
       this.init();
       this.sync();
@@ -290,7 +347,7 @@ tasksManager.prototype = {
  * CREATE A NEW TASK
  *
  */
-    newTask: function()
+    newTask: function(project)
     {
       var userId = this.connectUserId
       var day = this.dates[0]
@@ -298,11 +355,12 @@ tasksManager.prototype = {
       if (this.tasks[userId + ":" + day]!=undefined){
         lowPriority =  this.tasks[userId + ":" + day].length;
       }
+
       var newTask = {
         "id"                : "",
         "userId"            : userId,
         "title"             : "New task",
-        "typeId"            : this.taskTypes.length-1,
+        "typeId"            : this.taskTypeByProject[project].id,
         "day"               : day,
         "description"       : "",
         "creationUserId"    : userId,
@@ -344,6 +402,7 @@ tasksManager.prototype = {
         duplicatedTasksId.push({
           "id"               : "",
           "userId"            : t.userId,
+          "id_project"        : t.id_project,
           "title"             : t.title,
           "typeId"            : t.typeId,
           "day"               : t.day,
@@ -418,7 +477,9 @@ tasksManager.prototype = {
         for (var i = 0; i < tabTask.length; i++){
           var t = tabTask[i];
           if(t!=undefined){
-            html += this.renderTask(t)
+            if(this.projectsId[t.id_project]){
+              html += this.renderTask(t)
+            }
           }
         }
       }
@@ -456,7 +517,9 @@ tasksManager.prototype = {
         for (var i = 0; i < tabRelease.length; i++){
           var r = tabRelease[i];
           if(r!=undefined){
-            html += this.renderRelease(r)
+            if(this.projectsId[r.id_project]){
+              html += this.renderRelease(r)
+            }
           }
         } 
       }
@@ -545,7 +608,7 @@ tasksManager.prototype = {
       var lines = "";
       var firstLine = "";
       $.each( this.users, function( key, user ) {
-        if(user){
+        if(user && user.display){
           var empltyLine = true
           var line  = "<tr>";
           line += '<td class="firstCol" >' + user.firstName + '</td>';
@@ -674,6 +737,7 @@ tasksManager.prototype = {
 /*----------  duplicateTask ----------*/
       socket.on('duplicateTask', function (data)
       {
+        data.id_project = self.taskTypes[data.typeId].id_project;
         var t = new task(data);
         tm.addTask(t);
       })
@@ -688,6 +752,7 @@ tasksManager.prototype = {
 /*----------  updateTask ----------*/
       socket.on('updateTask', function (data)
       {
+        data.id_project = self.taskTypes[data.typeId].id_project;
         var t = self.tasksById[data.id];
         t.update(data)
 
@@ -792,7 +857,7 @@ tasksManager.prototype = {
           }
       })
 
-      socket.on('addType',function(taskType)
+      socket.on('addRelease',function(taskType)
       {
           self.taskTypes[taskType.id] = taskType
       })
@@ -950,5 +1015,82 @@ tasksManager.prototype = {
       $( "#duplicate_btn"       ).prop( "disabled", $disabled )
       $( "#archive_btn"         ).prop( "disabled", $disabled )
       $( "#del_btn"             ).prop( "disabled", $disabled )
+    },
+
+
+
+/**
+ *
+ * Projects
+ *
+ */
+
+    getProjects: function(){
+      var self = this
+      var html = '<div class="btn-group">' + 
+      '<button id="dropdownProjects" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"' +
+      ' aria-haspopup="true" aria-expanded="true" title="Mes projets">' + 
+      '<span class="glyphicon glyphicon-th" aria-hidden="true"></span></button>' + 
+      '<ul id="projects" class="dropdown-menu" aria-labelledby="dropdownProjects">'
+
+      self.projectByUser[self.connectUser.id].map(function(projectId,key) {
+        var icon = '<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span></button>'
+        if(self.projectsId[projectId]){
+          icon = '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>'
+        }
+        html += '<li><a href="#" data-value="' + projectId + '">' + icon + ' ' + self.getProjectTitle(projectId) + '</a></li>'
+      });
+      return html + '</li></ul></div>'
+    },
+    toogleProject: function(projectId){
+      p = this.projectsId[projectId]
+      if(this.projectsId[projectId]){
+        delete this.projectsId[projectId]
+      }else{
+        this.projectsId[projectId] = true
+      }
+      this.init();
+      this.sync();
+      this.render();
+      this.activate();
+    },
+
+    getProjectList : function(){
+      var self = this;
+      var html = '';
+      self.projectByUser[self.connectUser.id].map(function(projectId,key) {
+        html += '<option value="' + projectId + '">' + self.getProjectTitle(projectId) + '</option>';
+      });
+      return html;  
+    },
+
+    getProjectTitle : function(id){
+      return this.projectById[id].title;
+    },
+
+
+    getUsersList : function()
+    {
+        var html = ""
+        var count = 0;
+        $.each( this.users, function( key, user ) {
+          if(user && user.display){
+            console.log(user.logged)
+            var ico = "glyphicon-remove-sign"
+            if(user.logged==1){
+                count ++;
+                ico = "glyphicon-ok-sign"
+            }
+            if(html!=""){
+               html += '<li role="separator" class="divider"></li>' 
+            }
+            html += '<li><a href="#">' + user.getAvatar(32) + '<span class="glyphicon ' + ico + '" aria-hidden="true"></span>' + user.firstName + '</a></li>'
+        }
+      })
+        return {"list":html,"nb":count}
+    },
+    isUserDisplay : function(userId)
+    {
+      return this.users[userId].display
     }
   }

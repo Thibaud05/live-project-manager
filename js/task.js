@@ -29,6 +29,7 @@
     this.h = 0
     this.valid = data.valid
     this.initPosition
+    this.id_project = data.id_project
     var self = this;
 }
 
