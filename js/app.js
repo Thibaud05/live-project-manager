@@ -229,14 +229,18 @@ function appInit(data) {
   // Remove selected task
 
   $("#del_btn").mousedown(function() {
-    tm.delSelectedTasks();
+    if (confirm("Voulez-vous supprimer cette tache ?")) {
+      tm.delSelectedTasks();
+    }
   });
   $( "#del_btn" ).click(function() {
     $( this ).blur()
   }); 
 
   $("#archive_btn").mousedown(function() {
-    tm.archiveSelectedTasks();
+    if (confirm("Voulez-vous archiver cette tache ?")) {
+      tm.archiveSelectedTasks();
+    }
   });
   $( "#archive_btn" ).click(function() {
     $( this ).blur()
@@ -244,7 +248,9 @@ function appInit(data) {
 
   $('html').keydown(function(e){
       if(e.keyCode == 46){
-        tm.delSelectedTasks();
+        if (confirm("Voulez-vous supprimer cette tache ?")) {
+          tm.delSelectedTasks();
+        }
       }
   }) 
 
