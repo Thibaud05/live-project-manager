@@ -6,7 +6,7 @@
   //
   //////////////////////////////////////////
   function task(data){
-
+  
     this.isOpen = false;
     this.isDraging = false;
     this.id = data.id;

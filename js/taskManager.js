@@ -675,6 +675,10 @@ tasksManager.prototype = {
         if(cible){
           var htmlTask = self.renderTask(t);
           cible.append(htmlTask)
+          if(t.isOpen){
+            $openTask = $(".task[tid="+ t.id +"]")
+            t.open($openTask);
+          }
         }
         self.tasksById[t.id] = t;
         self.activate();
