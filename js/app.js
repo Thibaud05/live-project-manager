@@ -248,9 +248,7 @@ function appInit(data) {
 
   $('html').keydown(function(e){
       if(e.keyCode == 46){
-        if (confirm("Voulez-vous supprimer cette tache ?")) {
           tm.delSelectedTasks();
-        }
       }
   }) 
 

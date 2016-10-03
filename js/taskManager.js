@@ -379,15 +379,20 @@ tasksManager.prototype = {
     delSelectedTasks: function (){
       var removedTasksId = [];
       var self = this
+      var oneTaskIsOpen = false
       $.each(self.selectedTasks, function( key, t ) {
         var id = t.attr("tid");
         var task =  self.tasksById[id];
         
         if(!task.isOpen){
           removedTasksId.push({"id":id,"id_user":"","title":"","typeId":"","day":""});
+        }else{
+          oneTaskIsOpen = true
         }
       });
-      socket.emit('delTask', removedTasksId);
+      if(!oneTaskIsOpen&&confirm("Voulez-vous supprimer cette tache ?")){
+        socket.emit('delTask', removedTasksId);
+      }
     },
 /**
  *
@@ -658,9 +663,9 @@ tasksManager.prototype = {
 /*----------  moveTask ----------*/
       socket.on('moveTask', function (data)
       {
+       
         var t = self.tasksById[data.id]
         t.update(data)
-
         var k = t.userId + ":" + t.day
 
         if(self.tasks[k] == undefined ){
@@ -668,17 +673,30 @@ tasksManager.prototype = {
         }
         self.tasks[k][t.priority] = t;
         var selectedTask = $(".task[tid="+ t.id +"]")
-        if (selectedTask) {
+        var cible = $(".connectedSortable[di="+ self.datesIndex[t.day] +"][uid="+ t.userId +"]")
+        console.log("-------------")
+        console.log(selectedTask)
+        console.log(cible)
+        if (selectedTask.length && !cible.length) {
+          if(t.isOpen){
+            selectedTask.children("textarea").blur()
+            t.close(selectedTask)
+          }
           selectedTask.remove()
         }
-        var cible = $(".connectedSortable[di="+ self.datesIndex[t.day] +"][uid="+ t.userId +"]")
-        if(cible){
+        if (selectedTask.length && cible.length) {
+          if(t.isOpen){
+            selectedTask.children("textarea").blur()
+            t.close(selectedTask)
+          }
+          selectedTask.remove()
+          cible.append(selectedTask)
+        }
+
+        if (!selectedTask.length && cible.length) {
+          console.log("ok")
           var htmlTask = self.renderTask(t);
           cible.append(htmlTask)
-          if(t.isOpen){
-            $openTask = $(".task[tid="+ t.id +"]")
-            t.open($openTask);
-          }
         }
         self.tasksById[t.id] = t;
         self.activate();
