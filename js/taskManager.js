@@ -1114,5 +1114,15 @@ tasksManager.prototype = {
     isUserDisplay : function(userId)
     {
       return this.users[userId].display
+    },
+    getUserProjects : function()
+    {
+      //Todo
+      return '';
+    },
+    getPublicProject : function()
+    {
+      //Todo
+      return '';
     }
   }
