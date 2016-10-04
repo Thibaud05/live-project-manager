@@ -9,8 +9,8 @@ class user
             this.id_group = data.id_group
             this.email = data.email
             this.password = data.password
-            this.firstName = data.firstName
-            this.lastName = data.lastName
+            this.firstName = data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1)
+            this.lastName = data.lastName.toUpperCase();
             this.lastConnexion = data.lastConnexion
             this.autoConnexion = data.autoConnexion
             this.logged = false
