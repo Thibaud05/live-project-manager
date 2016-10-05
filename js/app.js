@@ -229,9 +229,7 @@ function appInit(data) {
   // Remove selected task
 
   $("#del_btn").mousedown(function() {
-    if (confirm("Voulez-vous supprimer cette tache ?")) {
       tm.delSelectedTasks();
-    }
   });
   $( "#del_btn" ).click(function() {
     $( this ).blur()
