@@ -129,27 +129,26 @@ tasksManager.prototype = {
             }
           }
         });
-        var nextPriority = 0;
         data.tasks.map(function(data,key) {
-          //log(data);
           
           if(data!=undefined){
             data.id_project = self.taskTypes[data.typeId].id_project;
             var t = new task(data);
             
-            //t.priority = nextPriority
 
             if(tasks_files[t.id] != undefined ){
               t.files = tasks_files[t.id];
               //log(t.files);
             }
-            self.tasksById[t.id] = t;
+            
             var k = t.userId + ":" + t.day;
             if(self.tasks[k] == undefined ){
               self.tasks[k] = new Array();
             }
-            self.tasks[k][t.priority] = t;
-            nextPriority ++
+            var nextPriority = t.getNextPriority(self.tasks,t.priority);
+            t.priority = nextPriority;
+            self.tasks[k][nextPriority] = t;
+            self.tasksById[t.id] = t;
           }
         });
       self.projectByUser[self.connectUser.id].map(function(projectId,key) {
@@ -158,8 +157,6 @@ tasksManager.prototype = {
             self.users[userId].display = true
         })
       });
-
-
     },
 /**
  *
@@ -232,7 +229,7 @@ tasksManager.prototype = {
         }
       });
 
-
+      this.tasks = [];
       this.tasksById.map(function(t,key) {
         if (t){
           var display = true;
@@ -247,7 +244,7 @@ tasksManager.prototype = {
             if(self.tasks[k] == undefined ){
               self.tasks[k] = new Array();
             }
-            self.tasks[k][t.priority] = t
+            self.tasks[k][t.priority] = t;
           }
         }
       });

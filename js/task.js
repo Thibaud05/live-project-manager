@@ -324,5 +324,13 @@ task.prototype = {
         }
       });
       return html + '</div>';
+    },
+    getNextPriority : function(tasks,priority){
+      var k = this.userId + ":" + this.day;
+      if(tasks[k][priority] != undefined ){
+        return this.getNextPriority(tasks,priority+1);
+      }else{
+        return priority;
+      }
     }
 }
