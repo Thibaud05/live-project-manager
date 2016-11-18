@@ -291,10 +291,8 @@ tasksManager.prototype = {
  */
     addTask :function (t){
       t.id_project = this.taskTypes[t.typeId].id_project
+      this.addDOMTask(t);
       this.tasksById[t.id] = t;
-      this.init();
-      this.sync();
-      this.render();
       this.activate();
     },
 /**
@@ -306,11 +304,9 @@ tasksManager.prototype = {
       var self = this
       datas.map(function( data, key ) {
         var t = new task(data)
+        self.addDOMTask(t);
         self.tasksById[t.id] = t;
       });
-      this.init();
-      this.sync();
-      this.render();
       this.activate();
     },
 /**
@@ -433,6 +429,41 @@ tasksManager.prototype = {
         validTasks.push(t);
       }
       socket.emit('updateTask', validTasks);
+    },
+/**
+ *
+ * Add task to the DOM
+ *
+ */
+    addDOMTask: function (t){
+        var k = t.userId + ":" + t.day
+        if(this.tasks[k] == undefined ){
+          this.tasks[k] = new Array();
+        }
+
+        this.tasks[k][t.priority] = t;
+        var selectedTask = $(".task[tid="+ t.id +"]")
+        var cible = $(".connectedSortable[di="+ this.datesIndex[t.day] +"][uid="+ t.userId +"]")
+        if (selectedTask.length && !cible.length) {
+          if(t.isOpen){
+            selectedTask.children("textarea").blur()
+            t.close(selectedTask)
+          }
+          selectedTask.remove()
+        }
+        if (selectedTask.length && cible.length) {
+          if(t.isOpen){
+            selectedTask.children("textarea").blur()
+            t.close(selectedTask)
+          }
+          selectedTask.remove()
+          cible.append(selectedTask)
+        }
+
+        if (!selectedTask.length && cible.length) {
+          var htmlTask = this.renderTask(t);
+          cible.append(htmlTask)
+        }
     },
 /**
  *
@@ -660,41 +691,9 @@ tasksManager.prototype = {
 /*----------  moveTask ----------*/
       socket.on('moveTask', function (data)
       {
-       
         var t = self.tasksById[data.id]
         t.update(data)
-        var k = t.userId + ":" + t.day
-
-        if(self.tasks[k] == undefined ){
-          self.tasks[k] = new Array();
-        }
-        self.tasks[k][t.priority] = t;
-        var selectedTask = $(".task[tid="+ t.id +"]")
-        var cible = $(".connectedSortable[di="+ self.datesIndex[t.day] +"][uid="+ t.userId +"]")
-        console.log("-------------")
-        console.log(selectedTask)
-        console.log(cible)
-        if (selectedTask.length && !cible.length) {
-          if(t.isOpen){
-            selectedTask.children("textarea").blur()
-            t.close(selectedTask)
-          }
-          selectedTask.remove()
-        }
-        if (selectedTask.length && cible.length) {
-          if(t.isOpen){
-            selectedTask.children("textarea").blur()
-            t.close(selectedTask)
-          }
-          selectedTask.remove()
-          cible.append(selectedTask)
-        }
-
-        if (!selectedTask.length && cible.length) {
-          console.log("ok")
-          var htmlTask = self.renderTask(t);
-          cible.append(htmlTask)
-        }
+        self.addDOMTask(t);
         self.tasksById[t.id] = t;
         self.activate();
       })
