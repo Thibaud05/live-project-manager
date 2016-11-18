@@ -7,7 +7,7 @@ class app
         this.usersKey = {}
         this.usersLogged = 0
         this.ts = 161
-        this.appVersion = "v1.2." + ts
+        this.appVersion = "v1.2." + this.ts
         this.userBySocket = {}
     }
 
