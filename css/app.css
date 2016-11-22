@@ -299,13 +299,12 @@ body{
 	font-size: 16px;
 }
 
-.task .title, .task .fileinput-button {
+.task .title, .task .fileinput-button,#upload #attach_btn,#upload #link_btn {
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
   display: table-cell;
   vertical-align: middle;
 }
-
 
 .release{
 	color: #fff;
@@ -373,19 +372,23 @@ body{
     margin-right: 20px;
     margin-left: 20px;
 }
-#upload .fileinput-button {
-    width: 100px;
-    height: 70px;
-}
-#upload .fileinput-button {
+#upload .fileinput-button,#upload #attach_btn,#upload #link_btn {
+    color: #fff;
     width: 100px;
     height: 95px;
     background-color: rgba(0, 0, 0, 0.3);
 }
-#upload .fileinput-button:hover {
+#upload .fileinput-button:hover, #upload #attach_btn:hover,#upload #link_btn:hover {
     color: #fff;
     background-color: rgba(0, 0, 0, 0.5);
 }
+#upload .fileinput-button{
+    height: 47px;
+}
+#upload #link_btn{
+    height: 48px;
+}
+
 #upload #progress {
     height: 5px;
     margin-bottom: 0px;
@@ -615,4 +618,12 @@ td.firstCol{
     .barContent .btn{
         display: block;
     }
+}
+
+#shifting_next,#shifting_prev{
+    color: #fff;
+    border: 0;
+}
+#shifting_next:hover,#shifting_prev:hover{
+    color: #000;
 }

@@ -87,14 +87,8 @@ task.prototype = {
 
         var html = '<div id="taskDetail"><div id="closeTask">X</div>';
 
-     html +='<div id="upload"><button id="upload_btn" class="btn fileinput-button"><span > \
-        <i class="glyphicon glyphicon-plus"></i> \
-         \
-    </span></button> \
-               <div id="progress" class="progress"> \
-        <div class="progress-bar progress-bar-success"></div> \
-    </div> \
-    </div>';
+    html +='<div id="upload"><button id="attach_btn" class="btn"><span >'
+    html +='<i class="glyphicon glyphicon-plus"></i></span></button>' + self.getProgressBar() + '</div>';
 
     html += self.displayFiles();
         moment.locale('fr');
@@ -133,7 +127,13 @@ task.prototype = {
       }
     });
     //siofu.listenOnInput($("#upload_btn"));
-    $("#upload_btn").click(self.siofu.prompt)
+    $("#attach_btn").click(function() {
+      html = '<button id="link_btn" class="btn"><span ><i class="glyphicon glyphicon-link"></i> Add link</span></button>'
+      html += '<button id="upload_btn" class="btn fileinput-button"><span ><i class="glyphicon glyphicon-upload"></i> Add File</span></button>'
+      html += self.getProgressBar();
+      $("#upload").html(html);
+      $("#upload_btn").click(self.siofu.prompt)
+    });
 
     //siofu.listenOnDrop($("#file"));
 
@@ -222,6 +222,9 @@ task.prototype = {
       htmlTask.addClass('disable-task');
     },
 
+    getProgressBar: function(){
+      return '<div id="progress" class="progress"><div class="progress-bar progress-bar-success"></div></div>';
+    },
 
 
     /////////////////////

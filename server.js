@@ -22,7 +22,7 @@ var server       = require('http').Server(appExpress);
 var io           = require('socket.io')(server);
 var cookieParser = require('socket.io-cookie');
 var fileUpload   = require('socketio-file-upload')
-var lwip         = require('lwip')
+//var lwip         = require('lwip')
 
 var app = new app()
 
@@ -121,6 +121,7 @@ io.on('connection', function (socket) {
       var imgPath = __dirname + "/uploads/" +  data.title
       var userId = app.userBySocket[socket.id].id
       var imgPathThumb = __dirname + "/img/user/" + userId + ".jpg"
+      /*
       lwip.open(imgPath, function(err, image){
         image.contain(96, 96,'white', function(err, image){     
              image.writeFile(imgPathThumb, function(err){
@@ -130,6 +131,7 @@ io.on('connection', function (socket) {
             });
         });
       });
+      */
   })
 
   uploader.on("saved", function(event)
