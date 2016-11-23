@@ -85,16 +85,15 @@ task.prototype = {
         htmlTitle.css({"display":"block"});
         $("body").css("overflow","hidden");
 
-        var html = '<div id="taskDetail"><div id="closeTask">X</div>';
+        var html = '<div id="taskDetail"><div id="closeTask"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>';
 
-    html +='<div id="upload"><button id="attach_btn" class="btn"><span >'
-    html +='<i class="glyphicon glyphicon-plus"></i></span></button>' + self.getProgressBar() + '</div>';
+    html +='<div id="upload">' + self.getAttachBtn() + '</div>';
 
     html += self.displayFiles();
         moment.locale('fr');
         html += '<p><button id="shifting_prev" type="button" class="btn btn-default" title="Avancer à la release précédente">' +
         '<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>';
-                html += ' <button id="shifting_next" type="button" class="btn btn-default" title="Repousser à la prochaine release">' +
+        html += ' <button id="shifting_next" type="button" class="btn btn-default" title="Repousser à la prochaine release">' +
         '<span  class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button></p>';
         html += '<p>ID : ' + self.id + '</p>';
         html += '<p>Responsable : ' + self.getCreationUser() + ", créé "+ moment(self.creationDate).fromNow() + '</p>';
@@ -104,6 +103,8 @@ task.prototype = {
 
         htmlTask.find("#taskDetail").remove();
         htmlTask.children(".contener").append(html);
+
+        self.attachBtnOnClcik();
 
         $('.removeFile').click(function(){
           var fid = $(this).attr('fid');
@@ -127,18 +128,9 @@ task.prototype = {
       }
     });
     //siofu.listenOnInput($("#upload_btn"));
-    $("#attach_btn").click(function() {
-      html = '<button id="link_btn" class="btn"><span ><i class="glyphicon glyphicon-link"></i> Add link</span></button>'
-      html += '<button id="upload_btn" class="btn fileinput-button"><span ><i class="glyphicon glyphicon-upload"></i> Add File</span></button>'
-      html += self.getProgressBar();
-      $("#upload").html(html);
-      $("#upload_btn").click(self.siofu.prompt)
-    });
-
     //siofu.listenOnDrop($("#file"));
 
     self.siofu.addEventListener("start", function(event){
-        console.log("startUpload");
         $('#progress .progress-bar').css('width',0);
     });
 
@@ -161,7 +153,6 @@ task.prototype = {
         }
     });
     
-
         $("#closeTask").click(function() {
           self.close(htmlTask);
           $("body").css("overflow","auto");
@@ -226,6 +217,35 @@ task.prototype = {
       return '<div id="progress" class="progress"><div class="progress-bar progress-bar-success"></div></div>';
     },
 
+    getAttachBtn : function(){
+      return '<button id="attach_btn" class="btn btn-attach"><span ><i class="glyphicon glyphicon-plus"></i></span></button>' + this.getProgressBar();
+    },
+
+    attachBtnOnClcik : function(){
+      var self = this;
+      $("#attach_btn").click(function() {
+        html = '<button id="link_btn" class="btn btn-attach-mini"><span ><i class="glyphicon glyphicon-link"></i> Add link</span></button>'
+        html += '<button id="upload_btn" class="btn btn-attach-mini fileinput-button"><span ><i class="glyphicon glyphicon-upload"></i> Add File</span></button>'
+        html += self.getProgressBar();
+        $("#upload").html(html);
+        $("#upload_btn").click(self.siofu.prompt)
+        $("#link_btn").click(function() {
+          html = '<div class="link-form"><div class="input-group"><span class="input-group-addon" id="basic-addon">Title</span>';
+          html += '<input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon"></div>';
+          html += '<div class="input-group"><span class="input-group-addon" id="basic-addon2">Link</span>';
+          html += '<input type="text" class="form-control" id="basic-url2" aria-describedby="basic-addon2"></div></div>';
+          html += '<button id="remove_btn" class="btn btn-attach-mini"><span ><i class="glyphicon glyphicon-remove"></i></span></button>';
+          html += '<button id="ok_btn" class="btn btn-attach-mini"><span ><i class="glyphicon glyphicon-ok"></i></span></button>';
+          html += self.getProgressBar();
+          $("#upload").html(html);
+
+          $("#remove_btn").click(function() {
+            $("#upload").html(self.getAttachBtn());
+            self.attachBtnOnClcik();
+          }); 
+        });
+      });
+    },
 
     /////////////////////
     // masquage du details de la tache
