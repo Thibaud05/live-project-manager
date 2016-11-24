@@ -1,8 +1,7 @@
-//test
-// tezst
-//lorem
+var socket = require("./socket.js");
 class task{
   constructor(data){
+    this.tm = window.tm;
     this.isOpen = false;
     this.isDraging = false;
     this.id = data.id;
@@ -109,14 +108,14 @@ class task{
   self.siofu = new SocketIOFileUpload(socket);
 
   $("#shifting_prev").click(function(){
-    var prev = tm.getNextRelease(self.typeId,true)
+    var prev = self.tm.getNextRelease(self.typeId,true)
     if(prev){
       socket.emit('changeRelease', {"t":self,"typeId":prev});
     }
   });
 
   $("#shifting_next").click(function(){
-    var next = tm.getNextRelease(self.typeId,false)
+    var next = self.tm.getNextRelease(self.typeId,false)
     if(next){
       socket.emit('changeRelease', {"t":self,"typeId":next});
     }
@@ -289,7 +288,7 @@ class task{
     // affichage du nom de l'utilisateur
 
     getCreationUser(){
-      var user = tm.getUser(this.creationUserId);
+      var user = self.tm.getUser(this.creationUserId);
       if (user != undefined){
         return user.getName();
       }
@@ -299,7 +298,7 @@ class task{
     // affichage du nom de l'utilisateur
 
     getEditUser(){
-      var user = tm.getUser(this.accountableUserId);
+      var user = self.tm.getUser(this.accountableUserId);
       if (user != undefined){
         return user.getName();
       }

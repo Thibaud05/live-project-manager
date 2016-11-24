@@ -44,8 +44,11 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var tasksManager = __webpack_require__(1);
 	var socket = __webpack_require__(2);
+	var tasksManager = __webpack_require__(1);
+	var tm = new tasksManager();
+	window.tm = tm
+
 	$(function () {
 
 	  $('.form-signin').css({ opacity: 0 ,marginTop: "0px"})
@@ -134,7 +137,7 @@
 	})
 
 	socket.on('loginUser', function (id_user) {
-	  if( tm != undefined){
+	  if( tm.users[id_user] != undefined){
 	    tm.users[id_user].logged = true
 	    updateUserList()
 	  }
@@ -210,17 +213,14 @@
 	    console.log(msg);
 	  }
 	} 
-	var tm
 	function appInit(data) {
 	  console.log("init")
-	  tm = new tasksManager();
 
 	  ////////////////////////////////////////////
 	  //
 	  //  EVENT MANAGEMEMENT
 	  //
 	  ////////////////////////////////////////////
-	  
 	  tm.init()
 	  tm.getData(data)
 	  tm.render()
@@ -485,39 +485,38 @@
 	var socket = __webpack_require__(2);
 	var user = __webpack_require__(4);
 	var file = __webpack_require__(5);
-	var file = __webpack_require__(6);
-
+	var task = __webpack_require__(6);
 	class tasksManager{
 	  constructor(){
-	    this.userByProject = [];
-	    this.projectByUser = [];
-	    this.projectById = []
-	    this.tasks = [];
-	    this.tasksById = [];
-	    this.users = [];
-	    this.releases = [];
-	    this.releasesById = [];
-	    this.taskTypes = [];
-	    this.taskTypesByDate = [];
-	    this.taskTypeByProject = [];
-	    this.nbWeekPerScreen = 3;
-	    this.dayPerWeek = 5;
-	    this.nbdays = this.nbWeekPerScreen*this.dayPerWeek;
-	    this.days = ["L","M","M","J","V","S","D"];
-	    this.now = moment();
-	    this.week;
-	    this.firstDayWeek;
-	    this.dates;
-	    this.datesIndex
-	    this.offset;
-	    this.selectedTasks = {};
-	    this.connectUserId;
-	    this.connectUser;
-	    this.fullUrl;
-	    this.select = false;
-	    this.lastRelease = []
-	    this.searchValue = "";
-	    this.projectsId = {}
+	      this.userByProject = [];
+	      this.projectByUser = [];
+	      this.projectById = []
+	      this.tasks = [];
+	      this.tasksById = [];
+	      this.users = [];
+	      this.releases = [];
+	      this.releasesById = [];
+	      this.taskTypes = [];
+	      this.taskTypesByDate = [];
+	      this.taskTypeByProject = [];
+	      this.nbWeekPerScreen = 3;
+	      this.dayPerWeek = 5;
+	      this.nbdays = this.nbWeekPerScreen*this.dayPerWeek;
+	      this.days = ["L","M","M","J","V","S","D"];
+	      this.now = moment();
+	      this.week;
+	      this.firstDayWeek;
+	      this.dates;
+	      this.datesIndex
+	      this.offset;
+	      this.selectedTasks = {};
+	      this.connectUserId;
+	      this.connectUser;
+	      this.fullUrl;
+	      this.select = false;
+	      this.lastRelease = []
+	      this.searchValue = "";
+	      this.projectsId = {}
 	  }
 	  init(){
 	    this.week = this.now.week();
@@ -1368,7 +1367,7 @@
 	      // Task drag and drop
 	      var self = this
 	      $( "body" ).off().mousedown(function(e) {
-	          log("click out")
+	          //log("click out")
 	          if(!self.select){
 	            $.each(self.selectedTasks, function( key, t ) {
 	              t.removeClass('selected');
@@ -1385,7 +1384,7 @@
 	        placeholder: "ui-sortable-placeholder",
 	        connectWith: ".connectedSortable",
 	        start( event, ui ) {
-	          log("start")
+	          //log("start")
 	          var t = self.tasksById[ui.item.attr("tid")];
 	          t.isDraging = true;
 	        },
@@ -1395,7 +1394,7 @@
 	          t.isDraging = false;
 	        },
 	        update:function( event, ui ) {
-	          log("CLIENT MOVE TASK")
+	          //log("CLIENT MOVE TASK")
 	          var tasksToUpdate = $(this).sortable('toArray', {attribute: 'tid'})
 	          var tasksUpdate = []
 	          tasksToUpdate.map(function(id,pos){
@@ -1403,11 +1402,11 @@
 	            t.priority = pos
 	            tasksUpdate.push(t)
 	          })
-	          log(tasksUpdate)
+	          //log(tasksUpdate)
 	          socket.emit('moveTask', tasksUpdate);
 	        },
 	        receive( event, ui ) {
-	          log("recive");
+	          //log("recive");
 	          var t = self.tasksById[ui.item.attr("tid")];
 	          t.day = self.dates[$(this).attr("di")];
 	          t.userId = $(this).attr("uid");
@@ -1418,7 +1417,7 @@
 
 	/*----------  Task click ----------*/
 	      $( ".connectedSortable > li" ).mousedown(function(e,obj) {
-	        log("down");
+	        //log("down");
 	        //e.stopPropagation();
 	        self.select = true;
 	        self.disabledTaskBtn(false)
@@ -1431,7 +1430,7 @@
 	              delete self.selectedTasks[t.attr("tid")];
 	            });
 	          }
-	          log("selected");
+	          //log("selected");
 	          var selectedTask = $(this);
 	          selectedTask.addClass('selected');
 	          self.selectedTasks[selectedTask.attr("tid")] = selectedTask;
@@ -1440,7 +1439,7 @@
 
 	/*----------  Task double click ----------*/
 	      $( ".connectedSortable > li" ).dblclick(function() {
-	        log("dbleclick");
+	        //log("dbleclick");
 	        var id = $(this).attr("tid");
 	        var t =  self.tasksById[id];
 	        if(!t.isDraging){
@@ -1489,7 +1488,7 @@
 	 *
 	 */
 	    changeInterval(nbWeek){
-	      log(this.now.format('MMMM Do YYYY'));
+	      //log(this.now.format('MMMM Do YYYY'));
 	      this.now = this.now.add(nbWeek,'w');
 	      this.init();
 	      this.sync();
@@ -1604,7 +1603,7 @@
 	      return '';
 	    }
 	  }
-	module.exports = tasksManager;
+	module.exports = tasksManager
 
 /***/ },
 /* 2 */
@@ -1709,13 +1708,12 @@
 
 /***/ },
 /* 6 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	//test
-	// tezst
-	//lorem
+	var socket = __webpack_require__(2);
 	class task{
 	  constructor(data){
+	    this.tm = window.tm;
 	    this.isOpen = false;
 	    this.isDraging = false;
 	    this.id = data.id;
@@ -1822,14 +1820,14 @@
 	  self.siofu = new SocketIOFileUpload(socket);
 
 	  $("#shifting_prev").click(function(){
-	    var prev = tm.getNextRelease(self.typeId,true)
+	    var prev = self.tm.getNextRelease(self.typeId,true)
 	    if(prev){
 	      socket.emit('changeRelease', {"t":self,"typeId":prev});
 	    }
 	  });
 
 	  $("#shifting_next").click(function(){
-	    var next = tm.getNextRelease(self.typeId,false)
+	    var next = self.tm.getNextRelease(self.typeId,false)
 	    if(next){
 	      socket.emit('changeRelease', {"t":self,"typeId":next});
 	    }
@@ -2002,7 +2000,7 @@
 	    // affichage du nom de l'utilisateur
 
 	    getCreationUser(){
-	      var user = tm.getUser(this.creationUserId);
+	      var user = self.tm.getUser(this.creationUserId);
 	      if (user != undefined){
 	        return user.getName();
 	      }
@@ -2012,7 +2010,7 @@
 	    // affichage du nom de l'utilisateur
 
 	    getEditUser(){
-	      var user = tm.getUser(this.accountableUserId);
+	      var user = self.tm.getUser(this.accountableUserId);
 	      if (user != undefined){
 	        return user.getName();
 	      }

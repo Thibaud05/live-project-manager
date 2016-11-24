@@ -1,5 +1,8 @@
-var tasksManager = require("./tasksManager.js");
 var socket = require("./socket.js");
+var tasksManager = require("./tasksManager.js");
+var tm = new tasksManager();
+window.tm = tm
+
 $(function () {
 
   $('.form-signin').css({ opacity: 0 ,marginTop: "0px"})
@@ -88,7 +91,7 @@ socket.on('logged', function (json) {
 })
 
 socket.on('loginUser', function (id_user) {
-  if( tm != undefined){
+  if( tm.users[id_user] != undefined){
     tm.users[id_user].logged = true
     updateUserList()
   }
@@ -164,17 +167,14 @@ function log(msg){
     console.log(msg);
   }
 } 
-var tm
 function appInit(data) {
   console.log("init")
-  tm = new tasksManager();
 
   ////////////////////////////////////////////
   //
   //  EVENT MANAGEMEMENT
   //
   ////////////////////////////////////////////
-  
   tm.init()
   tm.getData(data)
   tm.render()

@@ -1,39 +1,38 @@
 var socket = require("./socket.js");
 var user = require("./user.js");
 var file = require("./file.js");
-var file = require("./task.js");
-
+var task = require("./task.js");
 class tasksManager{
   constructor(){
-    this.userByProject = [];
-    this.projectByUser = [];
-    this.projectById = []
-    this.tasks = [];
-    this.tasksById = [];
-    this.users = [];
-    this.releases = [];
-    this.releasesById = [];
-    this.taskTypes = [];
-    this.taskTypesByDate = [];
-    this.taskTypeByProject = [];
-    this.nbWeekPerScreen = 3;
-    this.dayPerWeek = 5;
-    this.nbdays = this.nbWeekPerScreen*this.dayPerWeek;
-    this.days = ["L","M","M","J","V","S","D"];
-    this.now = moment();
-    this.week;
-    this.firstDayWeek;
-    this.dates;
-    this.datesIndex
-    this.offset;
-    this.selectedTasks = {};
-    this.connectUserId;
-    this.connectUser;
-    this.fullUrl;
-    this.select = false;
-    this.lastRelease = []
-    this.searchValue = "";
-    this.projectsId = {}
+      this.userByProject = [];
+      this.projectByUser = [];
+      this.projectById = []
+      this.tasks = [];
+      this.tasksById = [];
+      this.users = [];
+      this.releases = [];
+      this.releasesById = [];
+      this.taskTypes = [];
+      this.taskTypesByDate = [];
+      this.taskTypeByProject = [];
+      this.nbWeekPerScreen = 3;
+      this.dayPerWeek = 5;
+      this.nbdays = this.nbWeekPerScreen*this.dayPerWeek;
+      this.days = ["L","M","M","J","V","S","D"];
+      this.now = moment();
+      this.week;
+      this.firstDayWeek;
+      this.dates;
+      this.datesIndex
+      this.offset;
+      this.selectedTasks = {};
+      this.connectUserId;
+      this.connectUser;
+      this.fullUrl;
+      this.select = false;
+      this.lastRelease = []
+      this.searchValue = "";
+      this.projectsId = {}
   }
   init(){
     this.week = this.now.week();
@@ -884,7 +883,7 @@ class tasksManager{
       // Task drag and drop
       var self = this
       $( "body" ).off().mousedown(function(e) {
-          log("click out")
+          //log("click out")
           if(!self.select){
             $.each(self.selectedTasks, function( key, t ) {
               t.removeClass('selected');
@@ -901,7 +900,7 @@ class tasksManager{
         placeholder: "ui-sortable-placeholder",
         connectWith: ".connectedSortable",
         start( event, ui ) {
-          log("start")
+          //log("start")
           var t = self.tasksById[ui.item.attr("tid")];
           t.isDraging = true;
         },
@@ -911,7 +910,7 @@ class tasksManager{
           t.isDraging = false;
         },
         update:function( event, ui ) {
-          log("CLIENT MOVE TASK")
+          //log("CLIENT MOVE TASK")
           var tasksToUpdate = $(this).sortable('toArray', {attribute: 'tid'})
           var tasksUpdate = []
           tasksToUpdate.map(function(id,pos){
@@ -919,11 +918,11 @@ class tasksManager{
             t.priority = pos
             tasksUpdate.push(t)
           })
-          log(tasksUpdate)
+          //log(tasksUpdate)
           socket.emit('moveTask', tasksUpdate);
         },
         receive( event, ui ) {
-          log("recive");
+          //log("recive");
           var t = self.tasksById[ui.item.attr("tid")];
           t.day = self.dates[$(this).attr("di")];
           t.userId = $(this).attr("uid");
@@ -934,7 +933,7 @@ class tasksManager{
 
 /*----------  Task click ----------*/
       $( ".connectedSortable > li" ).mousedown(function(e,obj) {
-        log("down");
+        //log("down");
         //e.stopPropagation();
         self.select = true;
         self.disabledTaskBtn(false)
@@ -947,7 +946,7 @@ class tasksManager{
               delete self.selectedTasks[t.attr("tid")];
             });
           }
-          log("selected");
+          //log("selected");
           var selectedTask = $(this);
           selectedTask.addClass('selected');
           self.selectedTasks[selectedTask.attr("tid")] = selectedTask;
@@ -956,7 +955,7 @@ class tasksManager{
 
 /*----------  Task double click ----------*/
       $( ".connectedSortable > li" ).dblclick(function() {
-        log("dbleclick");
+        //log("dbleclick");
         var id = $(this).attr("tid");
         var t =  self.tasksById[id];
         if(!t.isDraging){
@@ -1005,7 +1004,7 @@ class tasksManager{
  *
  */
     changeInterval(nbWeek){
-      log(this.now.format('MMMM Do YYYY'));
+      //log(this.now.format('MMMM Do YYYY'));
       this.now = this.now.add(nbWeek,'w');
       this.init();
       this.sync();
@@ -1120,4 +1119,4 @@ class tasksManager{
       return '';
     }
   }
-module.exports = tasksManager;
+module.exports = tasksManager
