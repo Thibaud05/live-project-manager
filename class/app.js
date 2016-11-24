@@ -6,7 +6,7 @@ class app
         this.users = []
         this.usersKey = {}
         this.usersLogged = 0
-        this.ts = 161
+        this.ts = 165
         this.appVersion = "v1.2." + this.ts
         this.userBySocket = {}
     }
@@ -273,7 +273,7 @@ class app
                 '</div>' +
                 '<div class="strip"><div id="tasksManagerHead"></div></div></div><div class="page">';
     }
-
+    
     footer(){
         return '</div>'
     }
