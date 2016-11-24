@@ -1,24 +1,20 @@
-//////////////////////////////////////////
-//
-//  FILE OBJECT
-//
-//////////////////////////////////////////
-function file(data){
-  this.id = data.id;
-  this.taskId = data.taskId;
-  this.name = data.title;
-  this.type = data.type;
-  this.fullUrl = "";
-}
+class file{
+  constructor(data){
+    this.id = data.id;
+    this.taskId = data.taskId;
+    this.name = data.title;
+    this.type = data.type;
+    this.fullUrl = "";
+  }
 
-file.prototype = {
-  buildUrl: function() {
+  buildUrl() {
     var baseUrl = this.fullUrl + "files/";
     this.url = baseUrl + this.name;
     this.thumbnailUrl = baseUrl + "thumbnail/" + this.name;
     return true
-  },
-  display: function(){
+  }
+
+  display(){
     this.buildUrl();
     if (this.url) {
       var thumbnail = this.getThumbnail();
@@ -27,8 +23,9 @@ file.prototype = {
       html  = '<span class="text-danger">' + this.error + '<br>' + error + '</span>'
     }
     return html;
-  },
-  getThumbnail: function(){
+  }
+
+  getThumbnail(){
     var html = ""
     switch(this.type){
       case "image/jpeg" :
@@ -48,6 +45,6 @@ file.prototype = {
         html = this.type
     }
     return html
-    
   }
 }
+module.exports = file;

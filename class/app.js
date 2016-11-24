@@ -273,7 +273,7 @@ class app
                 '</div>' +
                 '<div class="strip"><div id="tasksManagerHead"></div></div></div><div class="page">';
     }
-    
+
     footer(){
         return '</div>'
     }
@@ -436,12 +436,12 @@ class app
     '<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> ' +
     '<script src="js/bootstrap.min.js"></script> ' +
     '<script src="js/moment.min.js"></script> ' +
-    '<script src="js/config.js?' + this.ts + '"></script>' +
-    '<script src="js/taskManager.js?' + this.ts + '"></script>' +
-    '<script src="js/task.js?' + this.ts + '"></script>' +
-    '<script src="js/user.js?' + this.ts + '"></script>' +
-    '<script src="js/file.js?' + this.ts + '"></script>' +
-    '<script src="js/app.js?' + this.ts + '"></script> ' +
+    //'<script src="js/config.js?' + this.ts + '"></script>' +
+    //'<script src="js/taskManager.js?' + this.ts + '"></script>' +
+    //'<script src="js/task.js?' + this.ts + '"></script>' +
+    //'<script src="js/user.js?' + this.ts + '"></script>' +
+    //'<script src="js/file.js?' + this.ts + '"></script>' +
+    '<script src="js/bundle.js?' + this.ts + '"></script> ' +
     '<script src="js/ie10-viewport-bug-workaround.js"></script> ' +
   '</body> ' +
 '</html>';

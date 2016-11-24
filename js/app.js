@@ -1,4 +1,5 @@
-var socket = io.connect(host);
+var tasksManager = require("./tasksManager.js");
+var socket = require("./socket.js");
 $(function () {
 
   $('.form-signin').css({ opacity: 0 ,marginTop: "0px"})
