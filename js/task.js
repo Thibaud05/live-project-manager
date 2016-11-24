@@ -1,4 +1,7 @@
-class file{
+//test
+// tezst
+//lorem
+class task{
   constructor(data){
     this.isOpen = false;
     this.isDraging = false;
@@ -40,7 +43,7 @@ class file{
     }else{
       return this.description
     }
-  },
+  }
 
   open(htmlTask){
     var self = this
