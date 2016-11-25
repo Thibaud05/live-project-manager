@@ -105,6 +105,13 @@ class task{
         var parent = $(this).parent();
         socket.emit('delDataFiles', self.files[fid]);
       });
+
+      $('.removeLink').click(function(){
+        var lid = $(this).attr('lid');
+        var parent = $(this).parent();
+        socket.emit('delDataLinks', self.links[lid]);
+      });
+
       
   self.siofu = new SocketIOFileUpload(socket);
 
@@ -237,6 +244,17 @@ class task{
           $("#upload").html(self.getAttachBtn());
           self.attachBtnOnClcik();
         }); 
+
+        $("#ok_btn").click(function() {
+          var title = $("#basic-url").val()
+          var link = $("#basic-url2").val()
+          if(title!="" && link != ""){
+            var data = {title:title,url:link,taskId:self.id}
+            socket.emit('setDataLinks', data);
+            $("#upload").html(self.getAttachBtn());
+            self.attachBtnOnClcik();
+          }
+        });
       });
     });
   }

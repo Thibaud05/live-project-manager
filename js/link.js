@@ -10,7 +10,7 @@ class link{
     var html = '<div class="link">'
     html += '<a href="' + this.url + '" target="_blank" class="btn btn-link"><span><i class="glyphicon glyphicon-link"></i></span><br></a>';
     html += this.title;
-    html += ' | <a href="#" fid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
+    html += ' | <a href="#" lid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
     html += '</div>';
     return html 
   }

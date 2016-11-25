@@ -88,6 +88,27 @@ class app
             io.emit('delDataFiles',f);
         })
 
+
+        socket.on('setDataLinks', function (data)
+        {
+            data.id = 0
+            var l = new global.link(data);
+            l.registerEvent("added")
+            l.addEventListener("added", function(e){
+                io.emit('setDataLinks',l);
+            }, false); 
+            l.add()
+        })
+
+        socket.on('delDataLinks', function (data)
+        {
+            var l = new global.link(data)
+            var id = l.id
+            l.del()
+            io.emit('delDataLinks',l);
+        })
+
+
         socket.on('addTask', function (data)
         {
             console.log("addTask")

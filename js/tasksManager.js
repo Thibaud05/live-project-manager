@@ -832,6 +832,32 @@ class tasksManager{
         }
         self.tasksById[f.taskId].files[f.id] = f
       })
+/*----------  delDataLinks  ----------*/
+      socket.on('delDataLinks', function (data)
+      {
+        var id = data.id
+        var selectedLink = $(".link > a[lid=" + id + "]").parent()
+        if (selectedLink) {
+          selectedLink.remove();
+        }
+        delete self.tasksById[data.taskId].links[id]
+      })
+      
+      /*----------  setDataLinks  ----------*/
+      socket.on('setDataLinks',function(data)
+      {
+        var l = new link(data)
+        var divFiles = $(".task[tid=" + l.taskId + "] .links")
+        if(divFiles){
+          divFiles.append(l.display())        
+          $('.removeFile').click(function(){
+            var lid = $(this).attr('lid');
+            var parent = $(this).parent();
+            socket.emit('delDatalink',l);
+          });
+        }
+        self.tasksById[f.taskId].links[l.id] = l
+      })
 
 /*----------  updateAvatar  ----------*/
       socket.on('updateAvatar',function(data)

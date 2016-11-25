@@ -1316,6 +1316,32 @@
 	        }
 	        self.tasksById[f.taskId].files[f.id] = f
 	      })
+	/*----------  delDataLinks  ----------*/
+	      socket.on('delDataLinks', function (data)
+	      {
+	        var id = data.id
+	        var selectedLink = $(".link > a[lid=" + id + "]").parent()
+	        if (selectedLink) {
+	          selectedLink.remove();
+	        }
+	        delete self.tasksById[data.taskId].links[id]
+	      })
+	      
+	      /*----------  setDataLinks  ----------*/
+	      socket.on('setDataLinks',function(data)
+	      {
+	        var l = new link(data)
+	        var divFiles = $(".task[tid=" + l.taskId + "] .links")
+	        if(divFiles){
+	          divFiles.append(l.display())        
+	          $('.removeFile').click(function(){
+	            var lid = $(this).attr('lid');
+	            var parent = $(this).parent();
+	            socket.emit('delDatalink',l);
+	          });
+	        }
+	        self.tasksById[f.taskId].links[l.id] = l
+	      })
 
 	/*----------  updateAvatar  ----------*/
 	      socket.on('updateAvatar',function(data)
@@ -1833,6 +1859,13 @@
 	        var parent = $(this).parent();
 	        socket.emit('delDataFiles', self.files[fid]);
 	      });
+
+	      $('.removeLink').click(function(){
+	        var lid = $(this).attr('lid');
+	        var parent = $(this).parent();
+	        socket.emit('delDataLinks', self.links[lid]);
+	      });
+
 	      
 	  self.siofu = new SocketIOFileUpload(socket);
 
@@ -1965,6 +1998,17 @@
 	          $("#upload").html(self.getAttachBtn());
 	          self.attachBtnOnClcik();
 	        }); 
+
+	        $("#ok_btn").click(function() {
+	          var title = $("#basic-url").val()
+	          var link = $("#basic-url2").val()
+	          if(title!="" && link != ""){
+	            var data = {title:title,url:link,taskId:self.id}
+	            socket.emit('setDataLinks', data);
+	            $("#upload").html(self.getAttachBtn());
+	            self.attachBtnOnClcik();
+	          }
+	        });
 	      });
 	    });
 	  }
@@ -2109,7 +2153,7 @@
 	    var html = '<div class="link">'
 	    html += '<a href="' + this.url + '" target="_blank" class="btn btn-link"><span><i class="glyphicon glyphicon-link"></i></span><br></a>';
 	    html += this.title;
-	    html += ' | <a href="#" fid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
+	    html += ' | <a href="#" lid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
 	    html += '</div>';
 	    return html 
 	  }
