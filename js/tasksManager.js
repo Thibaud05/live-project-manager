@@ -1,6 +1,8 @@
 var socket = require("./socket.js");
+window.socket = socket
 var user = require("./user.js");
 var file = require("./file.js");
+var link = require("./link.js");
 var task = require("./task.js");
 class tasksManager{
   constructor(){
@@ -75,6 +77,16 @@ class tasksManager{
           tasks_files[data.taskId][data.id] = new file(data);
         }
       });
+      var tasks_links = {};
+      //console.log(data)
+      data.tasks_links.map(function(data,key ) {
+        if(data!=undefined){
+          if(tasks_links[data.taskId] == undefined ){
+            tasks_links[data.taskId] = [];
+          }
+          tasks_links[data.taskId][data.id] = new link(data);
+        }
+      });
       //console.log(tasks_files)
       data.taskTypes.map(function(taskType,key) {
         self.taskTypes[taskType.id] = taskType;
@@ -133,6 +145,10 @@ class tasksManager{
           if(tasks_files[t.id] != undefined ){
             t.files = tasks_files[t.id];
             //log(t.files);
+          }
+
+          if(tasks_links[t.id] != undefined ){
+            t.links = tasks_links[t.id];
           }
           
           var k = t.userId + ":" + t.day;
@@ -905,7 +921,7 @@ class tasksManager{
           t.isDraging = true;
         },
         stop( event, ui ) {
-          log("stop")
+          //log("stop")
           var t = self.tasksById[ui.item.attr("tid")];
           t.isDraging = false;
         },

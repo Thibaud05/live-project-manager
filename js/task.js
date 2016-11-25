@@ -1,7 +1,6 @@
-var socket = require("./socket.js");
+var socket = window.socket
 class task{
   constructor(data){
-    this.tm = window.tm;
     this.isOpen = false;
     this.isDraging = false;
     this.id = data.id;
@@ -19,6 +18,7 @@ class task{
     this.title = data.title;
     this.description = data.description;
     this.files = [];
+    this.links = [];
     this.priority = data.priority
     this.w = 0
     this.h = 0
@@ -91,6 +91,7 @@ class task{
       html += '<p>ID : ' + self.id + '</p>';
       html += '<p>Responsable : ' + self.getCreationUser() + ", créé "+ moment(self.creationDate).fromNow() + '</p>';
       html += '<p>Attribué à ' + self.getEditUser() + '</p>';
+      html += self.displayLinks();
       html += '<p class="desc">' + description + '</p>';
       html += '</div>';
 
@@ -108,14 +109,14 @@ class task{
   self.siofu = new SocketIOFileUpload(socket);
 
   $("#shifting_prev").click(function(){
-    var prev = self.tm.getNextRelease(self.typeId,true)
+    var prev = window.tm.getNextRelease(self.typeId,true)
     if(prev){
       socket.emit('changeRelease', {"t":self,"typeId":prev});
     }
   });
 
   $("#shifting_next").click(function(){
-    var next = self.tm.getNextRelease(self.typeId,false)
+    var next = window.tm.getNextRelease(self.typeId,false)
     if(next){
       socket.emit('changeRelease', {"t":self,"typeId":next});
     }
@@ -217,7 +218,7 @@ class task{
   attachBtnOnClcik(){
     var self = this;
     $("#attach_btn").click(function() {
-      html = '<button id="link_btn" class="btn btn-attach-mini"><span ><i class="glyphicon glyphicon-link"></i> Add link</span></button>'
+      var html = '<button id="link_btn" class="btn btn-attach-mini"><span ><i class="glyphicon glyphicon-link"></i> Add link</span></button>'
       html += '<button id="upload_btn" class="btn btn-attach-mini fileinput-button"><span ><i class="glyphicon glyphicon-upload"></i> Add File</span></button>'
       html += self.getProgressBar();
       $("#upload").html(html);
@@ -288,7 +289,7 @@ class task{
     // affichage du nom de l'utilisateur
 
     getCreationUser(){
-      var user = self.tm.getUser(this.creationUserId);
+      var user = window.tm.getUser(this.creationUserId);
       if (user != undefined){
         return user.getName();
       }
@@ -298,7 +299,7 @@ class task{
     // affichage du nom de l'utilisateur
 
     getEditUser(){
-      var user = self.tm.getUser(this.accountableUserId);
+      var user = window.tm.getUser(this.accountableUserId);
       if (user != undefined){
         return user.getName();
       }
@@ -333,14 +334,24 @@ class task{
 
     displayFiles(){
       var html = '<div id="files" class="files">';
-      $.each( this.files, function( key, data ) {
-        if(data){
-          var objFile = new file({id:data.id,id_task:self.id,title:data.name,type:data.type});
-          html += objFile.display();
+      $.each( this.files, function( key, file ) {
+        if(file){
+          html += file.display();
         }
       });
       return html + '</div>';
     }
+
+    displayLinks(){
+      var html = '<div class="links">';
+      $.each( this.links, function( key, link ) {
+        if(link){
+          html += link.display();
+        }
+      });
+      return html + '<div class="clear"></div></div>';
+    }
+
     getNextPriority(tasks,priority){
       var k = this.userId + ":" + this.day;
       if(tasks[k][priority] != undefined ){

@@ -55,7 +55,8 @@ var sqls = [
   "SELECT * FROM `task_file`",
   "SELECT * FROM `task`",
   "SELECT * FROM `project`",
-  "SELECT * FROM `project_user`"
+  "SELECT * FROM `project_user`",
+  "SELECT * FROM `task_link`"
   ]
 
 connection.query(sqls.join(";"), function(err, r, fields) {
@@ -64,6 +65,7 @@ connection.query(sqls.join(";"), function(err, r, fields) {
   var indexedReleases = indexById(r[1])
   var indexedTasksFiles = indexById(r[3])
   var indexedProjects = indexById(r[5])
+  var indexedTasksLinks = indexById(r[7])
   var indexedUsers = []
   for (var data of r[2]) {
     var u = new user(data)
@@ -75,8 +77,9 @@ connection.query(sqls.join(";"), function(err, r, fields) {
     taskTypes   : r[0],
     releases    : indexedReleases,
     users       : indexedUsers,
-    tasks_files : indexedTasksFiles,
     tasks       : indexedTasks,
+    tasks_files : indexedTasksFiles,
+    tasks_links : indexedTasksLinks,
     projects    : indexedProjects,
     projects_user: r[6]
   }

@@ -653,3 +653,32 @@ td.firstCol{
     color: #fff;
     padding: 10px;
 }
+.links{
+    min-height: 100px;
+    width: 500px;
+}
+.links .link{
+    width: 100px;
+    display: block;
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 11px;
+}
+
+.links .btn-link{
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    display: table-cell;
+    vertical-align: middle;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.3);
+    width: 100px;
+    height: 95px;
+}
+
+.links .btn-link:hover{
+    background-color: rgba(0, 0, 0, 0.5);
+}

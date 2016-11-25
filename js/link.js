@@ -1,28 +1,18 @@
-class file{
+class link{
   constructor(data){
     this.id = data.id;
     this.taskId = data.taskId;
-    this.name = data.title;
-    this.type = data.type;
-    this.fullUrl = "";
-  }
-
-  buildUrl() {
-    var baseUrl = this.fullUrl + "files/";
-    this.url = baseUrl + this.name;
-    this.thumbnailUrl = baseUrl + "thumbnail/" + this.name;
-    return true
+    this.title = data.title;
+    this.url = data.link;
   }
 
   display(){
-    this.buildUrl();
-    var html;
-    if (this.url) {
-      html = '<div class="file"><a class="content" target="_blank" href="' + this.url + '" >' + this.getThumbnail() + '</a>' + this.name + ' <a href="#" fid="' + this.id + '" class="removeFile" >X</a></div>';
-    } else if (this.error) {
-      html  = '<span class="text-danger">' + this.error + '<br>' + error + '</span>'
-    }
-    return html;
+    var html = '<div class="link">'
+    html += '<a href="' + this.url + '" target="_blank" class="btn btn-link"><span><i class="glyphicon glyphicon-link"></i></span><br></a>';
+    html += this.title;
+    html += ' | <a href="#" fid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
+    html += '</div>';
+    return html 
   }
 
   getThumbnail(){
@@ -47,4 +37,4 @@ class file{
     return html
   }
 }
-module.exports = file;
+module.exports = link;

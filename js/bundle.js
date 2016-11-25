@@ -483,8 +483,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var socket = __webpack_require__(2);
+	window.socket = socket
 	var user = __webpack_require__(4);
 	var file = __webpack_require__(5);
+	var link = __webpack_require__(9);
 	var task = __webpack_require__(6);
 	class tasksManager{
 	  constructor(){
@@ -559,6 +561,16 @@
 	          tasks_files[data.taskId][data.id] = new file(data);
 	        }
 	      });
+	      var tasks_links = {};
+	      //console.log(data)
+	      data.tasks_links.map(function(data,key ) {
+	        if(data!=undefined){
+	          if(tasks_links[data.taskId] == undefined ){
+	            tasks_links[data.taskId] = [];
+	          }
+	          tasks_links[data.taskId][data.id] = new link(data);
+	        }
+	      });
 	      //console.log(tasks_files)
 	      data.taskTypes.map(function(taskType,key) {
 	        self.taskTypes[taskType.id] = taskType;
@@ -617,6 +629,10 @@
 	          if(tasks_files[t.id] != undefined ){
 	            t.files = tasks_files[t.id];
 	            //log(t.files);
+	          }
+
+	          if(tasks_links[t.id] != undefined ){
+	            t.links = tasks_links[t.id];
 	          }
 	          
 	          var k = t.userId + ":" + t.day;
@@ -1389,7 +1405,7 @@
 	          t.isDraging = true;
 	        },
 	        stop( event, ui ) {
-	          log("stop")
+	          //log("stop")
 	          var t = self.tasksById[ui.item.attr("tid")];
 	          t.isDraging = false;
 	        },
@@ -1673,9 +1689,9 @@
 
 	  display(){
 	    this.buildUrl();
+	    var html;
 	    if (this.url) {
-	      var thumbnail = this.getThumbnail();
-	      html = '<div class="file"><a class="content" target="_blank" href="' + this.url + '" >' + thumbnail + '</a>' + this.name + ' <a href="#" fid="' + this.id + '" class="removeFile" >X</a></div>';
+	      html = '<div class="file"><a class="content" target="_blank" href="' + this.url + '" >' + this.getThumbnail() + '</a>' + this.name + ' <a href="#" fid="' + this.id + '" class="removeFile" >X</a></div>';
 	    } else if (this.error) {
 	      html  = '<span class="text-danger">' + this.error + '<br>' + error + '</span>'
 	    }
@@ -1708,12 +1724,11 @@
 
 /***/ },
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	var socket = __webpack_require__(2);
+	var socket = window.socket
 	class task{
 	  constructor(data){
-	    this.tm = window.tm;
 	    this.isOpen = false;
 	    this.isDraging = false;
 	    this.id = data.id;
@@ -1731,6 +1746,7 @@
 	    this.title = data.title;
 	    this.description = data.description;
 	    this.files = [];
+	    this.links = [];
 	    this.priority = data.priority
 	    this.w = 0
 	    this.h = 0
@@ -1803,6 +1819,7 @@
 	      html += '<p>ID : ' + self.id + '</p>';
 	      html += '<p>Responsable : ' + self.getCreationUser() + ", créé "+ moment(self.creationDate).fromNow() + '</p>';
 	      html += '<p>Attribué à ' + self.getEditUser() + '</p>';
+	      html += self.displayLinks();
 	      html += '<p class="desc">' + description + '</p>';
 	      html += '</div>';
 
@@ -1820,14 +1837,14 @@
 	  self.siofu = new SocketIOFileUpload(socket);
 
 	  $("#shifting_prev").click(function(){
-	    var prev = self.tm.getNextRelease(self.typeId,true)
+	    var prev = window.tm.getNextRelease(self.typeId,true)
 	    if(prev){
 	      socket.emit('changeRelease', {"t":self,"typeId":prev});
 	    }
 	  });
 
 	  $("#shifting_next").click(function(){
-	    var next = self.tm.getNextRelease(self.typeId,false)
+	    var next = window.tm.getNextRelease(self.typeId,false)
 	    if(next){
 	      socket.emit('changeRelease', {"t":self,"typeId":next});
 	    }
@@ -1929,7 +1946,7 @@
 	  attachBtnOnClcik(){
 	    var self = this;
 	    $("#attach_btn").click(function() {
-	      html = '<button id="link_btn" class="btn btn-attach-mini"><span ><i class="glyphicon glyphicon-link"></i> Add link</span></button>'
+	      var html = '<button id="link_btn" class="btn btn-attach-mini"><span ><i class="glyphicon glyphicon-link"></i> Add link</span></button>'
 	      html += '<button id="upload_btn" class="btn btn-attach-mini fileinput-button"><span ><i class="glyphicon glyphicon-upload"></i> Add File</span></button>'
 	      html += self.getProgressBar();
 	      $("#upload").html(html);
@@ -2000,7 +2017,7 @@
 	    // affichage du nom de l'utilisateur
 
 	    getCreationUser(){
-	      var user = self.tm.getUser(this.creationUserId);
+	      var user = window.tm.getUser(this.creationUserId);
 	      if (user != undefined){
 	        return user.getName();
 	      }
@@ -2010,7 +2027,7 @@
 	    // affichage du nom de l'utilisateur
 
 	    getEditUser(){
-	      var user = self.tm.getUser(this.accountableUserId);
+	      var user = window.tm.getUser(this.accountableUserId);
 	      if (user != undefined){
 	        return user.getName();
 	      }
@@ -2045,14 +2062,24 @@
 
 	    displayFiles(){
 	      var html = '<div id="files" class="files">';
-	      $.each( this.files, function( key, data ) {
-	        if(data){
-	          var objFile = new file({id:data.id,id_task:self.id,title:data.name,type:data.type});
-	          html += objFile.display();
+	      $.each( this.files, function( key, file ) {
+	        if(file){
+	          html += file.display();
 	        }
 	      });
 	      return html + '</div>';
 	    }
+
+	    displayLinks(){
+	      var html = '<div class="links">';
+	      $.each( this.links, function( key, link ) {
+	        if(link){
+	          html += link.display();
+	        }
+	      });
+	      return html + '<div class="clear"></div></div>';
+	    }
+
 	    getNextPriority(tasks,priority){
 	      var k = this.userId + ":" + this.day;
 	      if(tasks[k][priority] != undefined ){
@@ -2063,6 +2090,53 @@
 	    }
 	}
 	module.exports = task;
+
+/***/ },
+/* 7 */,
+/* 8 */,
+/* 9 */
+/***/ function(module, exports) {
+
+	class link{
+	  constructor(data){
+	    this.id = data.id;
+	    this.taskId = data.taskId;
+	    this.title = data.title;
+	    this.url = data.link;
+	  }
+
+	  display(){
+	    var html = '<div class="link">'
+	    html += '<a href="' + this.url + '" target="_blank" class="btn btn-link"><span><i class="glyphicon glyphicon-link"></i></span><br></a>';
+	    html += this.title;
+	    html += ' | <a href="#" fid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
+	    html += '</div>';
+	    return html 
+	  }
+
+	  getThumbnail(){
+	    var html = ""
+	    switch(this.type){
+	      case "image/jpeg" :
+	        html = '<img src="' + this.thumbnailUrl + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
+	        html = '<img src="' + this.fullUrl + "/img/ico/doc.png" + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+	        html = '<img src="' + this.fullUrl + "/img/ico/ppt.png" + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+	        html = '<img src="' + this.fullUrl + "/img/ico/xls.png" + '" />';
+	        break
+	        
+	      default : 
+	        html = this.type
+	    }
+	    return html
+	  }
+	}
+	module.exports = link;
 
 /***/ }
 /******/ ]);
