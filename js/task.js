@@ -1,4 +1,5 @@
 var socket = window.socket
+var chat = require("./chat.js");
 class task{
   constructor(data){
     this.isOpen = false;
@@ -79,12 +80,12 @@ class task{
       htmlTask.css({"text-align":"left"});
       htmlTitle.css({"display":"block"});
       $("body").css("overflow","hidden");
+      var html =  '<div id="taskDetail"><div class="chat"></div>';
+      html +='<div id="closeTask"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>';
 
-      var html = '<div id="taskDetail"><div id="closeTask"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>';
+      html +='<div id="upload">' + self.getAttachBtn() + '</div>';
 
-  html +='<div id="upload">' + self.getAttachBtn() + '</div>';
-
-  html += self.displayFiles();
+      html += self.displayFiles();
       moment.locale('fr');
       html += '<p><button id="shifting_prev" type="button" class="btn btn-default" title="Avancer à la release précédente">' +
       '<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>';
@@ -102,8 +103,9 @@ class task{
 
       self.removeFile()
       self.removeLink()
-
       self.attachBtnOnClcik();
+
+      new chat(".chat",[])
 
   self.siofu = new SocketIOFileUpload(socket);
 

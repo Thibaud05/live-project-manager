@@ -452,6 +452,7 @@ class app
     '<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet"> ' +
     '<link href="css/signin.css" rel="stylesheet"> ' +
     '<link href="css/app.css?' + this.ts + '" rel="stylesheet"> ' +
+    '<link href="css/chat.css?' + this.ts + '" rel="stylesheet"> ' +
     '<script src="/socket.io/socket.io.js"></script> ' +
     '<script src="/siofu/client.js"></script>' +
 
