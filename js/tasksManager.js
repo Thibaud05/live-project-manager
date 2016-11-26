@@ -4,6 +4,7 @@ var user = require("./user.js");
 var file = require("./file.js");
 var link = require("./link.js");
 var task = require("./task.js");
+var message = require("./message.js");
 class tasksManager{
   constructor(){
       this.userByProject = [];
@@ -87,6 +88,21 @@ class tasksManager{
           tasks_links[data.taskId][data.id] = new link(data);
         }
       });
+
+      var tasks_messages = {};
+      data.tasks_messages.map(function(data,key ) {
+        if(data!=undefined){
+          if(tasks_messages[data.taskId] == undefined ){
+            tasks_messages[data.taskId] = [];
+          }
+          var me = false;
+          if(data.userId == self.connectUserId){
+            me = true;
+          }
+          var messageData = {txt:data.txt,dateTime:data.moment,user:self.users[data.userId],me:me}
+          tasks_messages[data.taskId][data.id] = new message(messageData);
+        }
+      });
       //console.log(tasks_files)
       data.taskTypes.map(function(taskType,key) {
         self.taskTypes[taskType.id] = taskType;
@@ -149,6 +165,10 @@ class tasksManager{
 
           if(tasks_links[t.id] != undefined ){
             t.links = tasks_links[t.id];
+          }
+
+          if(tasks_messages[t.id] != undefined ){
+            t.messages = tasks_messages[t.id];
           }
           
           var k = t.userId + ":" + t.day;

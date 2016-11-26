@@ -488,6 +488,7 @@
 	var file = __webpack_require__(5);
 	var link = __webpack_require__(9);
 	var task = __webpack_require__(6);
+	var message = __webpack_require__(11);
 	class tasksManager{
 	  constructor(){
 	      this.userByProject = [];
@@ -571,6 +572,21 @@
 	          tasks_links[data.taskId][data.id] = new link(data);
 	        }
 	      });
+
+	      var tasks_messages = {};
+	      data.tasks_messages.map(function(data,key ) {
+	        if(data!=undefined){
+	          if(tasks_messages[data.taskId] == undefined ){
+	            tasks_messages[data.taskId] = [];
+	          }
+	          var me = false;
+	          if(data.userId == self.connectUserId){
+	            me = true;
+	          }
+	          var messageData = {txt:data.txt,dateTime:data.moment,user:self.users[data.userId],me:me}
+	          tasks_messages[data.taskId][data.id] = new message(messageData);
+	        }
+	      });
 	      //console.log(tasks_files)
 	      data.taskTypes.map(function(taskType,key) {
 	        self.taskTypes[taskType.id] = taskType;
@@ -633,6 +649,10 @@
 
 	          if(tasks_links[t.id] != undefined ){
 	            t.links = tasks_links[t.id];
+	          }
+
+	          if(tasks_messages[t.id] != undefined ){
+	            t.messages = tasks_messages[t.id];
 	          }
 	          
 	          var k = t.userId + ":" + t.day;
@@ -1786,6 +1806,7 @@
 	    this.description = data.description;
 	    this.files = [];
 	    this.links = [];
+	    this.messages = [];
 	    this.priority = data.priority
 	    this.w = 0
 	    this.h = 0
@@ -1871,7 +1892,7 @@
 	      self.removeLink()
 	      self.attachBtnOnClcik();
 
-	      new chat(".chat",[])
+	      new chat(".chat",self.messages)
 
 	  self.siofu = new SocketIOFileUpload(socket);
 

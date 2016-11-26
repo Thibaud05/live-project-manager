@@ -20,6 +20,7 @@ class task{
     this.description = data.description;
     this.files = [];
     this.links = [];
+    this.messages = [];
     this.priority = data.priority
     this.w = 0
     this.h = 0
@@ -105,7 +106,7 @@ class task{
       self.removeLink()
       self.attachBtnOnClcik();
 
-      new chat(".chat",[])
+      new chat(".chat",self.messages)
 
   self.siofu = new SocketIOFileUpload(socket);
 
