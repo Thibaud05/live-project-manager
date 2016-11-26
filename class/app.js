@@ -13,6 +13,7 @@ class app
 
     controller(socket)
     {
+        var self = this;
         socket.on('setData', function (data)
         {
             console.log('setData')
@@ -93,11 +94,16 @@ class app
         {
             data.id = 0
             var l = new global.link(data);
-            l.registerEvent("added")
-            l.addEventListener("added", function(e){
-                io.emit('setDataLinks',l);
-            }, false); 
-            l.add()
+            self.checkUrlExists(l.link,function(urlExists){
+                if(urlExists){
+                    l.registerEvent("added")
+                    l.addEventListener("added", function(e){
+                        io.emit('setDataLinks',l);
+                    }, false); 
+                    l.add()
+                }
+                socket.emit('checkUrlExists',{urlExists:urlExists,taskId:l.taskId});
+            })
         })
 
         socket.on('delDataLinks', function (data)
@@ -259,6 +265,21 @@ class app
             html += '<li><a href="#">' + user.getAvatar(32) + '<span class="glyphicon ' + ico + '" aria-hidden="true"></span>' + user.firstName + '</a></li>'
         }
         return html
+    }
+
+    checkUrlExists(Url, callback) {
+        var http = require('http'),
+            url = require('url');
+        var options = {
+            method: 'HEAD',
+            host: url.parse(Url).host,
+            port: 80,
+            path: url.parse(Url).pathname
+        };
+        var req = http.request(options, function (r) {
+            callback( r.statusCode == 200 || r.statusCode == 301);
+        });
+        req.end();
     }
 
     header(u)

@@ -45,6 +45,8 @@ class task{
   }
 
   open(htmlTask){
+
+
     var self = this
     var htmlTitle = htmlTask.children(".contener").children("span")
     htmlTask.find("#taskDetail").remove();
@@ -98,21 +100,11 @@ class task{
       htmlTask.find("#taskDetail").remove();
       htmlTask.children(".contener").append(html);
 
+      self.removeFile()
+      self.removeLink()
+
       self.attachBtnOnClcik();
 
-      $('.removeFile').click(function(){
-        var fid = $(this).attr('fid');
-        var parent = $(this).parent();
-        socket.emit('delDataFiles', self.files[fid]);
-      });
-
-      $('.removeLink').click(function(){
-        var lid = $(this).attr('lid');
-        var parent = $(this).parent();
-        socket.emit('delDataLinks', self.links[lid]);
-      });
-
-      
   self.siofu = new SocketIOFileUpload(socket);
 
   $("#shifting_prev").click(function(){
@@ -242,6 +234,8 @@ class task{
         html += self.getProgressBar();
         $("#upload").html(html);
 
+        $("#link-title").focus();
+
         $("#remove_btn").click(function() {
           $(".link-form").remove();
           $("#upload").html(self.getAttachBtn());
@@ -251,17 +245,44 @@ class task{
         $("#ok_btn").click(function() {
           var title = $("#link-title").val()
           var link = $("#link-url").val()
+          $(".form-control").removeClass("error");
+          if(title == ""){
+            $("#link-title").addClass("error");
+          }
+          if(link == ""){
+            $("#link-url").addClass("error");
+          }
+
           if(title!="" && link != ""){
+
             var data = {title:title,url:link,taskId:self.id}
             socket.emit('setDataLinks', data);
-            $("#upload").html(self.getAttachBtn());
-            self.attachBtnOnClcik();
+          }else{
+            $(".link-form").effect("shake",{direction :"up"});
           }
         });
       });
     });
   }
+  removeFile()
+  {
+      var self = this
+      $('.removeFile').off()
+      $('.removeFile').click(function(){
+        var fid = $(this).attr('fid');
+        socket.emit('delDataFiles', self.files[fid]);
+      });
+  }
 
+  removeLink()
+  {
+      var self = this
+      $('.removeLink').off()  
+      $('.removeLink').click(function(){
+        var lid = $(this).attr('lid');
+        socket.emit('delDataLinks', self.links[lid]);
+      });
+  }
     /////////////////////
     // masquage du details de la tache
 
@@ -269,6 +290,8 @@ class task{
       $("#upload_btn").off()
       $("#shifting_prev").off()
       $("#shifting_next").off()
+      
+        
       this.siofu.removeEventListener("start")
       this.siofu.removeEventListener("progress")
       this.siofu.removeEventListener("complete")
@@ -370,7 +393,7 @@ class task{
           html += link.display();
         }
       });
-      return html + '<div class="clear"></div></div>';
+      return html + '</div>';
     }
 
     getNextPriority(tasks,priority){

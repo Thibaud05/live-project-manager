@@ -1307,12 +1307,8 @@
 	        var f = new file(data)
 	        var divFiles = $(".task[tid=" + f.taskId + "] .files")
 	        if(divFiles){
-	          divFiles.append(f.display())        
-	          $('.removeFile').click(function(){
-	            var fid = $(this).attr('fid');
-	            var parent = $(this).parent();
-	            socket.emit('delDataFiles',f);
-	          });
+	          divFiles.append(f.display())
+	          self.tasksById[f.taskId].removeFile();
 	        }
 	        self.tasksById[f.taskId].files[f.id] = f
 	      })
@@ -1326,22 +1322,33 @@
 	        }
 	        delete self.tasksById[data.taskId].links[id]
 	      })
-	      
+
 	      /*----------  setDataLinks  ----------*/
 	      socket.on('setDataLinks',function(data)
 	      {
 	        var l = new link(data)
-	        var divFiles = $(".task[tid=" + l.taskId + "] .links")
-	        if(divFiles){
-	          divFiles.append(l.display())        
-	          $('.removeFile').click(function(){
-	            var lid = $(this).attr('lid');
-	            var parent = $(this).parent();
-	            socket.emit('delDatalink',l);
-	          });
+	        var divLinks = $(".task[tid=" + l.taskId + "] .links")
+	        if(divLinks){
+	          divLinks.append(l.display())        
+	          self.tasksById[l.taskId].removeLink();
 	        }
-	        self.tasksById[f.taskId].links[l.id] = l
+	        self.tasksById[l.taskId].links[l.id] = l
 	      })
+
+	      socket.on('checkUrlExists', function (result)
+	        {
+	          if(result.urlExists){
+	            var t = self.tasksById[result.taskId];
+	            $("#upload").html(t.getAttachBtn());
+	            t.attachBtnOnClcik();
+	            $(".link-form").remove();
+	          }else{
+	            console.log("shake");
+	            $("#link-url").addClass("error");
+	            $(".link-form").effect("shake",{direction :"up"});
+	          }
+	          
+	        });
 
 	/*----------  updateAvatar  ----------*/
 	      socket.on('updateAvatar',function(data)
@@ -1398,6 +1405,11 @@
 	      {
 	          self.taskTypes[taskType.id] = taskType
 	      })
+
+
+
+
+
 	    }
 
 	/**
@@ -1799,6 +1811,8 @@
 	  }
 
 	  open(htmlTask){
+
+
 	    var self = this
 	    var htmlTitle = htmlTask.children(".contener").children("span")
 	    htmlTask.find("#taskDetail").remove();
@@ -1852,21 +1866,11 @@
 	      htmlTask.find("#taskDetail").remove();
 	      htmlTask.children(".contener").append(html);
 
+	      self.removeFile()
+	      self.removeLink()
+
 	      self.attachBtnOnClcik();
 
-	      $('.removeFile').click(function(){
-	        var fid = $(this).attr('fid');
-	        var parent = $(this).parent();
-	        socket.emit('delDataFiles', self.files[fid]);
-	      });
-
-	      $('.removeLink').click(function(){
-	        var lid = $(this).attr('lid');
-	        var parent = $(this).parent();
-	        socket.emit('delDataLinks', self.links[lid]);
-	      });
-
-	      
 	  self.siofu = new SocketIOFileUpload(socket);
 
 	  $("#shifting_prev").click(function(){
@@ -1996,6 +2000,8 @@
 	        html += self.getProgressBar();
 	        $("#upload").html(html);
 
+	        $("#link-title").focus();
+
 	        $("#remove_btn").click(function() {
 	          $(".link-form").remove();
 	          $("#upload").html(self.getAttachBtn());
@@ -2005,17 +2011,44 @@
 	        $("#ok_btn").click(function() {
 	          var title = $("#link-title").val()
 	          var link = $("#link-url").val()
+	          $(".form-control").removeClass("error");
+	          if(title == ""){
+	            $("#link-title").addClass("error");
+	          }
+	          if(link == ""){
+	            $("#link-url").addClass("error");
+	          }
+
 	          if(title!="" && link != ""){
+
 	            var data = {title:title,url:link,taskId:self.id}
 	            socket.emit('setDataLinks', data);
-	            $("#upload").html(self.getAttachBtn());
-	            self.attachBtnOnClcik();
+	          }else{
+	            $(".link-form").effect("shake",{direction :"up"});
 	          }
 	        });
 	      });
 	    });
 	  }
+	  removeFile()
+	  {
+	      var self = this
+	      $('.removeFile').off()
+	      $('.removeFile').click(function(){
+	        var fid = $(this).attr('fid');
+	        socket.emit('delDataFiles', self.files[fid]);
+	      });
+	  }
 
+	  removeLink()
+	  {
+	      var self = this
+	      $('.removeLink').off()  
+	      $('.removeLink').click(function(){
+	        var lid = $(this).attr('lid');
+	        socket.emit('delDataLinks', self.links[lid]);
+	      });
+	  }
 	    /////////////////////
 	    // masquage du details de la tache
 
@@ -2023,6 +2056,8 @@
 	      $("#upload_btn").off()
 	      $("#shifting_prev").off()
 	      $("#shifting_next").off()
+	      
+	        
 	      this.siofu.removeEventListener("start")
 	      this.siofu.removeEventListener("progress")
 	      this.siofu.removeEventListener("complete")
@@ -2124,7 +2159,7 @@
 	          html += link.display();
 	        }
 	      });
-	      return html + '<div class="clear"></div></div>';
+	      return html + '</div>';
 	    }
 
 	    getNextPriority(tasks,priority){

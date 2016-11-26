@@ -823,12 +823,8 @@ class tasksManager{
         var f = new file(data)
         var divFiles = $(".task[tid=" + f.taskId + "] .files")
         if(divFiles){
-          divFiles.append(f.display())        
-          $('.removeFile').click(function(){
-            var fid = $(this).attr('fid');
-            var parent = $(this).parent();
-            socket.emit('delDataFiles',f);
-          });
+          divFiles.append(f.display())
+          self.tasksById[f.taskId].removeFile();
         }
         self.tasksById[f.taskId].files[f.id] = f
       })
@@ -842,22 +838,33 @@ class tasksManager{
         }
         delete self.tasksById[data.taskId].links[id]
       })
-      
+
       /*----------  setDataLinks  ----------*/
       socket.on('setDataLinks',function(data)
       {
         var l = new link(data)
-        var divFiles = $(".task[tid=" + l.taskId + "] .links")
-        if(divFiles){
-          divFiles.append(l.display())        
-          $('.removeFile').click(function(){
-            var lid = $(this).attr('lid');
-            var parent = $(this).parent();
-            socket.emit('delDatalink',l);
-          });
+        var divLinks = $(".task[tid=" + l.taskId + "] .links")
+        if(divLinks){
+          divLinks.append(l.display())        
+          self.tasksById[l.taskId].removeLink();
         }
-        self.tasksById[f.taskId].links[l.id] = l
+        self.tasksById[l.taskId].links[l.id] = l
       })
+
+      socket.on('checkUrlExists', function (result)
+        {
+          if(result.urlExists){
+            var t = self.tasksById[result.taskId];
+            $("#upload").html(t.getAttachBtn());
+            t.attachBtnOnClcik();
+            $(".link-form").remove();
+          }else{
+            console.log("shake");
+            $("#link-url").addClass("error");
+            $(".link-form").effect("shake",{direction :"up"});
+          }
+          
+        });
 
 /*----------  updateAvatar  ----------*/
       socket.on('updateAvatar',function(data)
@@ -914,6 +921,11 @@ class tasksManager{
       {
           self.taskTypes[taskType.id] = taskType
       })
+
+
+
+
+
     }
 
 /**

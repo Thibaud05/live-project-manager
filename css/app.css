@@ -385,7 +385,7 @@ body{
     height: 95px;
     background-color: rgba(0, 0, 0, 0.3);
 }
-.btn-attach:hover, .btn-attach-mini:hover {
+.btn-attach:hover, .btn-attach-mini:hover,.btn-attach-mini:focus {
     color: #fff;
     background-color: rgba(0, 0, 0, 0.5);
 }
@@ -638,7 +638,6 @@ td.firstCol{
     background-color: rgba(0, 0, 0, 0.3);
     width: 300px;
     height: 100px;
-    padding: 10px;
 }
 .link-form input {
     border: 0;
@@ -646,7 +645,9 @@ td.firstCol{
     color: #fff;
 }
 .link-form .input-group {
-    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 .link-form .input-group-addon {
     border: 0;
@@ -654,8 +655,12 @@ td.firstCol{
     color: #fff;
     padding: 10px;
 }
+.link-form .error {
+    border-left: 5px solid #C62828;
+}
 .links{
     width: 500px;
+    overflow:hidden;
 }
 .links .link{
     width: 100px;
