@@ -232,22 +232,25 @@ class task{
       $("#upload_btn").click(self.siofu.prompt)
       $("#link_btn").click(function() {
         html = '<div class="link-form"><div class="input-group"><span class="input-group-addon" id="basic-addon">Title</span>';
-        html += '<input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon"></div>';
+        html += '<input type="text" class="form-control" id="link-title" aria-describedby="basic-addon"></div>';
         html += '<div class="input-group"><span class="input-group-addon" id="basic-addon2">Link</span>';
-        html += '<input type="text" class="form-control" id="basic-url2" aria-describedby="basic-addon2"></div></div>';
-        html += '<button id="remove_btn" class="btn btn-attach-mini"><span ><i class="glyphicon glyphicon-remove"></i></span></button>';
+        html += '<input type="text" class="form-control" id="link-url" aria-describedby="basic-addon2"></div></div>';
+        $("#files").prepend(html);
+
+        html = '<button id="remove_btn" class="btn btn-attach-mini"><span ><i class="glyphicon glyphicon-remove"></i></span></button>';
         html += '<button id="ok_btn" class="btn btn-attach-mini"><span ><i class="glyphicon glyphicon-ok"></i></span></button>';
         html += self.getProgressBar();
         $("#upload").html(html);
 
         $("#remove_btn").click(function() {
+          $(".link-form").remove();
           $("#upload").html(self.getAttachBtn());
           self.attachBtnOnClcik();
         }); 
 
         $("#ok_btn").click(function() {
-          var title = $("#basic-url").val()
-          var link = $("#basic-url2").val()
+          var title = $("#link-title").val()
+          var link = $("#link-url").val()
           if(title!="" && link != ""){
             var data = {title:title,url:link,taskId:self.id}
             socket.emit('setDataLinks', data);

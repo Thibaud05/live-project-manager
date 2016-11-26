@@ -632,8 +632,9 @@ td.firstCol{
 }
 
 .link-form {
-    position: absolute;
-    margin-left: -305px;
+    float: right;
+    margin-left: 20px;
+    margin-right: -13px;
     background-color: rgba(0, 0, 0, 0.3);
     width: 300px;
     height: 100px;
@@ -654,7 +655,6 @@ td.firstCol{
     padding: 10px;
 }
 .links{
-    min-height: 100px;
     width: 500px;
 }
 .links .link{
