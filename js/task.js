@@ -27,6 +27,7 @@ class task{
     this.valid = data.valid
     this.initPosition
     this.id_project = data.id_project
+    this.chat = null
     var self = this;
   }
 
@@ -106,7 +107,7 @@ class task{
       self.removeLink()
       self.attachBtnOnClcik();
 
-      new chat(".chat",self.messages)
+      self.chat = new chat(".chat",self.messages,self.id)
 
   self.siofu = new SocketIOFileUpload(socket);
 

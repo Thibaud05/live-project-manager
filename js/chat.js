@@ -1,16 +1,17 @@
 var message = require("./message.js");
 class chat{
-  constructor(container,messages){
+  constructor(container,messages,taskId){
     this.$container = $(container)
-    this.display()
-    this.messages = messages
+    this.display();
+    this.messages = messages;
     this.$messages = $('.messages');
     this.$input = $('.chatInput');
     this.$btnSend = $('#btnSend');
     this.lastHeight = this.$input.height();
     this.totalHeight = this.$container.height();
-    this.user_id = window.tm.connectUserId
-    this.init()
+    this.userId = window.tm.connectUserId;
+    this.taskId = taskId;
+    this.init();
   }
 
   display(){
@@ -26,17 +27,13 @@ class chat{
     var txt = this.$input.html().replace(/<div>/g, "").replace(/<\/div>/g, "<br>");
     if(txt!=""){
       var data = {
-        "user_id" : this.user_id,
-        "dateTime" : moment(),
+        "userId" : this.userId,
+        "moment" : moment(),
         "txt" : txt,
-        "me" : 1
+        "taskId" : this.taskId
       }
-      var newMessage = new message(data)
-      this.messages.push(newMessage)
-      this.$messages.append(newMessage.display())
+      socket.emit('setDataMessages', data);
       this.$input.text("")
-      this.checkForChanges()
-      this.displayLastMessage()
     }
   }
 
@@ -84,7 +81,7 @@ class chat{
     });
 
     this.$input.keydown(function(e){
-      this.delay(function(e){self.checkForChanges()},10)
+      self.delay(function(e){self.checkForChanges()},10)
     });
     
     // Envoy dun message

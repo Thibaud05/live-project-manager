@@ -12,6 +12,7 @@ global.type     = require('./class/type.js')
 global.release  = require('./class/release.js');
 global.file     = require('./class/file.js');
 global.link     = require('./class/link.js');
+global.message  = require('./class/message.js');
 global.moment   = require('./js/moment.min.js')
 
 var fs           = require("fs");

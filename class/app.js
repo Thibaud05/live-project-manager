@@ -114,6 +114,17 @@ class app
             io.emit('delDataLinks',l);
         })
 
+        socket.on('setDataMessages', function (data)
+        {
+            data.id = 0
+            var m = new global.message(data);
+            m.registerEvent("added")
+            m.addEventListener("added", function(e){
+                io.emit('setDataMessages',m);
+            }, false); 
+            m.add()
+        })
+
 
         socket.on('addTask', function (data)
         {

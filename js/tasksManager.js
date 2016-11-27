@@ -95,12 +95,7 @@ class tasksManager{
           if(tasks_messages[data.taskId] == undefined ){
             tasks_messages[data.taskId] = [];
           }
-          var me = false;
-          if(data.userId == self.connectUserId){
-            me = true;
-          }
-          var messageData = {txt:data.txt,dateTime:data.moment,user:self.users[data.userId],me:me}
-          tasks_messages[data.taskId][data.id] = new message(messageData);
+          tasks_messages[data.taskId][data.id] = new message(data);
         }
       });
       //console.log(tasks_files)
@@ -869,6 +864,21 @@ class tasksManager{
           self.tasksById[l.taskId].removeLink();
         }
         self.tasksById[l.taskId].links[l.id] = l
+      })
+
+      /*----------  setDataMessages  ----------*/
+      socket.on('setDataMessages',function(data)
+      {
+        var m = new message(data)
+        var t = self.tasksById[m.taskId]
+        var divMessage = $(".task[tid=" + m.taskId + "] .chat")
+        if(divMessage){
+          t.chat.messages.push(m)
+          t.chat.$messages.append(m.display())
+          t.chat.checkForChanges()
+          t.chat.displayLastMessage()
+        }
+        t.messages[m.id] = m
       })
 
       socket.on('checkUrlExists', function (result)

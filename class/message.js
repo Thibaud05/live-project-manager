@@ -1,5 +1,5 @@
 'use strict'
-class link
+class message
 {
     constructor(data)
     {
@@ -7,34 +7,37 @@ class link
         if(data)
         {
             this.id = data.id;
-            this.title = data.title;
+            this.userId = data.userId;
             this.taskId = data.taskId;
-            this.link = data.url;
+            this.txt = data.txt;
+            this.moment = global.moment(data.moment).format("YYYY-MM-DD HH:mm:ss")
         }
     }
 
     add(){
-        var sql = "INSERT INTO `task_link` (" +
-                    "`title`, " +
+        var sql = "INSERT INTO `task_message` (" +
+                    "`userId`, " +
                     "`taskId`, " +
-                    "`link`" +
+                    "`moment`, " +
+                    "`txt`" +
                 ") VALUES (" +
-                    "'" + this.title + "'," +
+                    "'" + this.userId + "'," +
                     "'" + this.taskId + "'," +
-                    "'" + this.link + "'" +
+                    "'" + this.moment + "'," +
+                    "'" + this.txt + "'" +
                 ");"
         var self = this
         global.connection.query(sql, function(err, result) {
             if (err) throw err;
             self.id = result.insertId;
-            global.data.tasks_links[self.id] = self
+            global.data.tasks_messages[self.id] = self
             self.dispatchEvent("added",self);
         });
     }
     del(){
-        var sql = "DELETE FROM `task_link` WHERE id = " + this.id;
+        var sql = "DELETE FROM `task_message` WHERE id = " + this.id;
         global.connection.query(sql)
-        delete global.data.tasks_links[this.id];
+        delete global.data.tasks_messages[this.id];
     }
     registerEvent(eventName)
     {
@@ -66,5 +69,5 @@ class Event
     }
 }
 
-module.exports=link;
+module.exports=message;
 

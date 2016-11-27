@@ -1,9 +1,12 @@
 class message{
   constructor(data){
+    this.id = data.id
+    this.userId = data.userId
+    this.taskId = data.taskId
     this.txt = data.txt
-    this.moment = moment(data.dateTime,"YYYY-MM-DD HH:mm:ss")
-    this.user = data.user
-    this.me = data.me
+    this.moment = moment(data.moment,"YYYY-MM-DD HH:mm:ss")
+    this.user = window.tm.users[data.userId]
+    this.me = data.userId == window.tm.connectUserId
   }
 
   display(){

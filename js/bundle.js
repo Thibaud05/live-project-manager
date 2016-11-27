@@ -579,12 +579,7 @@
 	          if(tasks_messages[data.taskId] == undefined ){
 	            tasks_messages[data.taskId] = [];
 	          }
-	          var me = false;
-	          if(data.userId == self.connectUserId){
-	            me = true;
-	          }
-	          var messageData = {txt:data.txt,dateTime:data.moment,user:self.users[data.userId],me:me}
-	          tasks_messages[data.taskId][data.id] = new message(messageData);
+	          tasks_messages[data.taskId][data.id] = new message(data);
 	        }
 	      });
 	      //console.log(tasks_files)
@@ -1355,6 +1350,21 @@
 	        self.tasksById[l.taskId].links[l.id] = l
 	      })
 
+	      /*----------  setDataMessages  ----------*/
+	      socket.on('setDataMessages',function(data)
+	      {
+	        var m = new message(data)
+	        var t = self.tasksById[m.taskId]
+	        var divMessage = $(".task[tid=" + m.taskId + "] .chat")
+	        if(divMessage){
+	          t.chat.messages.push(m)
+	          t.chat.$messages.append(m.display())
+	          t.chat.checkForChanges()
+	          t.chat.displayLastMessage()
+	        }
+	        t.messages[m.id] = m
+	      })
+
 	      socket.on('checkUrlExists', function (result)
 	        {
 	          if(result.urlExists){
@@ -1813,6 +1823,7 @@
 	    this.valid = data.valid
 	    this.initPosition
 	    this.id_project = data.id_project
+	    this.chat = null
 	    var self = this;
 	  }
 
@@ -1892,7 +1903,7 @@
 	      self.removeLink()
 	      self.attachBtnOnClcik();
 
-	      new chat(".chat",self.messages)
+	      self.chat = new chat(".chat",self.messages,self.id)
 
 	  self.siofu = new SocketIOFileUpload(socket);
 
@@ -2249,17 +2260,18 @@
 
 	var message = __webpack_require__(11);
 	class chat{
-	  constructor(container,messages){
+	  constructor(container,messages,taskId){
 	    this.$container = $(container)
-	    this.display()
-	    this.messages = messages
+	    this.display();
+	    this.messages = messages;
 	    this.$messages = $('.messages');
 	    this.$input = $('.chatInput');
 	    this.$btnSend = $('#btnSend');
 	    this.lastHeight = this.$input.height();
 	    this.totalHeight = this.$container.height();
-	    this.user_id = window.tm.connectUserId
-	    this.init()
+	    this.userId = window.tm.connectUserId;
+	    this.taskId = taskId;
+	    this.init();
 	  }
 
 	  display(){
@@ -2275,17 +2287,13 @@
 	    var txt = this.$input.html().replace(/<div>/g, "").replace(/<\/div>/g, "<br>");
 	    if(txt!=""){
 	      var data = {
-	        "user_id" : this.user_id,
-	        "dateTime" : moment(),
+	        "userId" : this.userId,
+	        "moment" : moment(),
 	        "txt" : txt,
-	        "me" : 1
+	        "taskId" : this.taskId
 	      }
-	      var newMessage = new message(data)
-	      this.messages.push(newMessage)
-	      this.$messages.append(newMessage.display())
+	      socket.emit('setDataMessages', data);
 	      this.$input.text("")
-	      this.checkForChanges()
-	      this.displayLastMessage()
 	    }
 	  }
 
@@ -2333,7 +2341,7 @@
 	    });
 
 	    this.$input.keydown(function(e){
-	      this.delay(function(e){self.checkForChanges()},10)
+	      self.delay(function(e){self.checkForChanges()},10)
 	    });
 	    
 	    // Envoy dun message
@@ -2363,10 +2371,13 @@
 
 	class message{
 	  constructor(data){
+	    this.id = data.id
+	    this.userId = data.userId
+	    this.taskId = data.taskId
 	    this.txt = data.txt
-	    this.moment = moment(data.dateTime,"YYYY-MM-DD HH:mm:ss")
-	    this.user = data.user
-	    this.me = data.me
+	    this.moment = moment(data.moment,"YYYY-MM-DD HH:mm:ss")
+	    this.user = window.tm.users[data.userId]
+	    this.me = data.userId == window.tm.connectUserId
 	  }
 
 	  display(){
