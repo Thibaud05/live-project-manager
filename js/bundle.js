@@ -2391,7 +2391,7 @@
 	    html += '  <div class="messageTime">' + this.getTime() + '</div>'
 	    html += '  <div class="message">'
 	    if(!this.me){
-	      html += '   <div class="userName">' + this.user.lastName + '</div>'
+	      html += '   <div class="userName">' + this.user.getName() + '</div>'
 	    }
 	    html += '   <div><p>' + this.txt + '</p></div>'
 	    html += '  </div>'

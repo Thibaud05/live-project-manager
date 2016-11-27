@@ -23,6 +23,7 @@
     padding-left: 50px;
     padding-right: 80px;
 }
+
 .chat .me .message{
     padding-left: 80px;
     padding-right: 50px;
@@ -40,8 +41,11 @@
 .chat .avatar{
     float: left;
 }
+.chat .other .avatar{
+    margin-top: 24px;
+}
 .chat .other .messageTime{
-    margin-top: 11px;
+    margin-top: 31px;
 }
 .chat .me .messageTime{
     margin-top: 10px;
