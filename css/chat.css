@@ -1,3 +1,6 @@
+.chat{
+    font-size: 12px;
+}
 .chat .messages{
     overflow-y:auto;
     height: 100%;
@@ -37,11 +40,8 @@
 .chat .avatar{
     float: left;
 }
-.chat .other .avatar{
-    margin-top: 28px;
-}
 .chat .other .messageTime{
-    margin-top: 33px;
+    margin-top: 11px;
 }
 .chat .me .messageTime{
     margin-top: 10px;
@@ -139,7 +139,7 @@
     visibility:hidden;
     right: 0;
     bottom: 0;
-    width: 50%;
+    width: 40%;
     height: 100%;
     padding-bottom: 40px;
     padding-top: 250px;
