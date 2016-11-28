@@ -687,3 +687,8 @@ td.firstCol{
 .links .btn-link:hover{
     background-color: rgba(0, 0, 0, 0.5);
 }
+.attach-conainer {
+    position: absolute;
+    top: 90px;
+    right: 0;
+}

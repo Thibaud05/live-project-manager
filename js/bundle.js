@@ -44,8 +44,8 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var socket = __webpack_require__(2);
-	var tasksManager = __webpack_require__(1);
+	var socket = __webpack_require__(1);
+	var tasksManager = __webpack_require__(3);
 	var tm = new tasksManager();
 	window.tm = tm
 
@@ -482,13 +482,35 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var socket = __webpack_require__(2);
+	var config = __webpack_require__(2);
+	let instance = null;
+	class socket{  
+	    constructor() {
+	        if(!instance){
+	              instance = io.connect(config.host);;
+	        }
+	        return instance;
+	      }
+	}
+	module.exports = new socket();
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	var host = 'http://www.koolog.com:3000';
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var socket = __webpack_require__(1);
 	window.socket = socket
 	var user = __webpack_require__(4);
 	var file = __webpack_require__(5);
-	var link = __webpack_require__(9);
-	var task = __webpack_require__(6);
-	var message = __webpack_require__(11);
+	var link = __webpack_require__(6);
+	var task = __webpack_require__(7);
+	var message = __webpack_require__(9);
 	class tasksManager{
 	  constructor(){
 	      this.userByProject = [];
@@ -1690,28 +1712,6 @@
 	module.exports = tasksManager
 
 /***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var config = __webpack_require__(3);
-	let instance = null;
-	class socket{  
-	    constructor() {
-	        if(!instance){
-	              instance = io.connect(config.host);;
-	        }
-	        return instance;
-	      }
-	}
-	module.exports = new socket();
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	var host = 'http://127.0.0.1:3000';
-
-/***/ },
 /* 4 */
 /***/ function(module, exports) {
 
@@ -1792,10 +1792,55 @@
 
 /***/ },
 /* 6 */
+/***/ function(module, exports) {
+
+	class link{
+	  constructor(data){
+	    this.id = data.id;
+	    this.taskId = data.taskId;
+	    this.title = data.title;
+	    this.url = data.link;
+	  }
+
+	  display(){
+	    var html = '<div class="link">'
+	    html += '<a href="' + this.url + '" target="_blank" class="btn btn-link"><span><i class="glyphicon glyphicon-link"></i></span><br></a>';
+	    html += this.title;
+	    html += ' | <a href="#" lid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
+	    html += '</div>';
+	    return html 
+	  }
+
+	  getThumbnail(){
+	    var html = ""
+	    switch(this.type){
+	      case "image/jpeg" :
+	        html = '<img src="' + this.thumbnailUrl + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
+	        html = '<img src="' + this.fullUrl + "/img/ico/doc.png" + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+	        html = '<img src="' + this.fullUrl + "/img/ico/ppt.png" + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+	        html = '<img src="' + this.fullUrl + "/img/ico/xls.png" + '" />';
+	        break
+	        
+	      default : 
+	        html = this.type
+	    }
+	    return html
+	  }
+	}
+	module.exports = link;
+
+/***/ },
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var socket = window.socket
-	var chat = __webpack_require__(10);
+	var chat = __webpack_require__(8);
 	class task{
 	  constructor(data){
 	    this.isOpen = false;
@@ -1881,11 +1926,11 @@
 	      var html =  '<div id="taskDetail"><div class="chat"></div>';
 	      html +='<div id="closeTask"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>';
 
-	      html +='<div id="upload">' + self.getAttachBtn() + '</div>';
+	      html +='<div class="attach-conainer"><div id="upload">' + self.getAttachBtn() + '</div>';
 
 	      html += self.displayFiles();
 	      moment.locale('fr');
-	      html += '<p><button id="shifting_prev" type="button" class="btn btn-default" title="Avancer à la release précédente">' +
+	      html += '</div><p><button id="shifting_prev" type="button" class="btn btn-default" title="Avancer à la release précédente">' +
 	      '<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>';
 	      html += ' <button id="shifting_next" type="button" class="btn btn-default" title="Repousser à la prochaine release">' +
 	      '<span  class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button></p>';
@@ -2208,57 +2253,10 @@
 	module.exports = task;
 
 /***/ },
-/* 7 */,
-/* 8 */,
-/* 9 */
-/***/ function(module, exports) {
-
-	class link{
-	  constructor(data){
-	    this.id = data.id;
-	    this.taskId = data.taskId;
-	    this.title = data.title;
-	    this.url = data.link;
-	  }
-
-	  display(){
-	    var html = '<div class="link">'
-	    html += '<a href="' + this.url + '" target="_blank" class="btn btn-link"><span><i class="glyphicon glyphicon-link"></i></span><br></a>';
-	    html += this.title;
-	    html += ' | <a href="#" lid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
-	    html += '</div>';
-	    return html 
-	  }
-
-	  getThumbnail(){
-	    var html = ""
-	    switch(this.type){
-	      case "image/jpeg" :
-	        html = '<img src="' + this.thumbnailUrl + '" />';
-	        break
-	      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
-	        html = '<img src="' + this.fullUrl + "/img/ico/doc.png" + '" />';
-	        break
-	      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-	        html = '<img src="' + this.fullUrl + "/img/ico/ppt.png" + '" />';
-	        break
-	      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-	        html = '<img src="' + this.fullUrl + "/img/ico/xls.png" + '" />';
-	        break
-	        
-	      default : 
-	        html = this.type
-	    }
-	    return html
-	  }
-	}
-	module.exports = link;
-
-/***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var message = __webpack_require__(11);
+	var message = __webpack_require__(9);
 	class chat{
 	  constructor(container,messages,taskId){
 	    this.$container = $(container)
@@ -2366,7 +2364,7 @@
 	module.exports = chat;
 
 /***/ },
-/* 11 */
+/* 9 */
 /***/ function(module, exports) {
 
 	class message{

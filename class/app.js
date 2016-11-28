@@ -278,14 +278,14 @@ class app
         return html
     }
 
-    checkUrlExists(Url, callback) {
+    checkUrlExists(link, callback) {
         var http = require('http'),
             url = require('url');
         var options = {
             method: 'HEAD',
-            host: url.parse(Url).host,
+            host: url.parse(link).host,
             port: 80,
-            path: url.parse(Url).pathname
+            path: url.parse(link).pathname
         };
         var req = http.request(options, function (r) {
             callback( r.statusCode == 200 || r.statusCode == 301);
