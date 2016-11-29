@@ -10,7 +10,7 @@ class message
             this.userId = data.userId;
             this.taskId = data.taskId;
             this.txt = data.txt;
-            this.moment = global.moment(data.moment).format("YYYY-MM-DD HH:mm:ss")
+            this.moment = global.moment().format("YYYY-MM-DD HH:mm:ss")
         }
     }
 
