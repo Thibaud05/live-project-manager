@@ -256,28 +256,6 @@ class app
         }
     }
 
-    getNbUserLogged()
-    {
-        return this.usersLogged
-    }
-
-    getUsersList()
-    {
-        var html = ""
-        for (var user of this.users)
-        {
-            var ico = "glyphicon-remove-sign"
-            if(user.logged==1){
-                ico = "glyphicon-ok-sign"
-            }
-            if(html!=""){
-               html += '<li role="separator" class="divider"></li>' 
-            }
-            html += '<li><a href="#">' + user.getAvatar(32) + '<span class="glyphicon ' + ico + '" aria-hidden="true"></span>' + user.firstName + '</a></li>'
-        }
-        return html
-    }
-
     checkUrlExists(link, callback) {
         var http = require('http'),
             url = require('url');
@@ -299,10 +277,7 @@ class app
         return '<div class="bar"><div class="stripHead"></div>' +
                 '<div class="head">' +
                 '<div class="logoLpm"><img src="img/lpm.png" /></div>' + 
-                '<div id="online" class="dropdown"><button type="button" id="dropdownMenu1" class="btn btn-user dropdown-primary" title="Utilisateurs connectés" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
-                '<span class="glyphicon glyphicon-user" aria-hidden="true"></span><span id="usersLogged"></span></button>' +
                 '<div id="config">' + this.displayConfig() + '</div>' +
-                '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="usersList">'+ this.getUsersList() +'</ul></div>' +
                 this.barContent() + 
                     '<div class="nav navbar-right" id="user"><a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' + 
                           u.getAvatar(32) +

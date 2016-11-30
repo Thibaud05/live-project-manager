@@ -668,7 +668,7 @@ class tasksManager{
         if(user && user.display){
           var empltyLine = true
           var line  = "<tr>";
-          line += '<td class="firstCol" >' + user.firstName + '</td>';
+          line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + user.firstName + '</td>';
           for (i = 0; i < self.nbdays; i++){
             var index = i % self.dayPerWeek;
             var css = ( index==0 ) ? ' class="leftSep"' : '';

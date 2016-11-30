@@ -93,13 +93,17 @@ socket.on('logged', function (json) {
 socket.on('loginUser', function (id_user) {
   if( tm.users[id_user] != undefined){
     tm.users[id_user].logged = true
-    updateUserList()
+    var cible = $(".avatar" + id_user).parent().find(".glyphicon")
+   	cible.removeClass("glyphicon-remove-sign")
+   	cible.addClass("glyphicon-ok-sign")
   }
 })
 
 socket.on('logoutUser', function (id_user) {
   tm.users[id_user].logged = false
-  updateUserList()
+    var cible = $(".avatar" + id_user).parent().find(".glyphicon")
+   cible.removeClass("glyphicon-ok-sign")
+   cible.addClass("glyphicon-remove-sign")
 })
 
 
@@ -196,7 +200,7 @@ function appInit(data) {
     }
   })
 
-  updateUserList()
+
   //////////////////////
   // Week navigation
 
@@ -215,11 +219,11 @@ function appInit(data) {
    $( "#search_btn" ).click(function() {
     if(searchIsOpen){
       $( "#search" ).hide()
-      $(".page").css("padding-top","151px")
+      $(".page").css("padding-top","141px")
       searchIsOpen = false
     }else{
       $( "#search" ).show()
-      $(".page").css("padding-top","197px")
+      $(".page").css("padding-top","187px")
       searchIsOpen = true
     }
     $( this ).blur()
@@ -251,12 +255,11 @@ function appInit(data) {
       }
   }) 
 
-  $( "#online" ).after( tm.getProjects());
+  $( "#next" ).after( tm.getProjects());
 
   $("#projects").on('mousedown', 'li a', function(){
     var idProject = $(this).data('value')
     tm.toogleProject(idProject)
-    updateUserList()
     $(this).children( ".glyphicon" ).toggleClass("glyphicon-eye-close").toggleClass("glyphicon-eye-open")
   });
 
@@ -408,12 +411,6 @@ function appInit(data) {
   });
 
 };
-
-function updateUserList(){
-  var data = tm.getUsersList()
-  $('#usersLogged').html(data.nb)
-  $('#usersList').html(data.list)
-}
 
 function createCookie(name, value, days) {
     var expires;

@@ -11,7 +11,7 @@ body{
 }
 .stripHead{
 	background-color: #303F9F;
-	height: 10px;
+	height: 0px;
 }
 .strip{
 	background-color: #F5F5F5;
@@ -35,7 +35,7 @@ body{
     float: right!important;
 }
 #menu3 {
-    margin-top: 14px;
+    margin-top: 15px;
     border-radius: 0;
     border: 0;
     top: auto;
@@ -75,7 +75,7 @@ body{
 
 
 #user{
-    margin-top: 10px;
+    margin-top: 9px;
 }
 .nav .open>a, .nav .open>a:focus, .nav .open>a:hover,
 #user a:hover{
@@ -83,7 +83,7 @@ body{
 }
 #user .name{
     color: #fff;
-    padding-right: 10px;
+    padding-right: 9px;
     display: none;
 }
 .clear{
@@ -456,13 +456,13 @@ td.firstCol{
     z-index: 2;
 }
 .page{
-    padding-top:151px;
+    padding-top:141px;
 }
 .barContent {
     margin-left: 0px;
     left: 50%;
     position: absolute;
-    margin-top: 4px;
+    margin-top: 5px;
 }
 .barContent .btn{
     margin-right: 10px;
@@ -585,7 +585,7 @@ td.firstCol{
     margin-top: 14px;
     left: -103px;
 }
-#usersList .glyphicon {
+.firstCol .glyphicon {
     top: 11px;
     left: -1px;
 }

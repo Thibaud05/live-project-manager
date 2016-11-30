@@ -44,8 +44,8 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var socket = __webpack_require__(1);
-	var tasksManager = __webpack_require__(3);
+	var socket = __webpack_require__(2);
+	var tasksManager = __webpack_require__(1);
 	var tm = new tasksManager();
 	window.tm = tm
 
@@ -139,13 +139,17 @@
 	socket.on('loginUser', function (id_user) {
 	  if( tm.users[id_user] != undefined){
 	    tm.users[id_user].logged = true
-	    updateUserList()
+	    var cible = $(".avatar" + id_user).parent().find(".glyphicon")
+	   	cible.removeClass("glyphicon-remove-sign")
+	   	cible.addClass("glyphicon-ok-sign")
 	  }
 	})
 
 	socket.on('logoutUser', function (id_user) {
 	  tm.users[id_user].logged = false
-	  updateUserList()
+	    var cible = $(".avatar" + id_user).parent().find(".glyphicon")
+	   cible.removeClass("glyphicon-ok-sign")
+	   cible.addClass("glyphicon-remove-sign")
 	})
 
 
@@ -242,7 +246,7 @@
 	    }
 	  })
 
-	  updateUserList()
+
 	  //////////////////////
 	  // Week navigation
 
@@ -261,11 +265,11 @@
 	   $( "#search_btn" ).click(function() {
 	    if(searchIsOpen){
 	      $( "#search" ).hide()
-	      $(".page").css("padding-top","151px")
+	      $(".page").css("padding-top","141px")
 	      searchIsOpen = false
 	    }else{
 	      $( "#search" ).show()
-	      $(".page").css("padding-top","197px")
+	      $(".page").css("padding-top","187px")
 	      searchIsOpen = true
 	    }
 	    $( this ).blur()
@@ -297,12 +301,11 @@
 	      }
 	  }) 
 
-	  $( "#online" ).after( tm.getProjects());
+	  $( "#next" ).after( tm.getProjects());
 
 	  $("#projects").on('mousedown', 'li a', function(){
 	    var idProject = $(this).data('value')
 	    tm.toogleProject(idProject)
-	    updateUserList()
 	    $(this).children( ".glyphicon" ).toggleClass("glyphicon-eye-close").toggleClass("glyphicon-eye-open")
 	  });
 
@@ -455,12 +458,6 @@
 
 	};
 
-	function updateUserList(){
-	  var data = tm.getUsersList()
-	  $('#usersLogged').html(data.nb)
-	  $('#usersList').html(data.list)
-	}
-
 	function createCookie(name, value, days) {
 	    var expires;
 
@@ -482,35 +479,13 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var config = __webpack_require__(2);
-	let instance = null;
-	class socket{  
-	    constructor() {
-	        if(!instance){
-	              instance = io.connect(config.host);;
-	        }
-	        return instance;
-	      }
-	}
-	module.exports = new socket();
-
-/***/ },
-/* 2 */
-/***/ function(module, exports) {
-
-	var host = 'http://www.koolog.com:3000';
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var socket = __webpack_require__(1);
+	var socket = __webpack_require__(2);
 	window.socket = socket
 	var user = __webpack_require__(4);
 	var file = __webpack_require__(5);
-	var link = __webpack_require__(6);
-	var task = __webpack_require__(7);
-	var message = __webpack_require__(9);
+	var link = __webpack_require__(9);
+	var task = __webpack_require__(6);
+	var message = __webpack_require__(11);
 	class tasksManager{
 	  constructor(){
 	      this.userByProject = [];
@@ -1174,7 +1149,7 @@
 	        if(user && user.display){
 	          var empltyLine = true
 	          var line  = "<tr>";
-	          line += '<td class="firstCol" >' + user.firstName + '</td>';
+	          line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + user.firstName + '</td>';
 	          for (i = 0; i < self.nbdays; i++){
 	            var index = i % self.dayPerWeek;
 	            var css = ( index==0 ) ? ' class="leftSep"' : '';
@@ -1712,6 +1687,28 @@
 	module.exports = tasksManager
 
 /***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var config = __webpack_require__(3);
+	let instance = null;
+	class socket{  
+	    constructor() {
+	        if(!instance){
+	              instance = io.connect(config.host);;
+	        }
+	        return instance;
+	      }
+	}
+	module.exports = new socket();
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	var host = 'http://127.0.0.1:3000';
+
+/***/ },
 /* 4 */
 /***/ function(module, exports) {
 
@@ -1724,13 +1721,19 @@
 	    this.display = false
 	    this.logged = data.logged
 	  }
-
 	  getName(){
 	    return this.firstName + " " + this.lastName;
 	  }
 
 	  getAvatar(size){
 	      return '<img class="img-circle avatar avatar' + this.id + '" src="img/user/' + this.id + '.jpg" width="' + size + '" height="' + size + '" />';
+	  }
+	  getStatus(){
+	    var ico = "glyphicon-remove-sign"
+	    if(this.logged == 1){
+	      ico = "glyphicon-ok-sign"
+	    }
+	    return '<span class="glyphicon ' + ico + '" aria-hidden="true"></span>';
 	  }
 	}
 	module.exports = user;
@@ -1792,55 +1795,10 @@
 
 /***/ },
 /* 6 */
-/***/ function(module, exports) {
-
-	class link{
-	  constructor(data){
-	    this.id = data.id;
-	    this.taskId = data.taskId;
-	    this.title = data.title;
-	    this.url = data.link;
-	  }
-
-	  display(){
-	    var html = '<div class="link">'
-	    html += '<a href="' + this.url + '" target="_blank" class="btn btn-link"><span><i class="glyphicon glyphicon-link"></i></span><br></a>';
-	    html += this.title;
-	    html += ' | <a href="#" lid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
-	    html += '</div>';
-	    return html 
-	  }
-
-	  getThumbnail(){
-	    var html = ""
-	    switch(this.type){
-	      case "image/jpeg" :
-	        html = '<img src="' + this.thumbnailUrl + '" />';
-	        break
-	      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
-	        html = '<img src="' + this.fullUrl + "/img/ico/doc.png" + '" />';
-	        break
-	      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-	        html = '<img src="' + this.fullUrl + "/img/ico/ppt.png" + '" />';
-	        break
-	      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-	        html = '<img src="' + this.fullUrl + "/img/ico/xls.png" + '" />';
-	        break
-	        
-	      default : 
-	        html = this.type
-	    }
-	    return html
-	  }
-	}
-	module.exports = link;
-
-/***/ },
-/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var socket = window.socket
-	var chat = __webpack_require__(8);
+	var chat = __webpack_require__(10);
 	class task{
 	  constructor(data){
 	    this.isOpen = false;
@@ -2253,10 +2211,57 @@
 	module.exports = task;
 
 /***/ },
-/* 8 */
+/* 7 */,
+/* 8 */,
+/* 9 */
+/***/ function(module, exports) {
+
+	class link{
+	  constructor(data){
+	    this.id = data.id;
+	    this.taskId = data.taskId;
+	    this.title = data.title;
+	    this.url = data.link;
+	  }
+
+	  display(){
+	    var html = '<div class="link">'
+	    html += '<a href="' + this.url + '" target="_blank" class="btn btn-link"><span><i class="glyphicon glyphicon-link"></i></span><br></a>';
+	    html += this.title;
+	    html += ' | <a href="#" lid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
+	    html += '</div>';
+	    return html 
+	  }
+
+	  getThumbnail(){
+	    var html = ""
+	    switch(this.type){
+	      case "image/jpeg" :
+	        html = '<img src="' + this.thumbnailUrl + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
+	        html = '<img src="' + this.fullUrl + "/img/ico/doc.png" + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+	        html = '<img src="' + this.fullUrl + "/img/ico/ppt.png" + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+	        html = '<img src="' + this.fullUrl + "/img/ico/xls.png" + '" />';
+	        break
+	        
+	      default : 
+	        html = this.type
+	    }
+	    return html
+	  }
+	}
+	module.exports = link;
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var message = __webpack_require__(9);
+	var message = __webpack_require__(11);
 	class chat{
 	  constructor(container,messages,taskId){
 	    this.$container = $(container)
@@ -2364,7 +2369,7 @@
 	module.exports = chat;
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports) {
 
 	class message{
