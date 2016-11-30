@@ -304,9 +304,7 @@ class app
                 '<div id="config">' + this.displayConfig() + '</div>' +
                 '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="usersList">'+ this.getUsersList() +'</ul></div>' +
                 this.barContent() + 
-                    '<div class="nav navbar-right" id="user"><span class="name">' +
-                      u.firstName + 
-                        '</span><a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' + 
+                    '<div class="nav navbar-right" id="user"><a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' + 
                           u.getAvatar(32) +
                         '</a>' +
                         '<div id="menu3" class="dropdown-menu" aria-labelledby="user">' +
