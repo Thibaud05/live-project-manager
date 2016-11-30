@@ -24,7 +24,7 @@ class message
                     "'" + this.userId + "'," +
                     "'" + this.taskId + "'," +
                     "'" + this.moment + "'," +
-                    "'" + this.txt + "'" +
+                    "'" + global.escapeQuote(this.txt) + "'" +
                 ");"
         var self = this
         global.connection.query(sql, function(err, result) {
