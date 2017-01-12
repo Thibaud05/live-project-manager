@@ -2507,11 +2507,11 @@
 	        var self = this;
 	        $(".project").click(function(){
 	            var id = $(this).parents(".card").attr("projectId");
-	            self.displayDetails(id);
+	            self.selectFav(id);
 	        });
 	        $(".btnFav").click(function(){
 	            var id = $(this).parents(".card").attr("projectId");
-	            self.selectFav(id);
+	            self.displayDetails(id);
 	        });
 	    }
 
