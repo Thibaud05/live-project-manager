@@ -44,8 +44,8 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var socket = __webpack_require__(2);
-	var tasksManager = __webpack_require__(1);
+	var socket = __webpack_require__(1);
+	var tasksManager = __webpack_require__(3);
 	var tm = new tasksManager();
 	window.tm = tm
 
@@ -303,32 +303,21 @@
 
 	  $( "#next" ).after( tm.getProjects());
 
+	  tm.btnProjectHandler();
+
+	/*
 	  $("#projects").on('mousedown', 'li a', function(){
 	    var idProject = $(this).data('value')
 	    tm.toogleProject(idProject)
 	    $(this).children( ".glyphicon" ).toggleClass("glyphicon-eye-close").toggleClass("glyphicon-eye-open")
 	  });
 
-
-
-
-
+	*/
 
 	  //////////////////////
 	  // Accountable selected task
 	  $("#dropdownAccountable").mousedown(function() {
 	    tm.select = true;
-	    console.log("oups")
-	  });
-
-	  $("#accountable").on('mousedown', 'li a', function(){
-
-	    var idUser = $(this).data('value')
-	    tm.assignAccountable(idUser)
-	  });
-
-	  $("#accountable").on('click', 'li a', function(){
-	    $( this ).blur()
 	  });
 
 	  //////////////////////
@@ -479,13 +468,36 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var socket = __webpack_require__(2);
+	var config = __webpack_require__(2);
+	var instance = null;
+	class socket{  
+	    constructor() {
+	        if(!instance){
+	              instance = io.connect(config.host);
+	        }
+	        return instance;
+	      }
+	}
+	module.exports = new socket();
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	var host = 'http://127.0.0.1:3000';
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var socket = __webpack_require__(1);
 	window.socket = socket
 	var user = __webpack_require__(4);
 	var file = __webpack_require__(5);
-	var link = __webpack_require__(9);
-	var task = __webpack_require__(6);
-	var message = __webpack_require__(11);
+	var link = __webpack_require__(6);
+	var task = __webpack_require__(7);
+	var projectScreen = __webpack_require__(10);
+	var message = __webpack_require__(9);
 	class tasksManager{
 	  constructor(){
 	      this.userByProject = [];
@@ -517,6 +529,7 @@
 	      this.lastRelease = []
 	      this.searchValue = "";
 	      this.projectsId = {}
+	      this.projectIsOpen = false;
 	  }
 	  init(){
 	    this.week = this.now.week();
@@ -539,7 +552,7 @@
 	 */
 	  getData(data){
 	    //console.log(data)
-	    this.connectUserId = data.connectUserId;
+	      this.connectUserId = data.connectUserId;
 	      this.fullUrl = data.fullUrl;
 	      this.tasks = [];
 	      var self = this
@@ -627,12 +640,13 @@
 	          }
 	        }
 	      });
+	      this.selectProject(data.selectedProject)
+
 	      data.tasks.map(function(data,key) {
 	        
 	        if(data!=undefined){
 	          data.id_project = self.taskTypes[data.typeId].id_project;
 	          var t = new task(data);
-	          
 
 	          if(tasks_files[t.id] != undefined ){
 	            t.files = tasks_files[t.id];
@@ -657,12 +671,16 @@
 	          self.tasksById[t.id] = t;
 	        }
 	      });
+	    
 	    self.projectByUser[self.connectUser.id].map(function(projectId,key) {
 	      self.projectsId[projectId] = true
-	      self.userByProject[projectId].map(function(userId,key) {
-	          self.users[userId].display = true
-	      })
+	      if(self.selectedProject == projectId){
+	        self.userByProject[projectId].map(function(userId,key) {
+	            self.users[userId].display = true
+	        })
+	      }
 	    });
+	    
 	  }
 	/**
 	 *
@@ -671,14 +689,17 @@
 	 */
 	  getNextRelease(typeId,getPrev){
 	    var maxRelease = {}
+	    self = this
 	    this.releasesById.map(function(r,key){
 	      if (r){
-	        if(maxRelease[r.typeId]!=undefined){
-	          if(maxRelease[r.typeId] < r.day){
+	        if(r.id_project == self.selectedProject){
+	          if(maxRelease[r.typeId]!=undefined){
+	            if(maxRelease[r.typeId] < r.day){
+	              maxRelease[r.typeId] = r.day
+	            }
+	          }else{
 	            maxRelease[r.typeId] = r.day
 	          }
-	        }else{
-	          maxRelease[r.typeId] = r.day
 	        }
 	      }
 	    })
@@ -726,9 +747,8 @@
 	        user.display = false
 	      }
 	    })
-
 	    self.projectByUser[self.connectUser.id].map(function(projectId,key) {
-	      if(self.projectsId[projectId]){
+	      if(self.selectedProject == projectId){
 	        self.userByProject[projectId].map(function(userId,key) {
 	            self.users[userId].display = true
 	        })
@@ -738,6 +758,7 @@
 	    this.tasks = [];
 	    this.tasksById.map(function(t,key) {
 	      if (t){
+	        t.isLocked = (self.selectedProject != t.id_project)
 	        var display = true;
 	        if(self.searchValue != ""){
 	          display = false;
@@ -966,7 +987,9 @@
 	        }
 
 	        if (!selectedTask.length && cible.length) {
-	          var htmlTask = this.renderTask(t);
+	          var inBox = cible.parents('div.box').length > 0
+	          console.log("inBox : " + inBox)
+	          var htmlTask = this.renderTask(t,inBox);
 	          cible.append(htmlTask)
 	        }
 	    }
@@ -991,7 +1014,6 @@
 
 	/*----------  assign Accountable TASK  ----------*/
 	    assignAccountable(userId){
-	      console.log(userId)
 	      var assignTasks = [];
 	      for (var key in this.selectedTasks) {
 	        var t = this.tasksById[key]
@@ -1002,12 +1024,21 @@
 	      socket.emit('updateTask', assignTasks);
 	    }
 
+	    renderAccountable(){
+	        var html = ''
+	        for (var userId of this.userByProject[this.selectedProject]) {
+	            console.log(userId)
+	            var user = this.users[userId]
+	            html += '<li><a href="#" data-value="' + user.id + '">' + user.getName() + '</a></li>'
+	        }
+	        return html
+	    }
 	/**
 	 *
 	 * DISPLAY TASKS
 	 *
 	 */
-	    renderTasks(key){
+	    renderTasks(key,inBox){
 
 	      var html = ''
 	      var tabTask = this.tasks[key];
@@ -1015,9 +1046,7 @@
 	        for (var i = 0; i < tabTask.length; i++){
 	          var t = tabTask[i];
 	          if(t!=undefined){
-	            if(this.projectsId[t.id_project]){
-	              html += this.renderTask(t)
-	            }
+	              html += this.renderTask(t,inBox)
 	          }
 	        }
 	      }
@@ -1028,19 +1057,28 @@
 	 * DISPLAY TASK
 	 *
 	 */
-	    renderTask(task){
-	        var color = this.taskTypes[task.typeId].color;
-	        var env = '';
-	        if(task.typeId!=5 && task.typeId!=6){
-	           env = '<div class="env">' + this.getLastRelease(task.typeId) + '</div>'
+	    renderTask(task,inBox){
+	        var html = ''
+
+	        if(this.projectsId[task.id_project] && (!inBox || !task.isLocked)){
+	          var color = this.taskTypes[task.typeId].color;
+	          var env = '';
+	          var validClass = "ok hidden"
+	          var taskTitle = task.title
+	          if(!task.isLocked){
+	            if(task.typeId!=5 && task.typeId!=6){
+	               env = '<div class="env">' + this.getLastRelease(task.typeId) + '</div>'
+	            }
+	            if(task.valid==1){
+	              validClass = "ok"
+	            }
+	          }else{
+	            taskTitle = this.projectById[task.id_project].name
+	          }
+	          html = '<li class="ui-state-default task ' + color + '" tid = "' + task.id + '" >'+ env 
+	          + '<div class="contener"><span class="title">' + taskTitle + '</span>'
+	          + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></div></li>';
 	        }
-	        var validClass = "ok"
-	        if(task.valid!=1){
-	          validClass = "ok hidden"
-	        }
-	        var html = '<li class="ui-state-default task ' + color + '" tid = "' + task.id + '" >'+ env 
-	        + '<div class="contener"><span class="title">' + task.title + '</span>'
-	        + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></div></li>';
 	      return html
 	    }
 	/**
@@ -1055,7 +1093,7 @@
 	        for (var i = 0; i < tabRelease.length; i++){
 	          var r = tabRelease[i];
 	          if(r!=undefined){
-	            if(this.projectsId[r.id_project]){
+	            if(r.id_project == this.selectedProject){
 	              html += this.renderRelease(r)
 	            }
 	          }
@@ -1087,14 +1125,14 @@
 	 */
 	    renderBox(type,idType){ 
 	      var html = ''
-	      var htmlTasks = this.renderTasks(idType + ":0000-00-00")
+	      var htmlTasks = this.renderTasks(idType + ":0000-00-00",true)
 	      if(this.searchValue == "" || htmlTasks != ""){
 	       
 	        html = '<div class="panel panel-default box">';
 	        html += '<div class="panel-heading">' + type + '</div>';
 	        html +=   '<div class="panel-body">';
 	        html +=     '<ul class="connectedSortable" di = "-1" uid ="' + idType + '">' 
-	        html +=       this.renderTasks(idType + ":0000-00-00")
+	        html +=       this.renderTasks(idType + ":0000-00-00",true)
 	        html +=     '</ul>'
 	        html +=   '</div>';
 	        html += '</div>';
@@ -1155,7 +1193,7 @@
 	            var css = ( index==0 ) ? ' class="leftSep"' : '';
 	            line += '<td' + css + '><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
 
-	            var htmlTask = self.renderTasks(user.id + ":" + self.dates[i]);
+	            var htmlTask = self.renderTasks(user.id + ":" + self.dates[i],false);
 	            if(htmlTask != ""){
 	              empltyLine = false
 	              line += htmlTask;
@@ -1183,6 +1221,7 @@
 	        htmlBox += this.renderBox("ARCHIVE",5)
 	      }
 	      $("#box").html(htmlBox);
+	      $("#accountable").html(this.renderAccountable());
 	    }
 
 	/**
@@ -1370,7 +1409,6 @@
 	            t.attachBtnOnClcik();
 	            $(".link-form").remove();
 	          }else{
-	            console.log("shake");
 	            $("#link-url").addClass("error");
 	            $(".link-form").effect("shake",{direction :"up"});
 	          }
@@ -1395,8 +1433,6 @@
 	        if(selectedTask){
 
 	          var oldTypeID = self.tasksById[t.id].typeId
-	          console.log("oldTypeID " + oldTypeID)
-	          console.log("TypeID " + t.typeId)
 	          var oldColor = self.taskTypes[oldTypeID].color;
 	          var newColor = self.taskTypes[t.typeId].color;
 	          var newEnv = self.getLastRelease(t.typeId)
@@ -1410,10 +1446,9 @@
 	/*----------  addRelease  ----------*/
 	      socket.on('addRelease',function(r)
 	      {
-	          console.log(r)
+
 	          // Ajout de la release dans le tableau de release indexé par id
 	          self.releasesById[r.id] = r
-	          console.log(self.releasesById)
 	          // Ajout de la release dans le tableau de release indexé par jour
 	          if(self.releases[r.day] == undefined){
 	            self.releases[r.day] = new Array();
@@ -1467,7 +1502,11 @@
 	        start( event, ui ) {
 	          //log("start")
 	          var t = self.tasksById[ui.item.attr("tid")];
-	          t.isDraging = true;
+	          if(t.isLocked){
+	            $( this ).sortable( "cancel" );
+	          }else{
+	            t.isDraging = true;
+	          }
 	        },
 	        stop( event, ui ) {
 	          //log("stop")
@@ -1504,7 +1543,7 @@
 	        self.disabledTaskBtn(false)
 	        var id = $(this).attr("tid");
 	        var t =  self.tasksById[id];
-	        if(! t.isOpen){
+	        if(! t.isOpen && !t.isLocked){
 	          if(!e.ctrlKey){
 	            $.each(self.selectedTasks, function( key, t ) {
 	              t.removeClass('selected');
@@ -1525,8 +1564,7 @@
 	        var t =  self.tasksById[id];
 	        if(!t.isDraging){
 	        $(this).removeClass('selected');
-	        if(! t.isOpen){
-
+	        if(! t.isOpen && !t.isLocked){
 	          t.open($(this));
 	        }
 	      }
@@ -1561,7 +1599,25 @@
 	          socket.emit('setRelease', r);
 	        }
 	      }).disableSelection();
+
+
+	/*----------  Release drag and drop  ----------*/
+
+	    $("#accountable").on('mousedown', 'li a', function(){
+	      var idUser = $(this).data('value')
+	      self.assignAccountable(idUser)
+	    });
+
+	    $("#accountable").on('click', 'li a', function(){
+	      $( this ).blur()
+	    });
 	    }
+
+
+
+
+
+
 
 	/**
 	 *
@@ -1600,23 +1656,49 @@
 	 * Projects
 	 *
 	 */
-
 	    getProjects(){
-	      var self = this
-	      var html = '<div class="btn-group">' + 
-	      '<button id="dropdownProjects" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"' +
-	      ' aria-haspopup="true" aria-expanded="true" title="Mes projets">' + 
-	      '<span class="glyphicon glyphicon-th" aria-hidden="true"></span></button>' + 
-	      '<ul id="projects" class="dropdown-menu" aria-labelledby="dropdownProjects">'
+	      var html = 
+	      '<button id="btnProject" type="button" class="btn btn-primary" ntitle="Mes projets">' + 
+	      '<span class="glyphicon glyphicon-th" aria-hidden="true"></span></button>'
+	      return html;
+	    }
 
-	      self.projectByUser[self.connectUser.id].map(function(projectId,key) {
-	        var icon = '<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span></button>'
-	        if(self.projectsId[projectId]){
-	          icon = '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>'
+	    btnProjectHandler(){
+	        var self = this;
+	        $("#btnProject").click(function(){
+	          if(!self.projectIsOpen){
+	            var ps = new projectScreen(self.projectByUser[self.connectUser.id],self.projectById,self.usersById);
+	            ps.dispayMyProject();
+	            $(".strip").hide();
+	            self.projectIsOpen = true;
+	          }else{
+	            self.closeProject()
+	          }
+	        });
+	    }
+
+	    closeProject(){
+	      $(".strip").show();
+	      $("#screenContainer").html('<div id="tasksManager" style="margin-top: 0px; opacity: 1;"></div><div id="box"></div>');
+	      this.projectIsOpen = false;
+	      this.sync()
+	      this.render()
+	      this.activate();
+	    }
+	    selectProject(id){
+	      if(id != this.selectedProject){
+	        if(id == undefined || id == 0 ) {
+	          id = this.projectByUser[this.connectUser.id][0]
 	        }
-	        html += '<li><a href="#" data-value="' + projectId + '">' + icon + ' ' + self.getProjectTitle(projectId) + '</a></li>'
-	      });
-	      return html + '</li></ul></div>'
+	        this.selectedProject = id
+	        if(this.projectById[id]){
+	          this.projectById[id].selected = true
+	        }
+	        socket.emit('selectProject',id);
+	      }
+	    }
+	    unSelectProject(id){
+	      this.projectById[id].selected = false
 	    }
 
 	    toogleProject(projectId){
@@ -1685,28 +1767,6 @@
 	    }
 	  }
 	module.exports = tasksManager
-
-/***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var config = __webpack_require__(3);
-	let instance = null;
-	class socket{  
-	    constructor() {
-	        if(!instance){
-	              instance = io.connect(config.host);;
-	        }
-	        return instance;
-	      }
-	}
-	module.exports = new socket();
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	var host = 'http://127.0.0.1:3000';
 
 /***/ },
 /* 4 */
@@ -1795,10 +1855,55 @@
 
 /***/ },
 /* 6 */
+/***/ function(module, exports) {
+
+	class link{
+	  constructor(data){
+	    this.id = data.id;
+	    this.taskId = data.taskId;
+	    this.title = data.title;
+	    this.url = data.link;
+	  }
+
+	  display(){
+	    var html = '<div class="link">'
+	    html += '<a href="' + this.url + '" target="_blank" class="btn btn-link"><span><i class="glyphicon glyphicon-link"></i></span><br></a>';
+	    html += this.title;
+	    html += ' | <a href="#" lid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
+	    html += '</div>';
+	    return html 
+	  }
+
+	  getThumbnail(){
+	    var html = ""
+	    switch(this.type){
+	      case "image/jpeg" :
+	        html = '<img src="' + this.thumbnailUrl + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
+	        html = '<img src="' + this.fullUrl + "/img/ico/doc.png" + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+	        html = '<img src="' + this.fullUrl + "/img/ico/ppt.png" + '" />';
+	        break
+	      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+	        html = '<img src="' + this.fullUrl + "/img/ico/xls.png" + '" />';
+	        break
+	        
+	      default : 
+	        html = this.type
+	    }
+	    return html
+	  }
+	}
+	module.exports = link;
+
+/***/ },
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var socket = window.socket
-	var chat = __webpack_require__(10);
+	var chat = __webpack_require__(8);
 	class task{
 	  constructor(data){
 	    this.isOpen = false;
@@ -1827,6 +1932,7 @@
 	    this.initPosition
 	    this.id_project = data.id_project
 	    this.chat = null
+	    this.isLocked = (window.tm.selectedProject != this.id_project);
 	    var self = this;
 	  }
 
@@ -1847,8 +1953,6 @@
 	  }
 
 	  open(htmlTask){
-
-
 	    var self = this
 	    var htmlTitle = htmlTask.children(".contener").children("span")
 	    htmlTask.find("#taskDetail").remove();
@@ -2211,57 +2315,10 @@
 	module.exports = task;
 
 /***/ },
-/* 7 */,
-/* 8 */,
-/* 9 */
-/***/ function(module, exports) {
-
-	class link{
-	  constructor(data){
-	    this.id = data.id;
-	    this.taskId = data.taskId;
-	    this.title = data.title;
-	    this.url = data.link;
-	  }
-
-	  display(){
-	    var html = '<div class="link">'
-	    html += '<a href="' + this.url + '" target="_blank" class="btn btn-link"><span><i class="glyphicon glyphicon-link"></i></span><br></a>';
-	    html += this.title;
-	    html += ' | <a href="#" lid="' + this.id + '" class="removeLink" title="Remove link">X</a>D';
-	    html += '</div>';
-	    return html 
-	  }
-
-	  getThumbnail(){
-	    var html = ""
-	    switch(this.type){
-	      case "image/jpeg" :
-	        html = '<img src="' + this.thumbnailUrl + '" />';
-	        break
-	      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
-	        html = '<img src="' + this.fullUrl + "/img/ico/doc.png" + '" />';
-	        break
-	      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-	        html = '<img src="' + this.fullUrl + "/img/ico/ppt.png" + '" />';
-	        break
-	      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-	        html = '<img src="' + this.fullUrl + "/img/ico/xls.png" + '" />';
-	        break
-	        
-	      default : 
-	        html = this.type
-	    }
-	    return html
-	  }
-	}
-	module.exports = link;
-
-/***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var message = __webpack_require__(11);
+	var message = __webpack_require__(9);
 	class chat{
 	  constructor(container,messages,taskId){
 	    this.$container = $(container)
@@ -2369,7 +2426,7 @@
 	module.exports = chat;
 
 /***/ },
-/* 11 */
+/* 9 */
 /***/ function(module, exports) {
 
 	class message{
@@ -2407,6 +2464,389 @@
 	  }
 	}
 	module.exports = message;
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var project = __webpack_require__(11);
+	var acUser = __webpack_require__(12);
+	//////////////////////////////////////////
+	//
+	//  PROJECT SCREEN CLASS
+	//
+	//////////////////////////////////////////
+	class projectScreen{
+	    constructor(projectsUser,projects,usersById){
+	        this.nbCol = 3;
+	        this.AllProject = projects
+	        this.projectsData = [];
+	        this.usersById = usersById
+	        this.mapData(projectsUser);
+	    }
+
+	    dispayMyProject()
+	    {
+	        var html = '<div class="container"><div class="starter-template"><h1>Projets';
+	        html += ' <a id="addUser" href="#" class="btn btn-success" title="Ajouter un projet"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>';
+	        html += '</h1></div>';
+	        var nbCol = 0;
+	        var row = "";
+	        this.projectsData.forEach(function(p,i) {
+	            nbCol ++;
+	            row += '<div class="col-md-4">' + p.display() + '</div>';
+	            if(nbCol % this.nbCol == 0){
+	                html += '<div class="row">' + row + '</div>';
+	                row = "";
+	            }
+	        },this);
+	        if(row != ""){
+	            html += '<div class="row">' + row + '</div>';
+	        }
+	        $("#screenContainer").html('<div class="container">' + html + '</div>');
+	        var self = this;
+	        $(".project").click(function(){
+	            var id = $(this).parents(".card").attr("projectId");
+	            self.displayDetails(id);
+	        });
+	        $(".btnFav").click(function(){
+	            var id = $(this).parents(".card").attr("projectId");
+	            self.selectFav(id);
+	        });
+	    }
+
+	    selectFav(id)
+	    {
+	        this.projectsData.forEach(function(p) {
+	            if(p.id!=id){
+	                window.tm.unSelectProject(p.id)
+	            }
+	        });
+	        window.tm.selectProject(id)
+	        window.tm.closeProject()
+	    }
+
+	    displayDetails(id)
+	    {
+	        var self = this
+	        var p = this.projectsData[id];
+	        $("#screenContainer").html(p.displayDetails());
+	        $("#addUser").click(function(){
+	            console.log("click btn add")
+	            $("#addUser").hide()
+	            $("#addUser").after('<input type="text" class="form-control" id="acUser" placeholder="User">')
+	            $("#acUser").focus()
+	            var myAcUser = new acUser("#acUser",self.usersById);
+	            myAcUser.init()
+	        });
+
+	    }
+
+	    mapData(projectsUser){
+	        var self = this;
+	        
+
+	        projectsUser.forEach(function(projectId) {
+	            var p = new project(self.AllProject[projectId]);
+	            this.projectsData[p.id] = p;
+	        },this);
+	    }
+	}
+	module.exports = projectScreen;
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	
+	//////////////////////////////////////////
+	//
+	//  PROJECT OBJECT
+	//
+	//////////////////////////////////////////
+	class project{
+	  constructor(data){
+	    this.id = data.id;
+	    this.name = data.name;
+	    this.desc = data.desc;
+	    this.img = data.img;
+	    this.color = data.color
+	    this.isPublic = data.isPublic;
+	    this.id_project = data.id_project;
+	    this.selected = data.selected;
+	  }
+
+	display()
+	  {
+	    var html = '<div class="card" projectId="' + this.id + '">';
+	    html += '<div class="btnFav"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-star';
+	    if(this.selected){
+	      html += ' selected';
+	    }
+	    html += '" aria-hidden="true"></span></button></div>'; 
+	    html += '<a href="#" class="project" style="' + this.displayBackground() + '">';
+	    html += this.displayName();
+	    html += '</a>';
+	    html += '</div>'; 
+	    return html;
+	  }
+
+	  displayDetails()
+	  {
+	    var html = '<div class="container-fluid">';
+	    html += ' <div class="row projectDetailsHeader" style="' + this.displayBackgroundColor() + '">';
+	    html += '   <div class="col-md-4 col-md-offset-4">';
+	    html += '     <div class="project" style="' + this.displayBackground() + '">' + this.displayName() + '</div>';
+	    html += '   </div>';
+	    html += ' </div>';
+	    html += ' </div>';
+	    html += '<div class="container">';
+	    html += ' <div class="row">';
+	    html += '   <div class="col-md-6">' + this.displayUsers()
+	    html += '     <h2>Liens</h2>' + this.displayDocuments()  
+	    html += '   <div class="col-md-6"><br><img class="img-responsive" src="img/project/visual-pitch.png" /><h2>Description</h2>' + this.desc + '</div>';
+	    html += ' </div>';
+	    html += '</div>';
+	    return html;
+	  }
+
+	  displayUsers()
+	  {
+	    var html = '<h2><form class="form-inline">Collaborateurs ';
+	    html += '<a id="addUser" href="#" class="btn btn-success" title="Ajouter un collaborateur"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>'
+	    html += '</from></h2>';
+	    html += '<div class="users row">';
+	    html += '<div class="user"><div class="avatar"></div><div class="name">User 1</div></div>';
+	    html += '<div class="user"><div class="avatar"></div><div class="name">User 2</div></div>';
+	    html += '<div class="user"><div class="avatar"></div><div class="name">User 3</div></div>';
+	    html += '<div class="user"><div class="avatar"></div><div class="name">User 4</div></div>';
+	    html += '<div class="user"><div class="avatar"></div><div class="name">User 5</div></div>';
+	    html += '</div>';
+	    return html;
+	  }
+
+	  displayBackground()
+	  {
+	    var html = '';
+	    if(this.img != ''){
+	      html += 'background-image: url(img/project/' + this.img + ');';
+	    }
+	    html += this.displayBackgroundColor();
+	    return html;
+	  }
+
+	  displayBackgroundColor()
+	  {
+	    var html = '';
+	    if(this.color != ''){
+	      html += 'background-color: ' + this.color + ';';
+	    }
+	    return html;
+	  }
+
+	  displayName(){
+	    var html = '';
+	    if(this.img == ''){
+	      html = this.name;
+	    }
+	    return html;
+	  }
+
+	  displayDocuments(){
+	    var html = '<div class="row"></div><div class="list-group col-sm-6">';
+	    html +=   '<button type="button" class="list-group-item"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> Site web</button>';
+	    html +=   '<button type="button" class="list-group-item"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span> Présentation</button>';
+	    html +=   '<button type="button" class="list-group-item"><span class="glyphicon glyphicon-film" aria-hidden="true"></span> Vidéo</button>';
+	    html += '</div>';
+	    html += '<div class="list-group col-sm-6">';
+	    html +=   '<button type="button" class="list-group-item"><span class="glyphicon glyphicon glyphicon-euro" aria-hidden="true"></span> Tarification </button>';
+	    html +=   '<button type="button" class="list-group-item"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Documentation</button>';
+	    html +=   '<button type="button" class="list-group-item"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Formation</button>';
+	    html += '</div></div>';
+	    return html;
+	  }
+
+	  select(){
+	    if(!this.selected){
+	      this.selected = 1;
+	      $(".card[projectid=" + this.id + "] .glyphicon-star").addClass("selected"); 
+	    }
+	  }
+
+	  unSelect(){
+	    if(this.selected){
+	      this.selected = 0;
+	      $(".card[projectid=" + this.id + "] .glyphicon-star").removeClass("selected"); 
+	    }
+	  }
+	}
+	module.exports = project;
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	
+
+	class acUser{
+	    constructor(field,data){
+	      this.field = $(field)
+	      this.usersById = data;
+	      this.selectedItem = -1;
+	      this.searchArray = []
+	      this.search = ""
+	      this.result = [];
+	    }
+
+	    init(){
+	    var self = this
+	    this.field.after("<div class='ac'></div>")
+	    this.field.keyup(function( e ) {
+	      if ( e.which == 38 ) {
+	        e.preventDefault()
+	        self.prev()
+	        
+	      }else if(e.which == 40){
+	        e.preventDefault()
+	        self.next()
+	      }else{
+	        self.searchUser()
+	      }
+	    });
+	    this.field.blur(function() {
+	      $(this).val("")
+	      $(this).next(".ac").html("")
+	      $("#addUser").show()
+	      $("#acUser").remove()
+	    });
+	  }
+
+	    searchUser(){
+	    console.log("///")
+	    var self = this
+	    this.search = this.field.val();
+	    if(this.search!=""){
+	    // Find matching user id
+	      this.usersById.forEach(function(user) {
+	        self.searchArray = self.search.split(' ');
+	        var wordsFind = 0
+	        var words = 0
+	        self.searchArray.forEach(function(strSearch){
+	          var nbMach = 0;
+	          if(strSearch!=""){
+	            words ++
+	            nbMach += self.searchWeight(user,user.nom,1,true,strSearch)
+	            nbMach += self.searchWeight(user,user.nom,1,false,strSearch)
+	            nbMach += self.searchWeight(user,user.prenom,1,true,strSearch)
+	            nbMach += self.searchWeight(user,user.prenom,1,false,strSearch)
+	            nbMach += self.searchWeight(user,user.ville,1,true,strSearch)
+	            nbMach += self.searchWeight(user,user.ville,1,false,strSearch)
+	            if(nbMach>0){
+	              wordsFind++
+	            } 
+	          }
+	         })
+	         if(wordsFind != words){
+	            delete self.result[user.id]
+	         }
+	      });
+	      var html = ""
+	      this.result.forEach(function(user) {
+	        html += "<li class='row' idUser='" + user.id 
+	        html += "' ><div class='user'></div><div class='userName'>" 
+	        html += self.boldStrFind(user.prenom).toLowerCase() + " " 
+	        html += self.boldStrFind(user.nom).toUpperCase() + "</div><div class='city'>"
+	        html += self.boldStrFind(user.ville).toLowerCase()+"</div></li>";
+	      })
+	      var listAc = this.field.next(".ac")
+	      listAc.html("<ul>" + html + "</ul>")
+	      var itemAc = listAc.find("li")
+	      itemAc.mousedown(function() {
+	        selfSend
+	        var id = $(this).attr("idUser")
+	        console.log(id + "_clcik")
+	      })
+	      itemAc.hover(function() {
+	        self.selectItem($(this).attr("idUser"))
+	      })
+	      
+	    }
+	  }
+
+	  boldStrFind(str){
+	    var html = str
+	    this.searchArray.forEach(function(strSearch){
+	    if(strSearch!=""){
+	      html = html.replace(new RegExp(strSearch,'gi'), "<b>" + strSearch + "</b>" );
+	      }
+	    })
+	    return html
+	  }
+
+	  searchWeight(user,param,weight,exact,strSearch){
+	    if(exact){
+	      strSearch = '^' + strSearch + '$'
+	    }
+	    if(param.search(new RegExp(strSearch,'i')) != -1){
+	      if(!this.result[user.id]){
+	        user.weight = 0
+	        this.result[user.id] = user
+	      }
+	      this.result[user.id].weight += weight
+	      return 1;
+	    }
+	    return 0;
+	  }
+
+	  selectItem(id){
+	    $(".ac ul>li.selected").removeClass("selected")
+	    $(".ac ul>li[idUser=" + id + "]").addClass("selected")
+	    this.selectedItem = id
+	  }
+
+	  next(){
+	    var self = this
+	    var firstItem = -1;
+	    var item = -1;
+	    this.result.forEach(function(user,i) {
+	      if(firstItem == -1){
+	        firstItem = i
+	      }
+	      if(item==-2){
+	        item = i
+	      }
+	        if(self.selectedItem == user.id){
+	        item = -2
+	      }
+	    })
+	    if(item<0){
+	        item = firstItem
+	    }
+	    this.selectItem(this.result[item].id)
+	  }
+
+	  prev(){
+	    var self = this
+	    var item = -1;
+	    this.result.forEach(function(user,i) {
+	        if(self.selectedItem == user.id){
+	        item = prevItem
+	      }
+	      prevItem = i
+	    })
+	    if(item == -1){
+	        item = prevItem
+	    }
+	    this.selectItem(this.result[item].id)
+	  }
+
+	  sendId()
+	  {
+	    console.log(this.selectedItem)
+	  }
+	}
+	module.exports = acUser;
+
 
 /***/ }
 /******/ ]);

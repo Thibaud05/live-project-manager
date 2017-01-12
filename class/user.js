@@ -17,6 +17,7 @@ class user
             }
             this.lastConnexion = data.lastConnexion
             this.autoConnexion = data.autoConnexion
+            this.selectedProject = data.selectedProject
             this.logged = false
             this.sockets = {}
         }
@@ -41,6 +42,11 @@ class user
     {
         var key = this.id + "%:#" + this.email + "/$!" + this.password
         return global.cryptoJs.MD5(key).toString(global.cryptoJs.enc.Base64)
+    }
+
+    selectProject(idProject){
+        this.selectedProject = idProject
+        global.connection.query("UPDATE `user` SET `selectedProject` ='" + idProject + "' WHERE `id` = " + this.id )
     }
 
     saveKey(socket){

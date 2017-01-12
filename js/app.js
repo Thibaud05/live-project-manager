@@ -257,32 +257,21 @@ function appInit(data) {
 
   $( "#next" ).after( tm.getProjects());
 
+  tm.btnProjectHandler();
+
+/*
   $("#projects").on('mousedown', 'li a', function(){
     var idProject = $(this).data('value')
     tm.toogleProject(idProject)
     $(this).children( ".glyphicon" ).toggleClass("glyphicon-eye-close").toggleClass("glyphicon-eye-open")
   });
 
-
-
-
-
+*/
 
   //////////////////////
   // Accountable selected task
   $("#dropdownAccountable").mousedown(function() {
     tm.select = true;
-    console.log("oups")
-  });
-
-  $("#accountable").on('mousedown', 'li a', function(){
-
-    var idUser = $(this).data('value')
-    tm.assignAccountable(idUser)
-  });
-
-  $("#accountable").on('click', 'li a', function(){
-    $( this ).blur()
   });
 
   //////////////////////

@@ -4,6 +4,7 @@ var user = require("./user.js");
 var file = require("./file.js");
 var link = require("./link.js");
 var task = require("./task.js");
+var projectScreen = require("./projectScreen.js");
 var message = require("./message.js");
 class tasksManager{
   constructor(){
@@ -36,6 +37,7 @@ class tasksManager{
       this.lastRelease = []
       this.searchValue = "";
       this.projectsId = {}
+      this.projectIsOpen = false;
   }
   init(){
     this.week = this.now.week();
@@ -58,7 +60,7 @@ class tasksManager{
  */
   getData(data){
     //console.log(data)
-    this.connectUserId = data.connectUserId;
+      this.connectUserId = data.connectUserId;
       this.fullUrl = data.fullUrl;
       this.tasks = [];
       var self = this
@@ -146,12 +148,13 @@ class tasksManager{
           }
         }
       });
+      this.selectProject(data.selectedProject)
+
       data.tasks.map(function(data,key) {
         
         if(data!=undefined){
           data.id_project = self.taskTypes[data.typeId].id_project;
           var t = new task(data);
-          
 
           if(tasks_files[t.id] != undefined ){
             t.files = tasks_files[t.id];
@@ -176,12 +179,16 @@ class tasksManager{
           self.tasksById[t.id] = t;
         }
       });
+    
     self.projectByUser[self.connectUser.id].map(function(projectId,key) {
       self.projectsId[projectId] = true
-      self.userByProject[projectId].map(function(userId,key) {
-          self.users[userId].display = true
-      })
+      if(self.selectedProject == projectId){
+        self.userByProject[projectId].map(function(userId,key) {
+            self.users[userId].display = true
+        })
+      }
     });
+    
   }
 /**
  *
@@ -190,14 +197,17 @@ class tasksManager{
  */
   getNextRelease(typeId,getPrev){
     var maxRelease = {}
+    self = this
     this.releasesById.map(function(r,key){
       if (r){
-        if(maxRelease[r.typeId]!=undefined){
-          if(maxRelease[r.typeId] < r.day){
+        if(r.id_project == self.selectedProject){
+          if(maxRelease[r.typeId]!=undefined){
+            if(maxRelease[r.typeId] < r.day){
+              maxRelease[r.typeId] = r.day
+            }
+          }else{
             maxRelease[r.typeId] = r.day
           }
-        }else{
-          maxRelease[r.typeId] = r.day
         }
       }
     })
@@ -245,9 +255,8 @@ class tasksManager{
         user.display = false
       }
     })
-
     self.projectByUser[self.connectUser.id].map(function(projectId,key) {
-      if(self.projectsId[projectId]){
+      if(self.selectedProject == projectId){
         self.userByProject[projectId].map(function(userId,key) {
             self.users[userId].display = true
         })
@@ -257,6 +266,7 @@ class tasksManager{
     this.tasks = [];
     this.tasksById.map(function(t,key) {
       if (t){
+        t.isLocked = (self.selectedProject != t.id_project)
         var display = true;
         if(self.searchValue != ""){
           display = false;
@@ -485,7 +495,9 @@ class tasksManager{
         }
 
         if (!selectedTask.length && cible.length) {
-          var htmlTask = this.renderTask(t);
+          var inBox = cible.parents('div.box').length > 0
+          console.log("inBox : " + inBox)
+          var htmlTask = this.renderTask(t,inBox);
           cible.append(htmlTask)
         }
     }
@@ -510,7 +522,6 @@ class tasksManager{
 
 /*----------  assign Accountable TASK  ----------*/
     assignAccountable(userId){
-      console.log(userId)
       var assignTasks = [];
       for (var key in this.selectedTasks) {
         var t = this.tasksById[key]
@@ -521,12 +532,21 @@ class tasksManager{
       socket.emit('updateTask', assignTasks);
     }
 
+    renderAccountable(){
+        var html = ''
+        for (var userId of this.userByProject[this.selectedProject]) {
+            console.log(userId)
+            var user = this.users[userId]
+            html += '<li><a href="#" data-value="' + user.id + '">' + user.getName() + '</a></li>'
+        }
+        return html
+    }
 /**
  *
  * DISPLAY TASKS
  *
  */
-    renderTasks(key){
+    renderTasks(key,inBox){
 
       var html = ''
       var tabTask = this.tasks[key];
@@ -534,9 +554,7 @@ class tasksManager{
         for (var i = 0; i < tabTask.length; i++){
           var t = tabTask[i];
           if(t!=undefined){
-            if(this.projectsId[t.id_project]){
-              html += this.renderTask(t)
-            }
+              html += this.renderTask(t,inBox)
           }
         }
       }
@@ -547,19 +565,28 @@ class tasksManager{
  * DISPLAY TASK
  *
  */
-    renderTask(task){
-        var color = this.taskTypes[task.typeId].color;
-        var env = '';
-        if(task.typeId!=5 && task.typeId!=6){
-           env = '<div class="env">' + this.getLastRelease(task.typeId) + '</div>'
+    renderTask(task,inBox){
+        var html = ''
+
+        if(this.projectsId[task.id_project] && (!inBox || !task.isLocked)){
+          var color = this.taskTypes[task.typeId].color;
+          var env = '';
+          var validClass = "ok hidden"
+          var taskTitle = task.title
+          if(!task.isLocked){
+            if(task.typeId!=5 && task.typeId!=6){
+               env = '<div class="env">' + this.getLastRelease(task.typeId) + '</div>'
+            }
+            if(task.valid==1){
+              validClass = "ok"
+            }
+          }else{
+            taskTitle = this.projectById[task.id_project].name
+          }
+          html = '<li class="ui-state-default task ' + color + '" tid = "' + task.id + '" >'+ env 
+          + '<div class="contener"><span class="title">' + taskTitle + '</span>'
+          + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></div></li>';
         }
-        var validClass = "ok"
-        if(task.valid!=1){
-          validClass = "ok hidden"
-        }
-        var html = '<li class="ui-state-default task ' + color + '" tid = "' + task.id + '" >'+ env 
-        + '<div class="contener"><span class="title">' + task.title + '</span>'
-        + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></div></li>';
       return html
     }
 /**
@@ -574,7 +601,7 @@ class tasksManager{
         for (var i = 0; i < tabRelease.length; i++){
           var r = tabRelease[i];
           if(r!=undefined){
-            if(this.projectsId[r.id_project]){
+            if(r.id_project == this.selectedProject){
               html += this.renderRelease(r)
             }
           }
@@ -606,14 +633,14 @@ class tasksManager{
  */
     renderBox(type,idType){ 
       var html = ''
-      var htmlTasks = this.renderTasks(idType + ":0000-00-00")
+      var htmlTasks = this.renderTasks(idType + ":0000-00-00",true)
       if(this.searchValue == "" || htmlTasks != ""){
        
         html = '<div class="panel panel-default box">';
         html += '<div class="panel-heading">' + type + '</div>';
         html +=   '<div class="panel-body">';
         html +=     '<ul class="connectedSortable" di = "-1" uid ="' + idType + '">' 
-        html +=       this.renderTasks(idType + ":0000-00-00")
+        html +=       this.renderTasks(idType + ":0000-00-00",true)
         html +=     '</ul>'
         html +=   '</div>';
         html += '</div>';
@@ -674,7 +701,7 @@ class tasksManager{
             var css = ( index==0 ) ? ' class="leftSep"' : '';
             line += '<td' + css + '><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
 
-            var htmlTask = self.renderTasks(user.id + ":" + self.dates[i]);
+            var htmlTask = self.renderTasks(user.id + ":" + self.dates[i],false);
             if(htmlTask != ""){
               empltyLine = false
               line += htmlTask;
@@ -702,6 +729,7 @@ class tasksManager{
         htmlBox += this.renderBox("ARCHIVE",5)
       }
       $("#box").html(htmlBox);
+      $("#accountable").html(this.renderAccountable());
     }
 
 /**
@@ -889,7 +917,6 @@ class tasksManager{
             t.attachBtnOnClcik();
             $(".link-form").remove();
           }else{
-            console.log("shake");
             $("#link-url").addClass("error");
             $(".link-form").effect("shake",{direction :"up"});
           }
@@ -914,8 +941,6 @@ class tasksManager{
         if(selectedTask){
 
           var oldTypeID = self.tasksById[t.id].typeId
-          console.log("oldTypeID " + oldTypeID)
-          console.log("TypeID " + t.typeId)
           var oldColor = self.taskTypes[oldTypeID].color;
           var newColor = self.taskTypes[t.typeId].color;
           var newEnv = self.getLastRelease(t.typeId)
@@ -929,10 +954,9 @@ class tasksManager{
 /*----------  addRelease  ----------*/
       socket.on('addRelease',function(r)
       {
-          console.log(r)
+
           // Ajout de la release dans le tableau de release indexé par id
           self.releasesById[r.id] = r
-          console.log(self.releasesById)
           // Ajout de la release dans le tableau de release indexé par jour
           if(self.releases[r.day] == undefined){
             self.releases[r.day] = new Array();
@@ -986,7 +1010,11 @@ class tasksManager{
         start( event, ui ) {
           //log("start")
           var t = self.tasksById[ui.item.attr("tid")];
-          t.isDraging = true;
+          if(t.isLocked){
+            $( this ).sortable( "cancel" );
+          }else{
+            t.isDraging = true;
+          }
         },
         stop( event, ui ) {
           //log("stop")
@@ -1023,7 +1051,7 @@ class tasksManager{
         self.disabledTaskBtn(false)
         var id = $(this).attr("tid");
         var t =  self.tasksById[id];
-        if(! t.isOpen){
+        if(! t.isOpen && !t.isLocked){
           if(!e.ctrlKey){
             $.each(self.selectedTasks, function( key, t ) {
               t.removeClass('selected');
@@ -1044,8 +1072,7 @@ class tasksManager{
         var t =  self.tasksById[id];
         if(!t.isDraging){
         $(this).removeClass('selected');
-        if(! t.isOpen){
-
+        if(! t.isOpen && !t.isLocked){
           t.open($(this));
         }
       }
@@ -1080,7 +1107,25 @@ class tasksManager{
           socket.emit('setRelease', r);
         }
       }).disableSelection();
+
+
+/*----------  Release drag and drop  ----------*/
+
+    $("#accountable").on('mousedown', 'li a', function(){
+      var idUser = $(this).data('value')
+      self.assignAccountable(idUser)
+    });
+
+    $("#accountable").on('click', 'li a', function(){
+      $( this ).blur()
+    });
     }
+
+
+
+
+
+
 
 /**
  *
@@ -1119,23 +1164,49 @@ class tasksManager{
  * Projects
  *
  */
-
     getProjects(){
-      var self = this
-      var html = '<div class="btn-group">' + 
-      '<button id="dropdownProjects" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"' +
-      ' aria-haspopup="true" aria-expanded="true" title="Mes projets">' + 
-      '<span class="glyphicon glyphicon-th" aria-hidden="true"></span></button>' + 
-      '<ul id="projects" class="dropdown-menu" aria-labelledby="dropdownProjects">'
+      var html = 
+      '<button id="btnProject" type="button" class="btn btn-primary" ntitle="Mes projets">' + 
+      '<span class="glyphicon glyphicon-th" aria-hidden="true"></span></button>'
+      return html;
+    }
 
-      self.projectByUser[self.connectUser.id].map(function(projectId,key) {
-        var icon = '<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span></button>'
-        if(self.projectsId[projectId]){
-          icon = '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>'
+    btnProjectHandler(){
+        var self = this;
+        $("#btnProject").click(function(){
+          if(!self.projectIsOpen){
+            var ps = new projectScreen(self.projectByUser[self.connectUser.id],self.projectById,self.usersById);
+            ps.dispayMyProject();
+            $(".strip").hide();
+            self.projectIsOpen = true;
+          }else{
+            self.closeProject()
+          }
+        });
+    }
+
+    closeProject(){
+      $(".strip").show();
+      $("#screenContainer").html('<div id="tasksManager" style="margin-top: 0px; opacity: 1;"></div><div id="box"></div>');
+      this.projectIsOpen = false;
+      this.sync()
+      this.render()
+      this.activate();
+    }
+    selectProject(id){
+      if(id != this.selectedProject){
+        if(id == undefined || id == 0 ) {
+          id = this.projectByUser[this.connectUser.id][0]
         }
-        html += '<li><a href="#" data-value="' + projectId + '">' + icon + ' ' + self.getProjectTitle(projectId) + '</a></li>'
-      });
-      return html + '</li></ul></div>'
+        this.selectedProject = id
+        if(this.projectById[id]){
+          this.projectById[id].selected = true
+        }
+        socket.emit('selectProject',id);
+      }
+    }
+    unSelectProject(id){
+      this.projectById[id].selected = false
     }
 
     toogleProject(projectId){

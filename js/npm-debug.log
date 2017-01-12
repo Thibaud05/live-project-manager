@@ -1,0 +1,36 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'run',
+1 verbose cli   'build' ]
+2 info using npm@3.10.8
+3 info using node@v6.9.1
+4 verbose run-script [ 'prebuild', 'build', 'postbuild' ]
+5 info lifecycle live-project-manager@1.0.0~prebuild: live-project-manager@1.0.0
+6 silly lifecycle live-project-manager@1.0.0~prebuild: no script for prebuild, continuing
+7 info lifecycle live-project-manager@1.0.0~build: live-project-manager@1.0.0
+8 verbose lifecycle live-project-manager@1.0.0~build: unsafe-perm in lifecycle true
+9 verbose lifecycle live-project-manager@1.0.0~build: PATH: C:\Program Files\nodejs\node_modules\npm\bin\node-gyp-bin;C:\Dev\live-project-manager\node_modules\.bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\QuickTime\QTSystem\;C:\wamp\bin\php\php5.4.3;C:\msysgit\msysgit\bin;C:\msysgit\msysgit\mingw\bin;C:\Users\STUIDO 05\AppData\Local\Smartbar\Application\;C:\Users\STUIDO 05\AppData\Local\Smartbar\Application\;C:\Program Files\nodejs\;C:\Program Files\Windows Kits\8.1\Windows Performance Toolkit\;C:\Users\STUIDO 05\AppData\Roaming\npm
+10 verbose lifecycle live-project-manager@1.0.0~build: CWD: C:\Dev\live-project-manager
+11 silly lifecycle live-project-manager@1.0.0~build: Args: [ '/d /s /c', 'webpack js/app.js js/bundle.js' ]
+12 verbose stack Error: kill ENOSYS
+12 verbose stack     at exports._errnoException (util.js:1026:11)
+12 verbose stack     at process.kill (internal/process.js:172:13)
+12 verbose stack     at process.listener (C:\Program Files\nodejs\node_modules\npm\node_modules\npmlog\node_modules\gauge\node_modules\signal-exit\index.js:86:15)
+12 verbose stack     at emitNone (events.js:91:20)
+12 verbose stack     at process.emit (events.js:185:7)
+12 verbose stack     at processEmit (C:\Program Files\nodejs\node_modules\npm\node_modules\npmlog\node_modules\gauge\node_modules\signal-exit\index.js:146:32)
+12 verbose stack     at processEmit (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\node_modules\npmlog\node_modules\gauge\node_modules\signal-exit\index.js:146:32)
+12 verbose stack     at Signal.wrap.onsignal (internal/process.js:199:44)
+13 verbose cwd C:\Dev\live-project-manager\js
+14 error Windows_NT 6.1.7601
+15 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "run" "build"
+16 error node v6.9.1
+17 error npm  v3.10.8
+18 error code ENOSYS
+19 error errno ENOSYS
+20 error syscall kill
+21 error kill ENOSYS
+22 error If you need help, you may report this error at:
+22 error     <https://github.com/npm/npm/issues>
+23 verbose exit [ 1, true ]

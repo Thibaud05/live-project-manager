@@ -1,9 +1,9 @@
 var config = require("./config.js");
-let instance = null;
+var instance = null;
 class socket{  
     constructor() {
         if(!instance){
-              instance = io.connect(config.host);;
+              instance = io.connect(config.host);
         }
         return instance;
       }

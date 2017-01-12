@@ -28,6 +28,7 @@ class task{
     this.initPosition
     this.id_project = data.id_project
     this.chat = null
+    this.isLocked = (window.tm.selectedProject != this.id_project);
     var self = this;
   }
 
@@ -48,8 +49,6 @@ class task{
   }
 
   open(htmlTask){
-
-
     var self = this
     var htmlTitle = htmlTask.children(".contener").children("span")
     htmlTask.find("#taskDetail").remove();

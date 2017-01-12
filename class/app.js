@@ -183,6 +183,12 @@ class app
             var type = new global.type(data);
             type.save();      
         })
+        
+
+        socket.on('selectProject', function(idProject){
+            global.data.users[global.data.connectUserId].selectProject(idProject)
+        })
+
         this.socket = socket
     }
 
@@ -202,6 +208,7 @@ class app
                 this.logged(u)
                 var html = this.display(u)
                 global.data.connectUserId = u.id
+                global.data.selectedProject = u.selectedProject
                 global.data.users[u.id].logged = true 
                 var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1}
                 this.socket.emit('logged',{obj:obj,data:global.data});
@@ -297,7 +304,7 @@ class app
                 '<div class="clear"></div>' +
                 this.searchBar() + 
                 '</div>' +
-                '<div class="strip"><div id="tasksManagerHead"></div></div></div><div class="page">';
+                '<div class="strip"><div id="tasksManagerHead"></div></div></div><div id="screenContainer" class="page">';
     }
 
     footer(){
@@ -322,7 +329,6 @@ class app
             this.displayBtn("search_btn","Rechercher","search") +
             '<div class="btn-group" >' + this.displayBtn("dropdownAccountable","Modifier le responsable","user",true) +
             '<ul id="accountable" class="dropdown-menu" aria-labelledby="dropdownAccountable">' +
-                this.displayChangeAccountableForm() +
             '</ul></div>' +
             this.displayBtn("valid_btn","Valider une tache","ok") +
             this.displayBtn("duplicate_btn","Copier une tache","duplicate") + 
@@ -356,15 +362,6 @@ class app
         return  '<button id="' + id + '" type="button" class="btn btn-primary' + toggleHtml + '" title="' + title + '" >' +
                     '<span class="glyphicon glyphicon-' + icon + '" aria-hidden="true"></span>' +
                 '</button>'
-    }
-
-    displayChangeAccountableForm()
-    {
-        var html = ''
-        for (var user of this.users) {
-            html += '<li><a href="#" data-value="' + user.id + '">' + user.getFullName() + '</a></li>'
-        }
-        return html
     }
 
     displayAddReleaseForm()
@@ -437,6 +434,7 @@ class app
     '<link href="css/signin.css" rel="stylesheet"> ' +
     '<link href="css/app.css?' + this.ts + '" rel="stylesheet"> ' +
     '<link href="css/chat.css?' + this.ts + '" rel="stylesheet"> ' +
+    '<link href="css/project.css?' + this.ts + '" rel="stylesheet"> ' +
     '<script src="/socket.io/socket.io.js"></script> ' +
     '<script src="/siofu/client.js"></script>' +
 
