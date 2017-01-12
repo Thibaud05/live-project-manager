@@ -125,6 +125,7 @@ class tasksManager{
         self.projectByUser[pu.id_user].push(pu.id_project)
       });
 
+      self.releases = []
       data.releases.map(function(data,key) {
         if(data!=undefined){
           var r = data
@@ -284,7 +285,7 @@ class tasksManager{
       }
     });
 
-    this.releases = [];
+    this.releasesById = [];
     this.releasesById.map(function(release,key) {
       if (release){
         var k =  release.day;
@@ -496,7 +497,7 @@ class tasksManager{
 
         if (!selectedTask.length && cible.length) {
           var inBox = cible.parents('div.box').length > 0
-          console.log("inBox : " + inBox)
+          //console.log("inBox : " + inBox)
           var htmlTask = this.renderTask(t,inBox);
           cible.append(htmlTask)
         }
@@ -535,7 +536,6 @@ class tasksManager{
     renderAccountable(){
         var html = ''
         for (var userId of this.userByProject[this.selectedProject]) {
-            console.log(userId)
             var user = this.users[userId]
             html += '<li><a href="#" data-value="' + user.id + '">' + user.getName() + '</a></li>'
         }
@@ -654,8 +654,6 @@ class tasksManager{
  *
  */
     render(){
-      //log(this.tasks)
-
       var self = this;
       var html = "";
       var htmlHead = "";
@@ -1242,7 +1240,6 @@ class tasksManager{
         var count = 0;
         $.each( this.users, function( key, user ) {
           if(user && user.display){
-            console.log(user.logged)
             var ico = "glyphicon-remove-sign"
             if(user.logged==1){
                 count ++;
