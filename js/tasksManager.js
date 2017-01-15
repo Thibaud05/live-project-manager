@@ -6,6 +6,7 @@ var link = require("./link.js");
 var task = require("./task.js");
 var projectScreen = require("./projectScreen.js");
 var message = require("./message.js");
+var box = require("./box.js");
 class tasksManager{
   constructor(){
       this.userByProject = [];
@@ -38,6 +39,8 @@ class tasksManager{
       this.searchValue = "";
       this.projectsId = {}
       this.projectIsOpen = false;
+      this.box = []
+      this.boxByProject = []
   }
   init(){
     this.week = this.now.week();
@@ -190,7 +193,19 @@ class tasksManager{
       }
     });
     
+    data.box.map(function(data,key) {
+      if(data!=undefined){
+        var b = new box(data)
+        self.box[b.id] = b;
+
+        if(self.boxByProject[b.id_project] == undefined ){
+          self.boxByProject[b.id_project] = [];
+        }
+        self.boxByProject[b.id_project][b.order] = b;
+      }
+    })
   }
+
 /**
  *
  * get the next release
@@ -497,7 +512,8 @@ class tasksManager{
 
         if (!selectedTask.length && cible.length) {
           var inBox = cible.parents('div.box').length > 0
-          //console.log("inBox : " + inBox)
+          //
+          .log("inBox : " + inBox)
           var htmlTask = this.renderTask(t,inBox);
           cible.append(htmlTask)
         }
@@ -722,10 +738,19 @@ class tasksManager{
       }
       $("#tasksManagerHead").html('<table class="table" width="100%" cellspacing="0">' + htmlHead + '</table>');
       $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
-      var htmlBox = this.renderBox("ALPHA",4) + this.renderBox("DEV",1) +  this.renderBox("QA",2) + this.renderBox("PRD",3)
+      var htmlBox = this.renderBox("OBSELETE ALPHA",4) + this.renderBox("OBSELETE DEV",1) +  this.renderBox("OBSELETE QA",2) + this.renderBox("OBSELETE PRD",3)
+      if(this.boxByProject[this.selectedProject]){
+        for (var key in this.boxByProject[this.selectedProject]) {
+          var b = this.boxByProject[this.selectedProject][key]
+          if(b!=undefined){
+            htmlBox += this.renderBox(b.name,b.id)
+          }
+        }
+      }
       if(this.searchValue!=""){
         htmlBox += this.renderBox("ARCHIVE",5)
       }
+
       $("#box").html(htmlBox);
       $("#accountable").html(this.renderAccountable());
     }
