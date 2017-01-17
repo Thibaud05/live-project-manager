@@ -484,7 +484,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	var host = 'http://127.0.0.1:3000';
+	var host = 'http://www.koolog.com:3000';
 
 /***/ },
 /* 3 */
@@ -1230,7 +1230,7 @@
 	      }
 	      $("#tasksManagerHead").html('<table class="table" width="100%" cellspacing="0">' + htmlHead + '</table>');
 	      $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
-	      var htmlBox = this.renderBox("OBSELETE ALPHA",4) + this.renderBox("OBSELETE DEV",1) +  this.renderBox("OBSELETE QA",2) + this.renderBox("OBSELETE PRD",3)
+	      var htmlBox = ""
 	      if(this.boxByProject[this.selectedProject]){
 	        for (var key in this.boxByProject[this.selectedProject]) {
 	          var b = this.boxByProject[this.selectedProject][key]
