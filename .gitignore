@@ -50,3 +50,4 @@ configPRD.js
 js/config-prd.js
 uploads/*
 img/user/*
+js/bundle.js

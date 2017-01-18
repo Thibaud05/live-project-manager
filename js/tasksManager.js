@@ -300,7 +300,7 @@ class tasksManager{
       }
     });
 
-    this.releasesById = [];
+    this.releases = [];
     this.releasesById.map(function(release,key) {
       if (release){
         var k =  release.day;
