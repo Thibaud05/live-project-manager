@@ -346,6 +346,7 @@ class tasksManager{
  */
   addTask(t){
     t.id_project = this.taskTypes[t.typeId].id_project
+    t.isLocked = (this.selectedProject != t.id_project)
     this.addDOMTask(t);
     this.tasksById[t.id] = t;
     this.activate();
@@ -515,6 +516,7 @@ class tasksManager{
         }
 
         if (!selectedTask.length && cible.length) {
+
           var inBox = cible.parents('div.box').length > 0
           var htmlTask = this.renderTask(t,inBox);
           cible.append(htmlTask)
@@ -585,7 +587,6 @@ class tasksManager{
  */
     renderTask(task,inBox){
         var html = ''
-
         if(this.projectsId[task.id_project] && (!inBox || !task.isLocked)){
           var color = this.taskTypes[task.typeId].color;
           var env = '';
