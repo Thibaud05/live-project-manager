@@ -179,10 +179,17 @@ class app
         })
 
         socket.on('addRelease', function (data){
-            console.log("socket addrelease")
             var type = new global.type(data);
             type.save();      
         })
+
+        socket.on('addDeadLine', function (data){
+            var startDay = global.moment().startOf('week');
+            var deadLine = new global.release({id:0,name:data.name,typeId:data.typeId,day:startDay.add(1, 'd').format("YYYY-MM-DD")})
+            deadLine.save()    
+        })
+
+
         
 
         socket.on('selectProject', function(idProject){
@@ -315,16 +322,16 @@ class app
     {
         return '<div class="barContent btn-group">' +
             this.displayBtn("prev","Taches précédentes","chevron-left") +
-            '<div class="btn-group" >' + this.displayBtn("dropdownMenu2","Ajouter","plus",true) + 
+            '<div id="dropdownAdd" class="btn-group" >' + this.displayBtn("dropdownMenu2","Ajouter","plus",true) + 
             '<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">' +
-                '<li><a id="add_btn_task" href="#" title="Ajouter une tache">Ajouter une tache </a></li>' +
+                '<li><a id="add_btn_task" href="#" title="Ajouter un ticket">Ajouter un ticket </a></li>' +
                 this.displayAddTask() +
                 '<li role="separator" class="divider"></li>' + 
-                '<li><a id="add_btn_release" href="#" title="Ajouter une tache">Ajouter une release </a></li>' +
-                this.displayAddReleaseForm() +
-                '<li role="separator" class="divider"></li>' + 
-                '<li><a id="add_btn_type" href="#" title="Ajouter une tache">Ajouter un type de release </a></li>' +
+                '<li><a id="add_btn_type" href="#" title="Ajouter un type de ticket">Ajouter un type de ticket </a></li>' +
                 this.displayAddTypeForm() +
+                '<li role="separator" class="divider"></li>' + 
+                '<li><a id="add_btn_release" href="#" title="Ajouter un jalon">Ajouter un jalon </a></li>' +
+                this.displayAddReleaseForm() +
             '</ul></div>' +
             this.displayBtn("search_btn","Rechercher","search") +
             '<div class="btn-group" >' + this.displayBtn("dropdownAccountable","Modifier le responsable","user",true) +
@@ -367,15 +374,8 @@ class app
     displayAddReleaseForm()
     {
         return  '<li id="add_release" class="hidden"><form class="form-inline">' +
-                    '<select class="form-control">' +
-                        '<option>ALPHA</option>' +
-                        '<option>DEV</option>' +
-                        '<option>QA</option>' +
-                        '<option>PRD</option>' +
-                    '</select>' +
-                    '<select class="form-control">' +
-                        '<option>v2</option>' +
-                        '<option>v1</option>' +
+                    '<input type="text" class="form-control" placeholder="Title">' +
+                    '<select class="form-control form-type">' +
                     '</select>' +
                     '<a href="#" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>' +
                 '</form></li>'
@@ -385,8 +385,6 @@ class app
     {
         return  '<li id="add_type" class="hidden"><form class="form-inline">' +
                     '<input type="text" class="form-control" placeholder="Title">' +
-                    '<select class="form-control project">' +
-                    '</select>' +
                     '<select class="form-control color">' +
                         '<option>red</option>' +
                         '<option>indigo</option>' +
@@ -404,7 +402,7 @@ class app
     displayAddTask()
     {
         return  '<li id="add_task" class="hidden"><form class="form-inline">' +
-            '<select class="form-control project">' +
+            '<select class="form-control form-type">' +
             '</select>' +
             '<a href="#" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>' +
         '</form></li>';

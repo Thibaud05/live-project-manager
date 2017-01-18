@@ -348,42 +348,56 @@
 	  $('.dropdown-menu').find('form').click(function (e) {
 	    e.stopPropagation();
 	  });
+	  $('#dropdownAdd').on('hide.bs.dropdown', function () {
+	    $('#add_task').toggleClass("hidden",true)
+	    $('#add_release').toggleClass("hidden",true)
+	    $('#add_type').toggleClass("hidden",true)
+	  })
+	    
 
 	  $( "#add_btn_task" ).click(function(e) {
 	    e.stopPropagation();
-	    $('#add_task .project option').remove();
-	    $('#add_task .project').html(tm.getProjectList());
+	    $('#add_task .form-type option').remove();
+	    $('#add_task .form-type').html(tm.getTypeList());
 	    $('#add_task').toggleClass("hidden")
+	    $('#add_release').toggleClass("hidden",true)
+	    $('#add_type').toggleClass("hidden",true)
 	  }); 
 
 	  $('#add_btn_release').click(function (e) {
 	    e.stopPropagation();
+	    $('#add_release .form-type option').remove();
+	    $('#add_release .form-type').html(tm.getTypeList());
 	    $('#add_release').toggleClass("hidden")
+	    $('#add_task').toggleClass("hidden",true)
+	    $('#add_type').toggleClass("hidden",true)
 	  });
 
 	  $('#add_btn_type').click(function (e) {
 	    e.stopPropagation();
-	    $('#add_type .project option').remove();
-	    $('#add_type .project').html(tm.getProjectList());
 	    $('#add_type').toggleClass("hidden")
+	    $('#add_task').toggleClass("hidden",true)
+	    $('#add_release').toggleClass("hidden",true)
 	  });
 
 	 $('#add_task a').click(function (e) {
-	  console.log("addTask")
-	  var project = $('#add_task .project').val()
-	  tm.newTask(project);
-	 })
-
-	 $('#add_release a').click(function (e) {
-	  console.log("addRelease")
+	  var type = $('#add_task .form-type').val()
+	  tm.newTask(type);
+	  $('#dropdownAdd').toggleClass("open",false)
+	  $('#add_task').toggleClass("hidden",true)
 	 })
 
 	 $('#add_type a').click(function (e) {
-	  console.log("addRelease")
-	  var id_project = $('#add_type .project').val()
 	  var name = $('#add_type input').val()
 	  var color = $('#add_type .color').val()
-	  socket.emit('addRelease', {name:name,color:color,id_project:id_project});
+	  socket.emit('addRelease', {name:name,color:color,id_project:tm.selectedProject});
+	 })
+
+	//
+	 $('#add_release a').click(function (e) {
+	  var name = $('#add_release input').val()
+	  var typeId = $('#add_release .form-type').val()
+	  socket.emit('addDeadLine', {name:name,typeId:typeId});
 	 })
 
 
@@ -598,7 +612,11 @@
 	      //console.log(tasks_files)
 	      data.taskTypes.map(function(taskType,key) {
 	        self.taskTypes[taskType.id] = taskType;
-	        self.taskTypeByProject[taskType.id_project] = taskType;
+	        var key = taskType.id_project
+	        if(self.taskTypeByProject[key]==undefined){
+	          self.taskTypeByProject[key] = []
+	        }
+	        self.taskTypeByProject[key].push(taskType);
 	      });
 
 	      data.projects.map(function(project,key) {
@@ -883,7 +901,7 @@
 	 * CREATE A NEW TASK
 	 *
 	 */
-	  newTask(project){
+	  newTask(type){
 	    var userId = this.connectUserId
 	    var day = this.dates[0]
 	    var lowPriority = 0
@@ -895,7 +913,7 @@
 	      "id"                : "",
 	      "userId"            : userId,
 	      "title"             : "New task",
-	      "typeId"            : this.taskTypeByProject[project].id,
+	      "typeId"            : type,
 	      "day"               : day,
 	      "description"       : "",
 	      "creationUserId"    : userId,
@@ -1735,11 +1753,12 @@
 	      this.activate();
 	    }
 
-	    getProjectList(){
+	    getTypeList(){
+	      console.log(this.selectedProject)
 	      var self = this;
 	      var html = '';
-	      self.projectByUser[self.connectUser.id].map(function(projectId,key) {
-	        html += '<option value="' + projectId + '">' + self.getProjectTitle(projectId) + '</option>';
+	      self.taskTypeByProject[self.selectedProject].map(function(t,key) {
+	        html = '<option value="' + t.id + '">' + t.name + '</option>' + html;
 	      });
 	      return html;  
 	    }

@@ -28,16 +28,6 @@ class type
             self.id = result.insertId;
             global.data.taskTypes.push(self);
             io.emit('addType',self);
-
-            var startDay = global.moment().startOf('week');
-            var rAplha = new global.release({id:0,name:"α",typeId:self.id,day:startDay.add(1, 'd').format("YYYY-MM-DD")})
-            var rDEV = new global.release({id:0,name:"DEV",typeId:self.id,day:startDay.add(1, 'd').format("YYYY-MM-DD")})
-            var rQA = new global.release({id:0,name:"QA",typeId:self.id,day:startDay.add(1, 'd').format("YYYY-MM-DD")})
-            var rPRD = new global.release({id:0,name:"PRD",typeId:self.id,day:startDay.add(1, 'd').format("YYYY-MM-DD")})
-            rAplha.save()
-            rDEV.save()
-            rQA.save()
-            rPRD.save()
         })
     }
 

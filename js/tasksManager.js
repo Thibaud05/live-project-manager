@@ -106,7 +106,11 @@ class tasksManager{
       //console.log(tasks_files)
       data.taskTypes.map(function(taskType,key) {
         self.taskTypes[taskType.id] = taskType;
-        self.taskTypeByProject[taskType.id_project] = taskType;
+        var key = taskType.id_project
+        if(self.taskTypeByProject[key]==undefined){
+          self.taskTypeByProject[key] = []
+        }
+        self.taskTypeByProject[key].push(taskType);
       });
 
       data.projects.map(function(project,key) {
@@ -391,7 +395,7 @@ class tasksManager{
  * CREATE A NEW TASK
  *
  */
-  newTask(project){
+  newTask(type){
     var userId = this.connectUserId
     var day = this.dates[0]
     var lowPriority = 0
@@ -403,7 +407,7 @@ class tasksManager{
       "id"                : "",
       "userId"            : userId,
       "title"             : "New task",
-      "typeId"            : this.taskTypeByProject[project].id,
+      "typeId"            : type,
       "day"               : day,
       "description"       : "",
       "creationUserId"    : userId,
@@ -1243,11 +1247,12 @@ class tasksManager{
       this.activate();
     }
 
-    getProjectList(){
+    getTypeList(){
+      console.log(this.selectedProject)
       var self = this;
       var html = '';
-      self.projectByUser[self.connectUser.id].map(function(projectId,key) {
-        html += '<option value="' + projectId + '">' + self.getProjectTitle(projectId) + '</option>';
+      self.taskTypeByProject[self.selectedProject].map(function(t,key) {
+        html = '<option value="' + t.id + '">' + t.name + '</option>' + html;
       });
       return html;  
     }
