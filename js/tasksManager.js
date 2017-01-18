@@ -512,8 +512,6 @@ class tasksManager{
 
         if (!selectedTask.length && cible.length) {
           var inBox = cible.parents('div.box').length > 0
-          //
-          .log("inBox : " + inBox)
           var htmlTask = this.renderTask(t,inBox);
           cible.append(htmlTask)
         }
