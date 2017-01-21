@@ -1,4 +1,5 @@
 'use strict'
+var Event = require("./event.js");
 class link
 {
     constructor(data)
@@ -52,18 +53,6 @@ class link
     addEventListener(eventName, callback){
       this.events[eventName].registerCallback(callback)
     };
-}
-
-class Event
-{
-    constructor(name){
-        this.name = name;
-        this.callbacks = [];
-    }
-
-    registerCallback(callback){
-        this.callbacks.push(callback);
-    }
 }
 
 module.exports=link;

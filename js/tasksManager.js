@@ -41,6 +41,7 @@ class tasksManager{
       this.projectIsOpen = false;
       this.box = []
       this.boxByProject = []
+      this.boxList = new BoxList()
   }
   init(){
     this.week = this.now.week();
@@ -196,8 +197,8 @@ class tasksManager{
         })
       }
     });
-    
-    data.box.map(function(data,key) {
+    this.boxList.setData(data.box)
+    /*data.box.map(function(data,key) {
       if(data!=undefined){
         var b = new box(data)
         self.box[b.id] = b;
@@ -207,7 +208,7 @@ class tasksManager{
         }
         self.boxByProject[b.id_project][b.order] = b;
       }
-    })
+    })*/
   }
 
 /**
@@ -347,6 +348,7 @@ class tasksManager{
   addTask(t){
     t.id_project = this.taskTypes[t.typeId].id_project
     t.isLocked = (this.selectedProject != t.id_project)
+
     this.addDOMTask(t);
     this.tasksById[t.id] = t;
     this.activate();
@@ -742,17 +744,8 @@ class tasksManager{
       $("#tasksManagerHead").html('<table class="table" width="100%" cellspacing="0">' + htmlHead + '</table>');
       $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
       var htmlBox = ""
-      if(this.boxByProject[this.selectedProject]){
-        for (var key in this.boxByProject[this.selectedProject]) {
-          var b = this.boxByProject[this.selectedProject][key]
-          if(b!=undefined){
-            htmlBox += this.renderBox(b.name,b.id)
-          }
-        }
-      }
-      if(this.searchValue!=""){
-        htmlBox += this.renderBox("ARCHIVE",5)
-      }
+
+      boxList.render(this.selectedProject)
 
       $("#box").html(htmlBox);
       $("#accountable").html(this.renderAccountable());
