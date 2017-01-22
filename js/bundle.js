@@ -724,10 +724,10 @@
 	        }
 	        if(display){
 	          var k = t.userId + ":" + t.day;
-	          if(self.tasks[k] == undefined ){
-	            self.tasks[k] = new Array();
+	          if(self.taskList.tasks[k] == undefined ){
+	            self.taskList.tasks[k] = new Array();
 	          }
-	          self.tasks[k][t.priority] = t;
+	          self.taskList.tasks[k][t.priority] = t;
 	        }
 	      }
 	    });
@@ -790,7 +790,7 @@
 	    datas.map(function( data, key ) {
 	      var t = new task(data)
 	      self.addDOMTask(t);
-	      self.tasksById[t.id] = t;
+	      self.taskList.tasksById[t.id] = t;
 	    });
 	    this.activate();
 	  }
@@ -859,7 +859,7 @@
 	    var oneTaskIsOpen = false
 	    $.each(self.selectedTasks, function( key, t ) {
 	      var id = t.attr("tid");
-	      var task =  self.tasksById[id];
+	      var task =  self.taskList.tasksById[id];
 	      
 	      if(!task.isOpen){
 	        removedTasksId.push({"id":id,"id_user":"","title":"","typeId":"","day":""});
@@ -1017,7 +1017,7 @@
 	 */
 	    renderRelease(release){
 	      var html = ''
-	      var taskType = this.taskTypes[release.typeId];
+	      var taskType = this.taskList.taskTypes[release.typeId];
 	      if(taskType){
 	        html += '<li class="ui-state-default release ' + taskType.color + '" tid = "' + release.id + '" ><span>';
 	        html += '<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> ';
@@ -1127,17 +1127,17 @@
 	/*----------  moveTask ----------*/
 	      socket.on('moveTask', function (data)
 	      {
-	        var t = self.tasksById[data.id]
+	        var t = self.taskList.tasksById[data.id]
 	        t.update(data)
 	        self.addDOMTask(t);
-	        self.tasksById[t.id] = t;
+	        self.taskList.tasksById[t.id] = t;
 	        self.activate();
 	      })
 
 	/*----------  setData  ----------*/
 	      socket.on('setData', function (data)
 	      {
-	        var t = self.tasksById[data.id];
+	        var t = self.taskList.tasksById[data.id];
 	        t.update(data)
 	        var k = t.userId + ":" + t.day
 	        var selectedTask = $(".task[tid="+ t.id +"]")
@@ -1146,12 +1146,12 @@
 	          selectedTask.find( ".title" ).html(t.getTitle())
 	          selectedTask.find( ".desc" ).html(t.getDescription())
 	        }
-	        self.tasksById[t.id].title = t.title;
-	        self.tasksById[t.id].description = t.description;
-	        if(self.tasks[k] == undefined ){
-	          self.tasks[k] = new Array();
+	        self.taskList.tasksById[t.id].title = t.title;
+	        self.taskList.tasksById[t.id].description = t.description;
+	        if(self.taskList.tasks[k] == undefined ){
+	          self.taskList.tasks[k] = new Array();
 	        }
-	        self.tasks[k][t.priority] = self.tasksById[t.id];
+	        self.taskList.tasks[k][t.priority] = self.taskList.tasksById[t.id];
 	      })
 
 	/*----------  setRelease  ----------*/
@@ -1177,12 +1177,12 @@
 	/*----------  delTask ----------*/
 	      socket.on('delTask', function (id)
 	      {
-	        var t =  self.tasksById[id];
+	        var t =  self.taskList.tasksById[id];
 	        var selectedTask = $(".task[tid="+ t.id +"]")
 	        if (selectedTask) {
 	          selectedTask.remove();
 	        }
-	        delete self.tasksById[id];
+	        delete self.taskList.tasksById[id];
 	        delete self.selectedTasks[id];
 
 	        log("taskRemoved");
@@ -1191,7 +1191,7 @@
 	/*----------  duplicateTask ----------*/
 	      socket.on('duplicateTask', function (data)
 	      {
-	        data.id_project = self.taskTypes[data.typeId].id_project;
+	        data.id_project = self.taskList.taskTypes[data.typeId].id_project;
 	        var t = new task(data);
 	        tm.addTask(t);
 	      })
@@ -1206,8 +1206,8 @@
 	/*----------  updateTask ----------*/
 	      socket.on('updateTask', function (data)
 	      {
-	        data.id_project = self.taskTypes[data.typeId].id_project;
-	        var t = self.tasksById[data.id];
+	        data.id_project = self.taskList.taskTypes[data.typeId].id_project;
+	        var t = self.taskList.tasksById[data.id];
 	        t.update(data)
 
 	        var selectedTask = $(".task[tid="+ t.id +"]")
@@ -1218,19 +1218,19 @@
 	            selectedTask.find( ".ok" ).removeClass("hidden")
 	          }
 	        }
-	        self.tasksById[t.id].valid = t.valid
+	        self.taskList.tasksById[t.id].valid = t.valid
 	      })
 
 	/*----------  archiveTask ----------*/
 	      socket.on('archiveTask', function (data)
 	      {
-	        var t = self.tasksById[data.id];
+	        var t = self.taskList.tasksById[data.id];
 	        t.update(data)
 	        var selectedTask = $(".task[tid="+ t.id +"]")
 	        if (selectedTask) {
 	          selectedTask.remove();
 	        }
-	        self.tasksById[t.id] = t
+	        self.taskList.tasksById[t.id] = t
 	      })
 
 	/*----------  delDataFiles  ----------*/
@@ -1241,7 +1241,7 @@
 	        if (selectedFile) {
 	          selectedFile.remove();
 	        }
-	        delete self.tasksById[data.taskId].files[id]
+	        delete self.taskList.tasksById[data.taskId].files[id]
 	      })
 
 	/*----------  setDataFiles  ----------*/
@@ -1251,9 +1251,9 @@
 	        var divFiles = $(".task[tid=" + f.taskId + "] .files")
 	        if(divFiles){
 	          divFiles.append(f.display())
-	          self.tasksById[f.taskId].removeFile();
+	          self.taskList.tasksById[f.taskId].removeFile();
 	        }
-	        self.tasksById[f.taskId].files[f.id] = f
+	        self.taskList.tasksById[f.taskId].files[f.id] = f
 	      })
 	/*----------  delDataLinks  ----------*/
 	      socket.on('delDataLinks', function (data)
@@ -1263,7 +1263,7 @@
 	        if (selectedLink) {
 	          selectedLink.remove();
 	        }
-	        delete self.tasksById[data.taskId].links[id]
+	        delete self.taskList.tasksById[data.taskId].links[id]
 	      })
 
 	      /*----------  setDataLinks  ----------*/
@@ -1273,16 +1273,16 @@
 	        var divLinks = $(".task[tid=" + l.taskId + "] .links")
 	        if(divLinks){
 	          divLinks.append(l.display())        
-	          self.tasksById[l.taskId].removeLink();
+	          self.taskList.tasksById[l.taskId].removeLink();
 	        }
-	        self.tasksById[l.taskId].links[l.id] = l
+	        self.taskList.tasksById[l.taskId].links[l.id] = l
 	      })
 
 	      /*----------  setDataMessages  ----------*/
 	      socket.on('setDataMessages',function(data)
 	      {
 	        var m = new message(data)
-	        var t = self.tasksById[m.taskId]
+	        var t = self.taskList.tasksById[m.taskId]
 	        var divMessage = $(".task[tid=" + m.taskId + "] .chat")
 	        if(divMessage){
 	          t.chat.messages.push(m)
@@ -1296,7 +1296,7 @@
 	      socket.on('checkUrlExists', function (result)
 	        {
 	          if(result.urlExists){
-	            var t = self.tasksById[result.taskId];
+	            var t = self.taskList.tasksById[result.taskId];
 	            $("#upload").html(t.getAttachBtn());
 	            t.attachBtnOnClcik();
 	            $(".link-form").remove();
@@ -1324,15 +1324,15 @@
 	        var selectedTask = $(".task[tid="+ t.id +"]")
 	        if(selectedTask){
 
-	          var oldTypeID = self.tasksById[t.id].typeId
-	          var oldColor = self.taskTypes[oldTypeID].color;
-	          var newColor = self.taskTypes[t.typeId].color;
+	          var oldTypeID = self.taskList.tasksById[t.id].typeId
+	          var oldColor = self.taskList.taskTypes[oldTypeID].color;
+	          var newColor = self.taskList.taskTypes[t.typeId].color;
 	          var newEnv = self.getLastRelease(t.typeId)
 	          selectedTask.removeClass( oldColor )
 	          selectedTask.addClass( newColor )
 	          selectedTask.find( ".env" ).html(newEnv)
 	        }
-	        self.tasksById[t.id].typeId = t.typeId
+	        self.taskList.tasksById[t.id].typeId = t.typeId
 	      })
 
 	/*----------  addRelease  ----------*/
@@ -1357,7 +1357,7 @@
 
 	      socket.on('addRelease',function(taskType)
 	      {
-	          self.taskTypes[taskType.id] = taskType
+	          self.taskList.taskTypes[taskType.id] = taskType
 	      })
 
 
@@ -1393,7 +1393,7 @@
 	        connectWith: ".connectedSortable",
 	        start( event, ui ) {
 	          //log("start")
-	          var t = self.tasksById[ui.item.attr("tid")];
+	          var t = self.taskList.tasksById[ui.item.attr("tid")];
 	          if(t.isLocked){
 	            $( this ).sortable( "cancel" );
 	          }else{
@@ -1402,7 +1402,7 @@
 	        },
 	        stop( event, ui ) {
 	          //log("stop")
-	          var t = self.tasksById[ui.item.attr("tid")];
+	          var t = self.taskList.tasksById[ui.item.attr("tid")];
 	          t.isDraging = false;
 	        },
 	        update:function( event, ui ) {
@@ -1410,7 +1410,7 @@
 	          var tasksToUpdate = $(this).sortable('toArray', {attribute: 'tid'})
 	          var tasksUpdate = []
 	          tasksToUpdate.map(function(id,pos){
-	            var t = self.tasksById[id];
+	            var t = self.taskList.tasksById[id];
 	            t.priority = pos
 	            tasksUpdate.push(t)
 	          })
@@ -1419,7 +1419,7 @@
 	        },
 	        receive( event, ui ) {
 	          //log("recive");
-	          var t = self.tasksById[ui.item.attr("tid")];
+	          var t = self.taskList.tasksById[ui.item.attr("tid")];
 	          t.day = self.dates[$(this).attr("di")];
 	          t.userId = $(this).attr("uid");
 	          //t.creationUserId = self.connectUserId;
@@ -1434,7 +1434,7 @@
 	        self.select = true;
 	        self.disabledTaskBtn(false)
 	        var id = $(this).attr("tid");
-	        var t =  self.tasksById[id];
+	        var t =  self.taskList.tasksById[id];
 	        if(! t.isOpen && !t.isLocked){
 	          if(!e.ctrlKey){
 	            $.each(self.selectedTasks, function( key, t ) {
@@ -1453,7 +1453,7 @@
 	      $( ".connectedSortable > li" ).dblclick(function() {
 	        //log("dbleclick");
 	        var id = $(this).attr("tid");
-	        var t =  self.tasksById[id];
+	        var t =  self.taskList.tasksById[id];
 	        if(!t.isDraging){
 	        $(this).removeClass('selected');
 	        if(! t.isOpen && !t.isLocked){
@@ -1468,8 +1468,8 @@
 	        content(){
 	          var element = $( this );
 	          var idTask = element.attr("tid");
-	          var t = self.tasksById[idTask];
-	          var color = self.taskTypes[t.typeId].color;
+	          var t = self.taskList.tasksById[idTask];
+	          var color = self.taskList.taskTypes[t.typeId].color;
 	          if(color == "pink"){
 	            return "";
 	          }
@@ -1610,7 +1610,7 @@
 	      console.log(this.selectedProject)
 	      var self = this;
 	      var html = '';
-	      self.taskTypeByProject[self.selectedProject].map(function(t,key) {
+	      self.taskList.taskTypeByProject[self.selectedProject].map(function(t,key) {
 	        html = '<option value="' + t.id + '">' + t.name + '</option>' + html;
 	      });
 	      return html;  
