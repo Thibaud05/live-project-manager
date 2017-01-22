@@ -7,19 +7,16 @@ var task = require("./task.js");
 var projectScreen = require("./projectScreen.js");
 var message = require("./message.js");
 var box = require("./box.js");
+var TaskList = require("./taskList.js");
+var BoxList = require("./boxList.js");
 class tasksManager{
   constructor(){
       this.userByProject = [];
       this.projectByUser = [];
       this.projectById = []
-      this.tasks = [];
-      this.tasksById = [];
       this.users = [];
       this.releases = [];
       this.releasesById = [];
-      this.taskTypes = [];
-      this.taskTypesByDate = [];
-      this.taskTypeByProject = [];
       this.nbWeekPerScreen = 3;
       this.dayPerWeek = 5;
       this.nbdays = this.nbWeekPerScreen*this.dayPerWeek;
@@ -39,8 +36,7 @@ class tasksManager{
       this.searchValue = "";
       this.projectsId = {}
       this.projectIsOpen = false;
-      this.box = []
-      this.boxByProject = []
+      this.taskList = new TaskList()
       this.boxList = new BoxList()
   }
   init(){
@@ -66,7 +62,7 @@ class tasksManager{
     //console.log(data)
       this.connectUserId = data.connectUserId;
       this.fullUrl = data.fullUrl;
-      this.tasks = [];
+      this.taskList.tasks = [];
       var self = this
       data.users.map(function(data,key) {
         if(data!=undefined){
@@ -74,45 +70,11 @@ class tasksManager{
         }
       })
       this.connectUser = this.getUser(this.connectUserId)
-      var tasks_files = {};
-      //console.log(data)
-      data.tasks_files.map(function(data,key ) {
-        if(data!=undefined){
-          if(tasks_files[data.taskId] == undefined ){
-            tasks_files[data.taskId] = [];
-          }
-          tasks_files[data.taskId][data.id] = new file(data);
-        }
-      });
-      var tasks_links = {};
-      //console.log(data)
-      data.tasks_links.map(function(data,key ) {
-        if(data!=undefined){
-          if(tasks_links[data.taskId] == undefined ){
-            tasks_links[data.taskId] = [];
-          }
-          tasks_links[data.taskId][data.id] = new link(data);
-        }
-      });
+      this.taskList.setData(data)
 
-      var tasks_messages = {};
-      data.tasks_messages.map(function(data,key ) {
-        if(data!=undefined){
-          if(tasks_messages[data.taskId] == undefined ){
-            tasks_messages[data.taskId] = [];
-          }
-          tasks_messages[data.taskId][data.id] = new message(data);
-        }
-      });
+
+
       //console.log(tasks_files)
-      data.taskTypes.map(function(taskType,key) {
-        self.taskTypes[taskType.id] = taskType;
-        var key = taskType.id_project
-        if(self.taskTypeByProject[key]==undefined){
-          self.taskTypeByProject[key] = []
-        }
-        self.taskTypeByProject[key].push(taskType);
-      });
 
       data.projects.map(function(project,key) {
         if(project!=undefined){
@@ -138,7 +100,7 @@ class tasksManager{
         if(data!=undefined){
           var r = data
           r.day = moment(data.day).format('YYYY-MM-DD');
-          r.id_project = self.taskTypes[r.typeId].id_project;
+          r.id_project = self.taskList.taskTypes[r.typeId].id_project;
 
           if (self.releases[r.day] == undefined){
             self.releases[r.day] = new Array();
@@ -158,36 +120,6 @@ class tasksManager{
         }
       });
       this.selectProject(data.selectedProject)
-
-      data.tasks.map(function(data,key) {
-        
-        if(data!=undefined){
-          data.id_project = self.taskTypes[data.typeId].id_project;
-          var t = new task(data);
-
-          if(tasks_files[t.id] != undefined ){
-            t.files = tasks_files[t.id];
-            //log(t.files);
-          }
-
-          if(tasks_links[t.id] != undefined ){
-            t.links = tasks_links[t.id];
-          }
-
-          if(tasks_messages[t.id] != undefined ){
-            t.messages = tasks_messages[t.id];
-          }
-          
-          var k = t.userId + ":" + t.day;
-          if(self.tasks[k] == undefined ){
-            self.tasks[k] = new Array();
-          }
-          var nextPriority = t.getNextPriority(self.tasks,t.priority);
-          t.priority = nextPriority;
-          self.tasks[k][nextPriority] = t;
-          self.tasksById[t.id] = t;
-        }
-      });
     
     self.projectByUser[self.connectUser.id].map(function(projectId,key) {
       self.projectsId[projectId] = true
@@ -198,17 +130,6 @@ class tasksManager{
       }
     });
     this.boxList.setData(data.box)
-    /*data.box.map(function(data,key) {
-      if(data!=undefined){
-        var b = new box(data)
-        self.box[b.id] = b;
-
-        if(self.boxByProject[b.id_project] == undefined ){
-          self.boxByProject[b.id_project] = [];
-        }
-        self.boxByProject[b.id_project][b.order] = b;
-      }
-    })*/
   }
 
 /**
@@ -268,7 +189,7 @@ class tasksManager{
   sync(){
 
     var self = this
-    this.tasks = [];
+    this.taskList.tasks = [];
 
 
     $.each( this.users, function( key, user ) {
@@ -284,8 +205,8 @@ class tasksManager{
       }
     });
 
-    this.tasks = [];
-    this.tasksById.map(function(t,key) {
+    this.taskList.tasks = [];
+    this.taskList.tasksById.map(function(t,key) {
       if (t){
         t.isLocked = (self.selectedProject != t.id_project)
         var display = true;
@@ -346,11 +267,11 @@ class tasksManager{
  *
  */
   addTask(t){
-    t.id_project = this.taskTypes[t.typeId].id_project
+    t.id_project = this.taskList.taskTypes[t.typeId].id_project
     t.isLocked = (this.selectedProject != t.id_project)
 
     this.addDOMTask(t);
-    this.tasksById[t.id] = t;
+    this.taskList.tasksById[t.id] = t;
     this.activate();
   }
 /**
@@ -402,8 +323,8 @@ class tasksManager{
     var userId = this.connectUserId
     var day = this.dates[0]
     var lowPriority = 0
-    if (this.tasks[userId + ":" + day]!=undefined){
-      lowPriority =  this.tasks[userId + ":" + day].length;
+    if (this.taskList.tasks[userId + ":" + day]!=undefined){
+      lowPriority =  this.taskList.tasks[userId + ":" + day].length;
     }
 
     var newTask = {
@@ -452,8 +373,8 @@ class tasksManager{
     duplicateTask(){
       var duplicatedTasksId = [];
       for (var key in this.selectedTasks) {
-        var t = this.tasksById[key]
-        var lowPriority =  this.tasks[t.userId + ":" + t.day].length;
+        var t = this.taskList.tasksById[key]
+        var lowPriority =  this.taskList.tasks[t.userId + ":" + t.day].length;
         duplicatedTasksId.push({
           "id"               : "",
           "userId"            : t.userId,
@@ -479,10 +400,10 @@ class tasksManager{
     validTask(){
       var validTasks = [];
       for (var key in this.selectedTasks) {
-        var t = this.tasksById[key]
+        var t = this.taskList.tasksById[key]
         this.selectedTasks[key].find( ".ok" ).toggleClass("hidden")
         t.valid = t.valid==1?0:1
-        this.tasksById[key] = t
+        this.taskList.tasksById[key] = t
         validTasks.push(t);
       }
       socket.emit('updateTask', validTasks);
@@ -494,11 +415,11 @@ class tasksManager{
  */
     addDOMTask(t){
         var k = t.userId + ":" + t.day
-        if(this.tasks[k] == undefined ){
-          this.tasks[k] = new Array();
+        if(this.taskList.tasks[k] == undefined ){
+          this.taskList.tasks[k] = new Array();
         }
 
-        this.tasks[k][t.priority] = t;
+        this.taskList.tasks[k][t.priority] = t;
         var selectedTask = $(".task[tid="+ t.id +"]")
         var cible = $(".connectedSortable[di="+ this.datesIndex[t.day] +"][uid="+ t.userId +"]")
         if (selectedTask.length && !cible.length) {
@@ -520,7 +441,7 @@ class tasksManager{
         if (!selectedTask.length && cible.length) {
 
           var inBox = cible.parents('div.box').length > 0
-          var htmlTask = this.renderTask(t,inBox);
+          var htmlTask = this.taskList.renderTask(t,inBox);
           cible.append(htmlTask)
         }
     }
@@ -532,7 +453,7 @@ class tasksManager{
     archiveSelectedTasks(){
       var archivedTasks = [];
       for (var key in this.selectedTasks) {
-        var t = this.tasksById[key]
+        var t = this.taskList.tasksById[key]
         var id = t.id
         t.userId = 5
         t.day = '0000-00-00'
@@ -547,9 +468,9 @@ class tasksManager{
     assignAccountable(userId){
       var assignTasks = [];
       for (var key in this.selectedTasks) {
-        var t = this.tasksById[key]
+        var t = this.taskList.tasksById[key]
         t.creationUserId = userId
-        this.tasksById[key] = t
+        this.taskList.tasksById[key] = t
         assignTasks.push(t);
       }
       socket.emit('updateTask', assignTasks);
@@ -562,53 +483,6 @@ class tasksManager{
             html += '<li><a href="#" data-value="' + user.id + '">' + user.getName() + '</a></li>'
         }
         return html
-    }
-/**
- *
- * DISPLAY TASKS
- *
- */
-    renderTasks(key,inBox){
-
-      var html = ''
-      var tabTask = this.tasks[key];
-      if(tabTask){
-        for (var i = 0; i < tabTask.length; i++){
-          var t = tabTask[i];
-          if(t!=undefined){
-              html += this.renderTask(t,inBox)
-          }
-        }
-      }
-      return html;
-    }
-  /**
- *
- * DISPLAY TASK
- *
- */
-    renderTask(task,inBox){
-        var html = ''
-        if(this.projectsId[task.id_project] && (!inBox || !task.isLocked)){
-          var color = this.taskTypes[task.typeId].color;
-          var env = '';
-          var validClass = "ok hidden"
-          var taskTitle = task.title
-          if(!task.isLocked){
-            if(task.typeId!=5 && task.typeId!=6){
-               env = '<div class="env">' + this.getLastRelease(task.typeId) + '</div>'
-            }
-            if(task.valid==1){
-              validClass = "ok"
-            }
-          }else{
-            taskTitle = this.projectById[task.id_project].name
-          }
-          html = '<li class="ui-state-default task ' + color + '" tid = "' + task.id + '" >'+ env 
-          + '<div class="contener"><span class="title">' + taskTitle + '</span>'
-          + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></div></li>';
-        }
-      return html
     }
 /**
  *
@@ -652,22 +526,7 @@ class tasksManager{
  * DISPLAY BOX
  *
  */
-    renderBox(type,idType){ 
-      var html = ''
-      var htmlTasks = this.renderTasks(idType + ":0000-00-00",true)
-      if(this.searchValue == "" || htmlTasks != ""){
-       
-        html = '<div class="panel panel-default box">';
-        html += '<div class="panel-heading">' + type + '</div>';
-        html +=   '<div class="panel-body">';
-        html +=     '<ul class="connectedSortable" di = "-1" uid ="' + idType + '">' 
-        html +=       this.renderTasks(idType + ":0000-00-00",true)
-        html +=     '</ul>'
-        html +=   '</div>';
-        html += '</div>';
-      }
-      return html;
-    }
+
 
 /**
  *
@@ -720,7 +579,7 @@ class tasksManager{
             var css = ( index==0 ) ? ' class="leftSep"' : '';
             line += '<td' + css + '><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
 
-            var htmlTask = self.renderTasks(user.id + ":" + self.dates[i],false);
+            var htmlTask = self.taskList.render(user.id + ":" + self.dates[i],false);
             if(htmlTask != ""){
               empltyLine = false
               line += htmlTask;
@@ -745,7 +604,7 @@ class tasksManager{
       $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
       var htmlBox = ""
 
-      boxList.render(this.selectedProject)
+      var htmlBox = this.boxList.render(this.selectedProject)
 
       $("#box").html(htmlBox);
       $("#accountable").html(this.renderAccountable());

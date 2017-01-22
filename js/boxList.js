@@ -14,12 +14,15 @@ class BoxList
 	        var box = new Box(data)
 	        self.boxs[box.id] = box;
 
-	        if(self.boxByProjects[box.id_project] == undefined ){
-	          self.boxByProjects[box.id_project] = [];
+	        if(self.boxsByProject[box.id_project] == undefined ){
+	          self.boxsByProject[box.id_project] = [];
 	        }
-	        self.boxByProjects[box.id_project][box.order] = box;
+	        self.boxsByProject[box.id_project][box.order] = box;
 	      }
 	    })
+    }
+    render(selectedProject){
+    	
     }
 }
 

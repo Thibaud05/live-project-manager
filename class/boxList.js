@@ -25,14 +25,15 @@ class BoxList
     	var html = ""
     	if(this.boxByProject[selectedProject]){
 	        for (var key in this.boxByProject[selectedProject]) {
-	        	var b = this.boxByProject[selectedProject][key]
-	        	if(b!=undefined){
-	            	html += this.renderBox(b.name,b.id)
+	        	var box = this.boxByProject[selectedProject][key]
+	        	if(box!=undefined){
+	            	html += box.render()
 	        	}
 	        }
 	    }
 	    if(this.searchValue!=""){
-	        htm += this.renderBox("ARCHIVE",5)
+	    	var box = new Box({id:5,name:"ARCHIVE"})
+	        htm += box.render()
 	    }
 	    return html;
 	}
