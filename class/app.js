@@ -193,7 +193,7 @@ class app
         
 
         socket.on('selectProject', function(idProject){
-            global.data.users[socket.connectUserId].selectProject(idProject)
+            global.data.users[global.data.connectUserId].selectProject(idProject)
         })
 
         this.socket = socket

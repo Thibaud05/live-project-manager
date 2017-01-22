@@ -70,9 +70,6 @@ class tasksManager{
         }
       })
       this.connectUser = this.getUser(this.connectUserId)
-      this.taskList.setData(data)
-
-
 
       //console.log(tasks_files)
 
@@ -94,6 +91,9 @@ class tasksManager{
         }
         self.projectByUser[pu.id_user].push(pu.id_project)
       });
+
+      this.selectProject(data.selectedProject)
+      this.taskList.setData(data)
 
       self.releases = []
       data.releases.map(function(data,key) {
@@ -119,7 +119,7 @@ class tasksManager{
           }
         }
       });
-      this.selectProject(data.selectedProject)
+      
     
     self.projectByUser[self.connectUser.id].map(function(projectId,key) {
       self.projectsId[projectId] = true
@@ -603,9 +603,11 @@ class tasksManager{
       $("#tasksManagerHead").html('<table class="table" width="100%" cellspacing="0">' + htmlHead + '</table>');
       $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
       var htmlBox = ""
-
       var htmlBox = this.boxList.render(this.selectedProject)
-
+      if(this.searchValue!=""){
+          var b = new box({id:5,name:"ARCHIVE"})
+          htmlBox += b.render()
+       }
       $("#box").html(htmlBox);
       $("#accountable").html(this.renderAccountable());
     }

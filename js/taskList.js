@@ -111,6 +111,8 @@ class TaskList
         for (var i = 0; i < tabTask.length; i++){
           var t = tabTask[i];
           if(t!=undefined){
+             if(inBox){
+              }
               html += this.renderTask(t,inBox)
           }
         }

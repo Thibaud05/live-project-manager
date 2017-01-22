@@ -498,7 +498,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	var host = 'http://www.koolog.com:3000';
+	var host = 'http://127.0.0.1:3000';
 
 /***/ },
 /* 3 */
@@ -513,8 +513,8 @@
 	var projectScreen = __webpack_require__(10);
 	var message = __webpack_require__(9);
 	var box = __webpack_require__(13);
-	var TaskList = __webpack_require__(15);
-	var BoxList = __webpack_require__(14);
+	var TaskList = __webpack_require__(14);
+	var BoxList = __webpack_require__(15);
 	class tasksManager{
 	  constructor(){
 	      this.userByProject = [];
@@ -576,9 +576,6 @@
 	        }
 	      })
 	      this.connectUser = this.getUser(this.connectUserId)
-	      this.taskList.setData(data)
-
-
 
 	      //console.log(tasks_files)
 
@@ -600,6 +597,9 @@
 	        }
 	        self.projectByUser[pu.id_user].push(pu.id_project)
 	      });
+
+	      this.selectProject(data.selectedProject)
+	      this.taskList.setData(data)
 
 	      self.releases = []
 	      data.releases.map(function(data,key) {
@@ -625,7 +625,7 @@
 	          }
 	        }
 	      });
-	      this.selectProject(data.selectedProject)
+	      
 	    
 	    self.projectByUser[self.connectUser.id].map(function(projectId,key) {
 	      self.projectsId[projectId] = true
@@ -1109,9 +1109,11 @@
 	      $("#tasksManagerHead").html('<table class="table" width="100%" cellspacing="0">' + htmlHead + '</table>');
 	      $("#tasksManager").html('<table class="table" width="100%" cellspacing="0">' + html + '</table>');
 	      var htmlBox = ""
-
 	      var htmlBox = this.boxList.render(this.selectedProject)
-
+	      if(this.searchValue!=""){
+	          var b = new box({id:5,name:"ARCHIVE"})
+	          htmlBox += b.render()
+	       }
 	      $("#box").html(htmlBox);
 	      $("#accountable").html(this.renderAccountable());
 	    }
@@ -2751,47 +2753,26 @@
 	    this.name = data.name;
 	    this.order = data.order;
 	  }
+	  render(){ 
+		  var html = ''
+		  var htmlTasks = window.tm.taskList.render(this.id + ":0000-00-00",true)
+		  if(window.tm.searchValue == "" || htmlTasks != ""){
+		    html = '<div class="panel panel-default box">';
+		    html += '<div class="panel-heading">' + this.name + '</div>';
+		    html +=   '<div class="panel-body">';
+		    html +=     '<ul class="connectedSortable" di = "-1" uid ="' + this.id + '">' 
+		    html +=       window.tm.taskList.render(this.id + ":0000-00-00",true)
+		    html +=     '</ul>'
+		    html +=   '</div>';
+		    html += '</div>';
+		  }
+		  return html;
+		}
 	}
 	module.exports = box;
 
 /***/ },
 /* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict'
-	var Box = __webpack_require__(13);
-	class BoxList
-	{
-	    constructor(){
-	        this.boxs = []
-	        this.boxsByProject = []
-	    }
-
-	    setData(data){
-	    	self = this
-	        data.map(function(data,key) {
-		      if(data!=undefined){
-		        var box = new Box(data)
-		        self.boxs[box.id] = box;
-
-		        if(self.boxsByProject[box.id_project] == undefined ){
-		          self.boxsByProject[box.id_project] = [];
-		        }
-		        self.boxsByProject[box.id_project][box.order] = box;
-		      }
-		    })
-	    }
-	    render(selectedProject){
-	    	
-	    }
-	}
-
-	module.exports=BoxList;
-
-
-
-/***/ },
-/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
@@ -2907,6 +2888,8 @@
 	        for (var i = 0; i < tabTask.length; i++){
 	          var t = tabTask[i];
 	          if(t!=undefined){
+	             if(inBox){
+	              }
 	              html += this.renderTask(t,inBox)
 	          }
 	        }
@@ -2942,6 +2925,52 @@
 	}
 
 	module.exports=TaskList;
+
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict'
+	var Box = __webpack_require__(13);
+	class BoxList
+	{
+	    constructor(){
+	        this.boxs = []
+	        this.boxByProject = []
+	    }
+
+	    setData(data){
+	    	self = this
+	        data.map(function(data,key) {
+		      if(data!=undefined){
+		        var box = new Box(data)
+		        self.boxs[box.id] = box;
+
+		        if(self.boxByProject[box.id_project] == undefined ){
+		          self.boxByProject[box.id_project] = [];
+		        }
+		        self.boxByProject[box.id_project][box.order] = box;
+		      }
+		    })
+	    }
+	    render(selectedProject){
+	    	var html =""
+		    if(this.boxByProject[selectedProject]){
+		        for (var key in this.boxByProject[selectedProject]) {
+		          var b = this.boxByProject[selectedProject][key]
+		          if(b!=undefined){
+		            html += b.render()
+		          }
+		        }
+		    }
+			return html
+	    }
+
+	}
+
+	module.exports=BoxList;
 
 
 
