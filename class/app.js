@@ -193,7 +193,7 @@ class app
         
 
         socket.on('selectProject', function(idProject){
-            global.data.users[global.data.connectUserId].selectProject(idProject)
+            global.data.users[this.socket.connectUserId].selectProject(idProject)
         })
 
         this.socket = socket
@@ -217,6 +217,7 @@ class app
                 global.data.connectUserId = u.id
                 global.data.selectedProject = u.selectedProject
                 global.data.users[u.id].logged = true 
+                this.socket.connectUserId = u.id
                 var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1}
                 this.socket.emit('logged',{obj:obj,data:global.data});
                 io.emit('loginUser',u.id);
