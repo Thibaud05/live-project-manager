@@ -47,6 +47,21 @@ appExpress.get('/', function (req, res) {
   res.send(app.displayLogin())
 });
 
+appExpress.get('/api/taskTitle/:id', function (req, res) {
+  var json = [];
+  req.param('id').split(",").forEach(function (id) {
+    var task = global.data.tasks[parseInt(id)]
+    if(task!=undefined){
+      json.push({id:task.id,title:task.title})
+    }
+  });
+  if(json != ""){
+    res.send(JSON.stringify(json))
+  }else{
+    res.status(404).send('Not found');
+  }
+});
+
 appExpress.get('/uploadTest', function (req, res) {
   res.sendFile(__dirname + '/testupload.html');
 });
