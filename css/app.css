@@ -692,3 +692,11 @@ td.firstCol{
     top: 90px;
     right: 0;
 }
+.colorPreview {
+    width: 30px;
+    height: 30px;
+    border-radius: 20px;
+    float: left;
+    margin-right: 10px;
+    margin-left: 10px;
+}

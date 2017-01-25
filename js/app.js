@@ -334,6 +334,9 @@ function appInit(data) {
     $('#add_release').toggleClass("hidden",true)
   });
 
+
+
+
  $('#add_task a').click(function (e) {
   var type = $('#add_task .form-type').val()
   tm.newTask(type);
@@ -349,7 +352,11 @@ function appInit(data) {
   $('#dropdownAdd').toggleClass("open",false)
 
  })
-
+ /*
+$('#add_type .color').change(function (e) {
+  var color = this.val()
+  $('#add_type .colorPreview').
+})*/
 //
  $('#add_release a').click(function (e) {
   var name = $('#add_release input').val()
