@@ -56,16 +56,19 @@ class TaskList
     }
 
     setTypeData(data){
-    	self = this
-	    data.map(function(taskType,key) {
-	        self.taskTypes[taskType.id] = taskType;
-	        var key = taskType.id_project
-	        if(self.taskTypeByProject[key]==undefined){
-	          self.taskTypeByProject[key] = []
-	        }
-	        self.taskTypeByProject[key].push(taskType);
-	     });
+      self = this
+      data.map(function(taskType,key) {
+        self.addType(taskType)
+      });
+    }
 
+    addType(taskType){
+        this.taskTypes[taskType.id] = taskType;
+        var key = taskType.id_project
+        if(this.taskTypeByProject[key]==undefined){
+          this.taskTypeByProject[key] = []
+        }
+        this.taskTypeByProject[key].push(taskType);
     }
 
     setFilesData(data){

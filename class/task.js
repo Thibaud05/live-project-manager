@@ -38,7 +38,7 @@ class task
 					"`valid` = '" + this.valid + "'," +
 					"`description` = '" + global.escapeQuote(this.description) + "'" +
 		 		" WHERE `id` = " + this.id
-		console.log(sql)
+		//console.log(sql)
 		global.connection.query(sql)
 		global.data.tasks[this.id] = this
 

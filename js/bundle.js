@@ -383,14 +383,17 @@
 	 $('#add_task a').click(function (e) {
 	  var type = $('#add_task .form-type').val()
 	  tm.newTask(type);
-	  $('#dropdownAdd').toggleClass("open",false)
 	  $('#add_task').toggleClass("hidden",true)
+	  $('#dropdownAdd').toggleClass("open",false)
 	 })
 
 	 $('#add_type a').click(function (e) {
 	  var name = $('#add_type input').val()
 	  var color = $('#add_type .color').val()
 	  socket.emit('addRelease', {name:name,color:color,id_project:tm.selectedProject});
+	  $('#add_type').toggleClass("hidden",true)
+	  $('#dropdownAdd').toggleClass("open",false)
+
 	 })
 
 	//
@@ -398,6 +401,8 @@
 	  var name = $('#add_release input').val()
 	  var typeId = $('#add_release .form-type').val()
 	  socket.emit('addDeadLine', {name:name,typeId:typeId});
+	  $('#add_release').toggleClass("hidden",true)
+	  $('#dropdownAdd').toggleClass("open",false)
 	 })
 
 
@@ -1357,12 +1362,10 @@
 	          }
 	      })
 
-	      socket.on('addRelease',function(taskType)
+	      socket.on('addType',function(taskType)
 	      {
-	          self.taskList.taskTypes[taskType.id] = taskType
+	          self.taskList.addType(taskType)
 	      })
-
-
 
 
 
@@ -2833,16 +2836,19 @@
 	    }
 
 	    setTypeData(data){
-	    	self = this
-		    data.map(function(taskType,key) {
-		        self.taskTypes[taskType.id] = taskType;
-		        var key = taskType.id_project
-		        if(self.taskTypeByProject[key]==undefined){
-		          self.taskTypeByProject[key] = []
-		        }
-		        self.taskTypeByProject[key].push(taskType);
-		     });
+	      self = this
+	      data.map(function(taskType,key) {
+	        self.addType(taskType)
+	      });
+	    }
 
+	    addType(taskType){
+	        this.taskTypes[taskType.id] = taskType;
+	        var key = taskType.id_project
+	        if(this.taskTypeByProject[key]==undefined){
+	          this.taskTypeByProject[key] = []
+	        }
+	        this.taskTypeByProject[key].push(taskType);
 	    }
 
 	    setFilesData(data){

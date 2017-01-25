@@ -17,19 +17,22 @@ class app
         socket.on('setData', function (data)
         {
             console.log('setData')
-            console.log(data)
+            //console.log(data)
             var t = new global.task(data)
             io.emit('setData',t.update());
         })
 
         socket.on('changeRelease', function (data)
         {
+            console.log('changeRelease')
             data.t.typeId = data.typeId
             var t = new global.task(data.t)
             io.emit('changeRelease',t.update());
+
         })
         socket.on('updateTask', function (datas)
         {
+            console.log('updateTask')
             for(var i= 0; i < datas.length; i++)
             {
                 var data = datas[i]
@@ -55,13 +58,13 @@ class app
         socket.on('moveTask', function (datas)
         {
             console.log("SERVER MOVE TASK")
-            console.log(datas)
+            //console.log(datas)
             
-            console.log(datas.length)       
+            //console.log(datas.length)       
 
             for(var i= 0; i < datas.length; i++)
             {
-                console.log("test")
+                //console.log("test")
                var data = datas[i]
                 var t = new global.task(data)
                 
@@ -193,7 +196,7 @@ class app
         
 
         socket.on('selectProject', function(idProject){
-            global.data.users[this.socket.connectUserId].selectProject(idProject)
+            global.data.users[self.socket.connectUserId].selectProject(idProject)
         })
 
         this.socket = socket
@@ -254,13 +257,13 @@ class app
     logout(socketId){
         var user = this.userBySocket[socketId]
         
-        console.log(user)
+        //console.log(user)
         if( user!= undefined && user.logged ){
             
 
             user.delSocket(socketId)
             delete this.userBySocket[socketId]
-            console.log(user)
+            //console.log(user)
             if( !user.haveSocket() ){
                 this.socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:"deco",userId:user.id});
                 this.usersLogged --
@@ -356,7 +359,7 @@ class app
 
     display(u)
     {
-        console.log(u)
+        //console.log(u)
         return this.header(u) + '<div id="tasksManager"></div><div id="box"></div>' + this.footer()
     }
 

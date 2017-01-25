@@ -851,12 +851,10 @@ class tasksManager{
           }
       })
 
-      socket.on('addRelease',function(taskType)
+      socket.on('addType',function(taskType)
       {
-          self.taskList.taskTypes[taskType.id] = taskType
+          self.taskList.addType(taskType)
       })
-
-
 
 
 
