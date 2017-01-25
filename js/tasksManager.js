@@ -4,6 +4,7 @@ var user = require("./user.js");
 var file = require("./file.js");
 var link = require("./link.js");
 var task = require("./task.js");
+var ProjectUser = require("./ProjectUser.js");
 var projectScreen = require("./projectScreen.js");
 var message = require("./message.js");
 var box = require("./box.js");
@@ -11,8 +12,8 @@ var TaskList = require("./taskList.js");
 var BoxList = require("./boxList.js");
 class tasksManager{
   constructor(){
-      this.userByProject = [];
-      this.projectByUser = [];
+      this.projectUserByProject = [];
+      this.projectUserByUser = [];
       this.projectById = []
       this.users = [];
       this.releases = [];
@@ -79,17 +80,17 @@ class tasksManager{
         }
       });
 
-      data.projects_user.map(function(pu,key) {
-
-        if(self.userByProject[pu.id_project] == undefined ){
-            self.userByProject[pu.id_project] = [];
+      data.projects_user.map(function(data,key) {
+        var pu = new ProjectUser(data)
+        if(self.projectUserByProject[pu.id_project] == undefined ){
+            self.projectUserByProject[pu.id_project] = [];
         }
-        self.userByProject[pu.id_project].push(pu.id_user)
+        self.projectUserByProject[pu.id_project].push(pu)
 
-        if(self.projectByUser[pu.id_user] == undefined ){
-            self.projectByUser[pu.id_user] = [];
+        if(self.projectUserByUser[pu.id_user] == undefined ){
+            self.projectUserByUser[pu.id_user] = [];
         }
-        self.projectByUser[pu.id_user].push(pu.id_project)
+        self.projectUserByUser[pu.id_user].push(pu)
       });
 
       this.selectProject(data.selectedProject)
@@ -120,15 +121,19 @@ class tasksManager{
         }
       });
       
-    
-    self.projectByUser[self.connectUser.id].map(function(projectId,key) {
+    // Projects id for connected user
+    self.projectUserByUser[self.connectUser.id].map(function(projectUser,key){
+      var projectId = projectUser.id_project
       self.projectsId[projectId] = true
-      if(self.selectedProject == projectId){
-        self.userByProject[projectId].map(function(userId,key) {
-            self.users[userId].display = true
-        })
+    });  
+
+    // User for this project       
+    self.projectUserByProject[self.selectedProject].map(function(projectUser,key) {
+      if(projectUser.isVisibleUser()){
+        var userId = projectUser.id_user
+        self.users[userId].display = true
       }
-    });
+    })
     this.boxList.setData(data.box)
   }
 
@@ -197,13 +202,14 @@ class tasksManager{
         user.display = false
       }
     })
-    self.projectByUser[self.connectUser.id].map(function(projectId,key) {
-      if(self.selectedProject == projectId){
-        self.userByProject[projectId].map(function(userId,key) {
-            self.users[userId].display = true
-        })
-      }
-    });
+
+    // User for this project  
+    self.projectUserByProject[self.selectedProject].map(function(projectUser,key) {
+      if(projectUser.isVisibleUser()){
+        var userId = projectUser.id_user
+        self.users[userId].display = true
+      } 
+    })
 
     this.taskList.tasks = [];
     this.taskList.tasksById.map(function(t,key) {
@@ -478,8 +484,9 @@ class tasksManager{
 
     renderAccountable(){
         var html = ''
-        for (var userId of this.userByProject[this.selectedProject]) {
-            var user = this.users[userId]
+        for (var userProject of this.projectUserByProject[this.selectedProject]) {
+
+            var user = this.users[userProject.id_user]
             html += '<li><a href="#" data-value="' + user.id + '">' + user.getName() + '</a></li>'
         }
         return html
@@ -1053,7 +1060,7 @@ class tasksManager{
         var self = this;
         $("#btnProject").click(function(){
           if(!self.projectIsOpen){
-            var ps = new projectScreen(self.projectByUser[self.connectUser.id],self.projectById,self.usersById);
+            var ps = new projectScreen(self.projectUserByUser[self.connectUser.id],self.projectById,self.usersById);
             ps.dispayMyProject();
             $(".strip").hide();
             self.projectIsOpen = true;
@@ -1074,7 +1081,7 @@ class tasksManager{
     selectProject(id){
       if(id != this.selectedProject){
         if(id == undefined || id == 0 ) {
-          id = this.projectByUser[this.connectUser.id][0]
+          id = this.projectUserByUser[this.connectUser.id][0].id_project
         }
         this.selectedProject = id
         if(this.projectById[id]){

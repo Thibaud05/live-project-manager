@@ -75,8 +75,8 @@ class projectScreen{
         var self = this;
         
 
-        projectsUser.forEach(function(projectId) {
-            var p = new project(self.AllProject[projectId]);
+        projectsUser.forEach(function(projectUser) {
+            var p = new project(self.AllProject[projectUser.id_project]);
             this.projectsData[p.id] = p;
         },this);
     }

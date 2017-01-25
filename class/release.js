@@ -40,7 +40,6 @@ class release
             global.data.releases[self.id] = self
             console.log('addRelease' + self.name)
             io.emit('addRelease',self);
-
         })
     }
 

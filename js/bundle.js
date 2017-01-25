@@ -380,6 +380,9 @@
 	    $('#add_release').toggleClass("hidden",true)
 	  });
 
+
+
+
 	 $('#add_task a').click(function (e) {
 	  var type = $('#add_task .form-type').val()
 	  tm.newTask(type);
@@ -395,7 +398,11 @@
 	  $('#dropdownAdd').toggleClass("open",false)
 
 	 })
-
+	 /*
+	$('#add_type .color').change(function (e) {
+	  var color = this.val()
+	  $('#add_type .colorPreview').
+	})*/
 	//
 	 $('#add_release a').click(function (e) {
 	  var name = $('#add_release input').val()
@@ -515,6 +522,7 @@
 	var file = __webpack_require__(5);
 	var link = __webpack_require__(6);
 	var task = __webpack_require__(7);
+	var ProjectUser = __webpack_require__(16);
 	var projectScreen = __webpack_require__(10);
 	var message = __webpack_require__(9);
 	var box = __webpack_require__(13);
@@ -522,8 +530,8 @@
 	var BoxList = __webpack_require__(15);
 	class tasksManager{
 	  constructor(){
-	      this.userByProject = [];
-	      this.projectByUser = [];
+	      this.projectUserByProject = [];
+	      this.projectUserByUser = [];
 	      this.projectById = []
 	      this.users = [];
 	      this.releases = [];
@@ -590,17 +598,17 @@
 	        }
 	      });
 
-	      data.projects_user.map(function(pu,key) {
-
-	        if(self.userByProject[pu.id_project] == undefined ){
-	            self.userByProject[pu.id_project] = [];
+	      data.projects_user.map(function(data,key) {
+	        var pu = new ProjectUser(data)
+	        if(self.projectUserByProject[pu.id_project] == undefined ){
+	            self.projectUserByProject[pu.id_project] = [];
 	        }
-	        self.userByProject[pu.id_project].push(pu.id_user)
+	        self.projectUserByProject[pu.id_project].push(pu)
 
-	        if(self.projectByUser[pu.id_user] == undefined ){
-	            self.projectByUser[pu.id_user] = [];
+	        if(self.projectUserByUser[pu.id_user] == undefined ){
+	            self.projectUserByUser[pu.id_user] = [];
 	        }
-	        self.projectByUser[pu.id_user].push(pu.id_project)
+	        self.projectUserByUser[pu.id_user].push(pu)
 	      });
 
 	      this.selectProject(data.selectedProject)
@@ -631,15 +639,19 @@
 	        }
 	      });
 	      
-	    
-	    self.projectByUser[self.connectUser.id].map(function(projectId,key) {
+	    // Projects id for connected user
+	    self.projectUserByUser[self.connectUser.id].map(function(projectUser,key){
+	      var projectId = projectUser.id_project
 	      self.projectsId[projectId] = true
-	      if(self.selectedProject == projectId){
-	        self.userByProject[projectId].map(function(userId,key) {
-	            self.users[userId].display = true
-	        })
+	    });  
+
+	    // User for this project       
+	    self.projectUserByProject[self.selectedProject].map(function(projectUser,key) {
+	      if(projectUser.isVisibleUser()){
+	        var userId = projectUser.id_user
+	        self.users[userId].display = true
 	      }
-	    });
+	    })
 	    this.boxList.setData(data.box)
 	  }
 
@@ -708,13 +720,14 @@
 	        user.display = false
 	      }
 	    })
-	    self.projectByUser[self.connectUser.id].map(function(projectId,key) {
-	      if(self.selectedProject == projectId){
-	        self.userByProject[projectId].map(function(userId,key) {
-	            self.users[userId].display = true
-	        })
-	      }
-	    });
+
+	    // User for this project  
+	    self.projectUserByProject[self.selectedProject].map(function(projectUser,key) {
+	      if(projectUser.isVisibleUser()){
+	        var userId = projectUser.id_user
+	        self.users[userId].display = true
+	      } 
+	    })
 
 	    this.taskList.tasks = [];
 	    this.taskList.tasksById.map(function(t,key) {
@@ -989,8 +1002,9 @@
 
 	    renderAccountable(){
 	        var html = ''
-	        for (var userId of this.userByProject[this.selectedProject]) {
-	            var user = this.users[userId]
+	        for (var userProject of this.projectUserByProject[this.selectedProject]) {
+
+	            var user = this.users[userProject.id_user]
 	            html += '<li><a href="#" data-value="' + user.id + '">' + user.getName() + '</a></li>'
 	        }
 	        return html
@@ -1564,7 +1578,7 @@
 	        var self = this;
 	        $("#btnProject").click(function(){
 	          if(!self.projectIsOpen){
-	            var ps = new projectScreen(self.projectByUser[self.connectUser.id],self.projectById,self.usersById);
+	            var ps = new projectScreen(self.projectUserByUser[self.connectUser.id],self.projectById,self.usersById);
 	            ps.dispayMyProject();
 	            $(".strip").hide();
 	            self.projectIsOpen = true;
@@ -1585,7 +1599,7 @@
 	    selectProject(id){
 	      if(id != this.selectedProject){
 	        if(id == undefined || id == 0 ) {
-	          id = this.projectByUser[this.connectUser.id][0]
+	          id = this.projectUserByUser[this.connectUser.id][0].id_project
 	        }
 	        this.selectedProject = id
 	        if(this.projectById[id]){
@@ -2443,8 +2457,8 @@
 	        var self = this;
 	        
 
-	        projectsUser.forEach(function(projectId) {
-	            var p = new project(self.AllProject[projectId]);
+	        projectsUser.forEach(function(projectUser) {
+	            var p = new project(self.AllProject[projectUser.id_project]);
 	            this.projectsData[p.id] = p;
 	        },this);
 	    }
@@ -2979,6 +2993,30 @@
 	module.exports=BoxList;
 
 
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	'use strict'
+	class ProjectUser
+	{
+	    constructor(data)
+	    {
+	        if(data)
+	        {
+	            this.id_project = data.id_project;
+	            this.id_user = data.id_user;
+	            this.right = data.right;
+	        }
+	    }
+
+	    isVisibleUser(){
+	        return (this.right == 1)
+	    }
+
+	}
+	module.exports=ProjectUser;
 
 /***/ }
 /******/ ]);
