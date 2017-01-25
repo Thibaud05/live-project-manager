@@ -125,7 +125,7 @@ io.on('connection', function (socket) {
     //console.log(u)
     var html = app.display(u)
     global.data.connectUserId = u.id
-    global.data.connectUserId = u.selectedProject
+    global.data.selectedProject = u.selectedProject
     socket.connectUserId = u.id
     var obj = {logged:u.logged,key:u.getKey(),html:html}
     socket.emit('logged',{obj:obj,data:global.data});
