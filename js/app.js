@@ -52,6 +52,8 @@ socket.on('displayLogin', function (data) {
 
 socket.on('logged', function (json) {
   var data = json.obj
+  json.data.connectUserId = json.obj.connectUserId
+  json.data.selectedProject = json.obj.selectedProject
     if(data.logged){
       createCookie("key", data.key,30)
       if(data.autoLog){

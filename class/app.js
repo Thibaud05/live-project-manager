@@ -6,7 +6,7 @@ class app
         this.users = []
         this.usersKey = {}
         this.usersLogged = 0
-        this.ts = 165
+        this.ts = 208
         this.appVersion = "v1.2." + this.ts
         this.userBySocket = {}
     }
@@ -217,11 +217,9 @@ class app
                 //console.log(u)
                 this.logged(u)
                 var html = this.display(u)
-                global.data.connectUserId = u.id
-                global.data.selectedProject = u.selectedProject
                 global.data.users[u.id].logged = true 
                 this.socket.connectUserId = u.id
-                var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1}
+                var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1,connectUserId:u.id,selectedProject:u.selectedProject}
                 this.socket.emit('logged',{obj:obj,data:global.data});
                 io.emit('loginUser',u.id);
                 return true

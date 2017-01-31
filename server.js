@@ -124,10 +124,8 @@ io.on('connection', function (socket) {
     u = app.login(new user(data))
     //console.log(u)
     var html = app.display(u)
-    global.data.connectUserId = u.id
-    global.data.selectedProject = u.selectedProject
     socket.connectUserId = u.id
-    var obj = {logged:u.logged,key:u.getKey(),html:html}
+    var obj = {logged:u.logged,key:u.getKey(),html:html,connectUserId:u.id,selectedProject:u.selectedProject}
     socket.emit('logged',{obj:obj,data:global.data});
     if(u.logged){
       global.data.users[u.id].logged = true
