@@ -1,4 +1,5 @@
 'use strict'
+var ClientUser        = require('./../js/user.js');
 class Store
 {
     constructor()
@@ -62,8 +63,7 @@ class Store
         var users = []
         for (var dataUser of this.users) {
             if(dataUser){
-                var user = JSON.parse(JSON.stringify(dataUser))
-                user.password = ""
+                var user = new ClientUser(dataUser)
                 users.push(user)
             }
         }
