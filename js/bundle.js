@@ -738,7 +738,7 @@
 	        var display = true;
 	        if(self.searchValue != ""){
 	          display = false;
-	          if((t.title.contain(self.searchValue))||(t.description.contain(self.searchValue))){
+	          if((t.title.contain(self.searchValue))||(t.description.contain(self.searchValue))||(t.id == self.searchValue)){
 	            display = true;
 	          }
 	        }
