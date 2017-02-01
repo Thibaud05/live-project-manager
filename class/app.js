@@ -429,7 +429,7 @@ class app
     '<link rel="icon" href="../../favicon.ico"> ' +
     '<title>LPM - Live project manager</title> ' +
     '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> ' +
-    '<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet"> ' +
+    //'<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet"> ' +
     '<link href="css/signin.css" rel="stylesheet"> ' +
     '<link href="css/app.css?' + this.ts + '" rel="stylesheet"> ' +
     '<link href="css/chat.css?' + this.ts + '" rel="stylesheet"> ' +
@@ -466,7 +466,7 @@ class app
     //'<script src="js/user.js?' + this.ts + '"></script>' +
     //'<script src="js/file.js?' + this.ts + '"></script>' +
     '<script src="js/bundle.js?' + this.ts + '"></script> ' +
-    '<script src="js/ie10-viewport-bug-workaround.js"></script> ' +
+    //'<script src="js/ie10-viewport-bug-workaround.js"></script> ' +
   '</body> ' +
 '</html>';
     }
