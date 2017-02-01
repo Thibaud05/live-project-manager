@@ -267,11 +267,11 @@
 	   $( "#search_btn" ).click(function() {
 	    if(searchIsOpen){
 	      $( "#search" ).hide()
-	      $(".page").css("padding-top","141px")
+	      $(".page").css("padding-top","91px")
 	      searchIsOpen = false
 	    }else{
 	      $( "#search" ).show()
-	      $(".page").css("padding-top","187px")
+	      $(".page").css("padding-top","137px")
 	      searchIsOpen = true
 	    }
 	    $( this ).blur()
