@@ -196,7 +196,7 @@ class app
         
 
         socket.on('selectProject', function(idProject){
-            global.data.users[self.socket.connectUserId].selectProject(idProject)
+            self.users[self.socket.connectUserId].selectProject(idProject)
         })
 
         this.socket = socket
@@ -214,13 +214,12 @@ class app
             var u = this.usersKey[cookie]
             //console.log(u)
             if( u != undefined ){
-                //console.log(u)
                 this.logged(u)
                 var html = this.display(u)
-                global.data.users[u.id].logged = true 
+                this.users[u.id].logged = true 
                 this.socket.connectUserId = u.id
                 var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1,connectUserId:u.id,selectedProject:u.selectedProject}
-                this.socket.emit('logged',{obj:obj,data:global.data});
+                this.socket.emit('logged',{obj:obj,data:global.store.getClientData()});
                 io.emit('loginUser',u.id);
                 return true
             }
@@ -266,7 +265,7 @@ class app
                 this.socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:"deco",userId:user.id});
                 this.usersLogged --
                 user.logged = false
-                global.data.users[user.id].logged = false
+                this.users[user.id].logged = false
                 io.emit('logoutUser',user.id);
             }
         }

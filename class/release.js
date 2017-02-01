@@ -20,7 +20,7 @@ class release
                     + "`day` = '" + this.day + "'"
                 + "WHERE `id` = '" + this.id + "'"
         global.connection.query(sql)
-        global.data.releases[this.id] = this
+        global.store.releases[this.id] = this
     }
 
     save(){
@@ -37,7 +37,7 @@ class release
         global.connection.query(sql, function(err, result) {
             if (err) throw err;
             self.id = result.insertId;
-            global.data.releases[self.id] = self
+            global.store.releases[self.id] = self
             console.log('addRelease' + self.name)
             io.emit('addRelease',self);
         })

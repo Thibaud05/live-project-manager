@@ -1,3 +1,4 @@
+serverStart()
 var app         = require('./class/app.js');
 var user        = require('./class/user.js');
 var config      = require('./config.js');
@@ -13,8 +14,9 @@ global.release  = require('./class/release.js');
 global.file     = require('./class/file.js');
 global.link     = require('./class/link.js');
 global.message  = require('./class/message.js');
-global.box     = require('./class/box.js');
+global.box      = require('./class/box.js');
 global.moment   = require('./js/moment.min.js')
+global.store    = require('./class/store.js'); 
 
 var fs           = require("fs");
 var mysql        = require('mysql');
@@ -50,7 +52,7 @@ appExpress.get('/', function (req, res) {
 appExpress.get('/api/taskTitle/:id', function (req, res) {
   var json = [];
   req.param('id').split(",").forEach(function (id) {
-    var task = global.data.tasks[parseInt(id)]
+    var task = global.store.tasks[parseInt(id)]
     if(task!=undefined){
       json.push({id:task.id,title:task.title})
     }
@@ -66,48 +68,16 @@ appExpress.get('/uploadTest', function (req, res) {
   res.sendFile(__dirname + '/testupload.html');
 });
 
-var sqls = [
-  "SELECT * FROM `type`",
-  "SELECT * FROM `release`",
-  "SELECT * FROM `user`",
-  "SELECT * FROM `task_file`",
-  "SELECT * FROM `task`",
-  "SELECT * FROM `project`",
-  "SELECT * FROM `project_user`",
-  "SELECT * FROM `task_link`",
-  "SELECT * FROM `task_message`",
-  "SELECT * FROM `box`"
-  ]
 
-connection.query(sqls.join(";"), function(err, r, fields) {
+connection.query(global.store.getSql(), function(err, data, fields) {
   if (err) throw err;
-  var indexedTasks = indexById(r[4])
-  var indexedReleases = indexById(r[1])
-  var indexedTasksFiles = indexById(r[3])
-  var indexedProjects = indexById(r[5])
-  var indexedTasksLinks = indexById(r[7])
-  var indexedTasksMessages = indexById(r[8])
-  var indexedBox = indexById(r[9])
-  var indexedUsers = []
-  for (var data of r[2]) {
-    var u = new user(data)
-    app.users.push(u)
-    app.usersKey[u.getKey()] = u
-    indexedUsers[u.id] = u
+  global.store.setData(data)
+  for (var userData of global.store.users) {
+      var u = new user(userData)
+      app.users.push(u)
+      app.usersKey[u.getKey()] = u
   }
-  global.data = {
-    taskTypes   : r[0],
-    releases    : indexedReleases,
-    users       : indexedUsers,
-    tasks       : indexedTasks,
-    tasks_files : indexedTasksFiles,
-    tasks_links : indexedTasksLinks,
-    tasks_messages : indexedTasksMessages,
-    projects    : indexedProjects,
-    projects_user: r[6],
-    box: indexedBox
-  }
-
+  console.log("-- Mysql data Loaded")
 });  
 
 io.on('connection', function (socket) {
@@ -126,9 +96,9 @@ io.on('connection', function (socket) {
     var html = app.display(u)
     socket.connectUserId = u.id
     var obj = {logged:u.logged,key:u.getKey(),html:html,connectUserId:u.id,selectedProject:u.selectedProject}
-    socket.emit('logged',{obj:obj,data:global.data});
+    socket.emit('logged',{obj:obj,data:global.store.getClientData()});
     if(u.logged){
-      global.data.users[u.id].logged = true
+        app.users[u.id].logged = true
       io.emit('loginUser',u.id);
     }
   });
@@ -172,15 +142,6 @@ io.on('connection', function (socket) {
   });
 });
 
-function indexById(data)
-{
-  var indexedData = []
-  for (var i=0; i<data.length;i++){
-    var obj = data[i]
-    indexedData[obj.id] = obj
-  }
-  return indexedData
-}
 global.moment.locale('fr', {
     months : "janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre".split("_"),
     monthsShort : "janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.".split("_"),
@@ -239,3 +200,11 @@ global.moment.locale('fr', {
         doy : 4  // The week that contains Jan 4th is the first week of the year.
     }
 });
+
+function serverStart(){
+  console.log("//////////////////////////////")
+  console.log("//                          //")
+  console.log("//     Server start         //")
+  console.log("//                          //")
+  console.log("//////////////////////////////")
+}

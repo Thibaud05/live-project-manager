@@ -26,7 +26,7 @@ class box
         global.connection.query(sql, function(err, result) {
             if (err) throw err;
             self.id = result.insertId;
-            global.data.box.push(self);
+            global.store.box.push(self);
             io.emit('addBox',self);
         })
     }

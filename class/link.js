@@ -28,14 +28,14 @@ class link
         global.connection.query(sql, function(err, result) {
             if (err) throw err;
             self.id = result.insertId;
-            global.data.tasks_links[self.id] = self
+            global.store.tasks_links[self.id] = self
             self.dispatchEvent("added",self);
         });
     }
     del(){
         var sql = "DELETE FROM `task_link` WHERE id = " + this.id;
         global.connection.query(sql)
-        delete global.data.tasks_links[this.id];
+        delete global.store.tasks_links[this.id];
     }
     registerEvent(eventName)
     {

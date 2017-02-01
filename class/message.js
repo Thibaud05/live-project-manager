@@ -1,4 +1,5 @@
 'use strict'
+var Event = require("./event.js");
 class message
 {
     constructor(data)
@@ -30,14 +31,14 @@ class message
         global.connection.query(sql, function(err, result) {
             if (err) throw err;
             self.id = result.insertId;
-            global.data.tasks_messages[self.id] = self
+            global.store.tasks_messages[self.id] = self
             self.dispatchEvent("added",self);
         });
     }
     del(){
         var sql = "DELETE FROM `task_message` WHERE id = " + this.id;
         global.connection.query(sql)
-        delete global.data.tasks_messages[this.id];
+        delete global.store.tasks_messages[this.id];
     }
     registerEvent(eventName)
     {
@@ -56,18 +57,5 @@ class message
       this.events[eventName].registerCallback(callback)
     };
 }
-
-class Event
-{
-    constructor(name){
-        this.name = name;
-        this.callbacks = [];
-    }
-
-    registerCallback(callback){
-        this.callbacks.push(callback);
-    }
-}
-
 module.exports=message;
 

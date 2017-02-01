@@ -26,7 +26,7 @@ class type
         global.connection.query(sql, function(err, result) {
             if (err) throw err;
             self.id = result.insertId;
-            global.data.taskTypes.push(self);
+            global.store.taskTypes.push(self);
             io.emit('addType',self);
         })
     }

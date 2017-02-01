@@ -40,7 +40,7 @@ class task
 		 		" WHERE `id` = " + this.id
 		//console.log(sql)
 		global.connection.query(sql)
-		global.data.tasks[this.id] = this
+		global.store.tasks[this.id] = this
 
 		return this;
 	}
@@ -97,7 +97,7 @@ class task
   			console.log(self)
   			console.log(result.insertId);
   			self.id = result.insertId;
-  			global.data.tasks[self.id] = self
+  			global.store.tasks[self.id] = self
 
   			self.onUpdateCompleted()
 		});
@@ -112,7 +112,7 @@ class task
 	{
 		var sql = "DELETE FROM `task` WHERE id = " + this.id;
 		global.connection.query(sql)
-		delete global.data.tasks[this.id];
+		delete global.store.tasks[this.id];
 	}
 }
 module.exports=task

@@ -98,6 +98,8 @@
 
 	socket.on('logged', function (json) {
 	  var data = json.obj
+	  json.data.connectUserId = json.obj.connectUserId
+	  json.data.selectedProject = json.obj.selectedProject
 	    if(data.logged){
 	      createCookie("key", data.key,30)
 	      if(data.autoLog){
@@ -522,12 +524,12 @@
 	var file = __webpack_require__(5);
 	var link = __webpack_require__(6);
 	var task = __webpack_require__(7);
-	var ProjectUser = __webpack_require__(16);
-	var projectScreen = __webpack_require__(10);
+	var ProjectUser = __webpack_require__(10);
+	var projectScreen = __webpack_require__(11);
 	var message = __webpack_require__(9);
-	var box = __webpack_require__(13);
-	var TaskList = __webpack_require__(14);
-	var BoxList = __webpack_require__(15);
+	var box = __webpack_require__(14);
+	var TaskList = __webpack_require__(15);
+	var BoxList = __webpack_require__(16);
 	class tasksManager{
 	  constructor(){
 	      this.projectUserByProject = [];
@@ -2378,10 +2380,34 @@
 
 /***/ },
 /* 10 */
+/***/ function(module, exports) {
+
+	'use strict'
+	class ProjectUser
+	{
+	    constructor(data)
+	    {
+	        if(data)
+	        {
+	            this.id_project = data.id_project;
+	            this.id_user = data.id_user;
+	            this.right = data.right;
+	        }
+	    }
+
+	    isVisibleUser(){
+	        return (this.right == 1)
+	    }
+
+	}
+	module.exports=ProjectUser;
+
+/***/ },
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var project = __webpack_require__(11);
-	var acUser = __webpack_require__(12);
+	var project = __webpack_require__(12);
+	var acUser = __webpack_require__(13);
 	//////////////////////////////////////////
 	//
 	//  PROJECT SCREEN CLASS
@@ -2466,7 +2492,7 @@
 	module.exports = projectScreen;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	
@@ -2594,7 +2620,7 @@
 	module.exports = project;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	
@@ -2760,7 +2786,7 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	class box{
@@ -2789,7 +2815,7 @@
 	module.exports = box;
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
@@ -2949,11 +2975,11 @@
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
-	var Box = __webpack_require__(13);
+	var Box = __webpack_require__(14);
 	class BoxList
 	{
 	    constructor(){
@@ -2993,30 +3019,6 @@
 	module.exports=BoxList;
 
 
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	'use strict'
-	class ProjectUser
-	{
-	    constructor(data)
-	    {
-	        if(data)
-	        {
-	            this.id_project = data.id_project;
-	            this.id_user = data.id_user;
-	            this.right = data.right;
-	        }
-	    }
-
-	    isVisibleUser(){
-	        return (this.right == 1)
-	    }
-
-	}
-	module.exports=ProjectUser;
 
 /***/ }
 /******/ ]);

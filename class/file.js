@@ -1,4 +1,5 @@
 'use strict'
+var Event = require("./event.js");
 class file
 {
     constructor(data)
@@ -27,14 +28,14 @@ class file
         global.connection.query(sql, function(err, result) {
             if (err) throw err;
             self.id = result.insertId;
-            global.data.tasks_files[self.id] = self
+            global.store.tasks_files[self.id] = self
             self.dispatchEvent("added",self);
         });
     }
     del(){
         var sql = "DELETE FROM `task_file` WHERE id = " + this.id;
         global.connection.query(sql)
-        delete global.data.tasks_files[this.id];
+        delete global.store.tasks_files[this.id];
     }
     registerEvent(eventName)
     {
@@ -52,18 +53,6 @@ class file
     addEventListener(eventName, callback){
       this.events[eventName].registerCallback(callback)
     };
-}
-
-class Event
-{
-    constructor(name){
-        this.name = name;
-        this.callbacks = [];
-    }
-
-    registerCallback(callback){
-        this.callbacks.push(callback);
-    }
 }
 
 module.exports=file;
