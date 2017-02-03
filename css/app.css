@@ -700,3 +700,6 @@ td.firstCol{
     margin-right: 10px;
     margin-left: 10px;
 }
+.locked {
+    opacity: 0.3;
+}

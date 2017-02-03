@@ -2966,7 +2966,7 @@
 	              validClass = "ok"
 	            }
 	          }else{
-
+	            color += " locked"
 	            taskTitle = window.tm.projectById[task.id_project].name
 	          }
 	          html = '<li class="ui-state-default task ' + color + '" tid = "' + task.id + '" >'+ env 
