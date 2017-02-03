@@ -43,13 +43,38 @@ class Store
         
     }
 
-    getClientData()
+    getClientData(idUser)
     {
+        var projects = {}
+        var tasks = []
+        var types = {}
+
+
+        for (var project_user of this.projects_user){
+            if(project_user.id_user == idUser){
+                projects[project_user.id_project] = true
+            }
+        }
+
+        for (var type of this.taskTypes){
+            if(projects[type.id_project]){
+                types[type.id] = true
+            }
+        }
+
+
+        for (var taskId in this.tasks){
+            var task = this.tasks[taskId]
+            if(types[task.typeId]){
+                tasks[taskId] = task
+            }
+        }
+
         return {
             taskTypes       : this.taskTypes,
             releases        : this.releases,
             users           : this.getClientUsers(),
-            tasks           : this.tasks,
+            tasks           : tasks,
             tasks_files     : this.tasks_files,
             tasks_links     : this.tasks_links,
             tasks_messages  : this.tasks_messages,
@@ -80,8 +105,7 @@ class Store
     indexById(data)
     {
       var indexedData = []
-      for (var i=0; i<data.length;i++){
-        var obj = data[i]
+      for (var obj of data){
         indexedData[obj.id] = obj
       }
       return indexedData

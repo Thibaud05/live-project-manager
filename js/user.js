@@ -11,6 +11,10 @@ class user{
     return this.firstName + " " + this.lastName;
   }
 
+  getFirstName(){
+    return this.firstName.charAt(0).toUpperCase() + this.firstName.slice(1)
+  }
+
   getAvatar(size){
       return '<img class="img-circle avatar avatar' + this.id + '" src="img/user/' + this.id + '.jpg" width="' + size + '" height="' + size + '" />';
   }

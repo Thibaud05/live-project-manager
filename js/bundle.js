@@ -88,9 +88,13 @@
 	    }
 	  }
 	});
-
 	socket.on('displayLogin', function (data) {
 	  $('.form-signin').animate({opacity: 1,marginTop: "150px"},{
+	    duration: 500,
+	    easing: "easeOutCubic"
+	  })
+	  $('#loader').css("animation", "none");
+	  $('#loader').animate({opacity: 0,marginTop: "150px"},{
 	    duration: 500,
 	    easing: "easeOutCubic"
 	  })
@@ -1100,7 +1104,7 @@
 	        if(user && user.display){
 	          var empltyLine = true
 	          var line  = "<tr>";
-	          line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + user.firstName + '</td>';
+	          line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + user.getFirstName() + '</td>';
 	          for (i = 0; i < self.nbdays; i++){
 	            var index = i % self.dayPerWeek;
 	            var css = ( index==0 ) ? ' class="leftSep"' : '';
@@ -1696,6 +1700,10 @@
 	  }
 	  getName(){
 	    return this.firstName + " " + this.lastName;
+	  }
+
+	  getFirstName(){
+	    return this.firstName.charAt(0).toUpperCase() + this.firstName.slice(1)
 	  }
 
 	  getAvatar(size){

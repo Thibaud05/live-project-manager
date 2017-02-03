@@ -42,9 +42,13 @@ socket.on('notif', function (data) {
     }
   }
 });
-
 socket.on('displayLogin', function (data) {
   $('.form-signin').animate({opacity: 1,marginTop: "150px"},{
+    duration: 500,
+    easing: "easeOutCubic"
+  })
+  $('#loader').css("animation", "none");
+  $('#loader').animate({opacity: 0,marginTop: "150px"},{
     duration: 500,
     easing: "easeOutCubic"
   })

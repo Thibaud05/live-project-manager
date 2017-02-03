@@ -86,6 +86,8 @@ io.on('connection', function (socket) {
   app.controller(socket)
   if(!app.autoLogin()){
     socket.emit('displayLogin',true);
+  }else{
+    socket.emit('loading',{});
   }
   socket.emit('news', { hello: 'world' });
 
@@ -96,7 +98,7 @@ io.on('connection', function (socket) {
     var html = app.display(u)
     socket.connectUserId = u.id
     var obj = {logged:u.logged,key:u.getKey(),html:html,connectUserId:u.id,selectedProject:u.selectedProject}
-    socket.emit('logged',{obj:obj,data:global.store.getClientData()});
+    socket.emit('logged',{obj:obj,data:global.store.getClientData(u.id)});
     if(u.logged){
         app.users[u.id].logged = true
       io.emit('loginUser',u.id);

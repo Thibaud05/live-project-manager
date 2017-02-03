@@ -10,6 +10,23 @@ body{
   margin: 0;
   background-color: #3F51B5;
 }
+@keyframes loading {
+    0%   {opacity:0}
+    50%  {opacity:1}
+    100% {opacity:0}
+}
+#loader{
+  position:absolute;
+  font-family:arial;
+  color:#fff;
+  opacity:0;
+  left:50%;
+  top:50%;
+  animation-name: loading;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+}
 .loading{
   background-color: #fff;
   width: 30px;

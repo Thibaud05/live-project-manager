@@ -219,7 +219,7 @@ class app
                 this.users[u.id].logged = true 
                 this.socket.connectUserId = u.id
                 var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1,connectUserId:u.id,selectedProject:u.selectedProject}
-                this.socket.emit('logged',{obj:obj,data:global.store.getClientData()});
+                this.socket.emit('logged',{obj:obj,data:global.store.getClientData(u.id)});
                 io.emit('loginUser',u.id);
                 return true
             }
@@ -427,7 +427,7 @@ class app
     '<meta name="description" content=""> ' +
     '<meta name="author" content=""> ' +
     '<link rel="icon" href="../../favicon.ico"> ' +
-    '<title>LPM - Live project manager</title> ' +
+    '<title>LPM - Live pro manager</title> ' +
     '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> ' +
     //'<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet"> ' +
     '<link href="css/signin.css" rel="stylesheet"> ' +
@@ -442,6 +442,7 @@ class app
       '<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script> ' +
     '<![endif]--> ' +
   '</head> ' +
+  '<div id="loader">Connexion</div>' +
   '<body> ' +
     '<div class="container"> ' +
         '<div class="form-signin"> ' +
@@ -457,7 +458,7 @@ class app
         '</div> ' +
     '</div> <!-- /container --> ' +
     '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> ' +
-    '<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> ' +
+    '<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script> ' +
     '<script src="js/bootstrap.min.js"></script> ' +
     '<script src="js/moment.min.js"></script> ' +
     //'<script src="js/config.js?' + this.ts + '"></script>' +
