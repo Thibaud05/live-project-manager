@@ -196,30 +196,28 @@ class app
         
 
         socket.on('selectProject', function(idProject){
-            self.users[self.socket.connectUserId].selectProject(idProject)
+            self.users[socket.connectUserId].selectProject(idProject)
         })
-
-        this.socket = socket
     }
 
-    autoLogin()
+    autoLogin(socket)
     {
 
        var cookie = null
-       if(this.socket.handshake.headers.cookie){
-        cookie = this.socket.handshake.headers.cookie.key
+       if(socket.handshake.headers.cookie){
+        cookie = socket.handshake.headers.cookie.key
        }
-       //console.log(this.socket.handshake)
+       //console.log(socket.handshake)
         if( cookie != undefined ){
             var u = this.usersKey[cookie]
             //console.log(u)
             if( u != undefined ){
-                this.logged(u)
+                this.logged(u,socket)
                 var html = this.display(u)
                 this.users[u.id].logged = true 
-                this.socket.connectUserId = u.id
+                socket.connectUserId = u.id
                 var obj = {logged:u.logged,key:u.getKey(),html:html,autoLog:1,connectUserId:u.id,selectedProject:u.selectedProject}
-                this.socket.emit('logged',{obj:obj,data:global.store.getClientData(u.id)});
+                socket.emit('logged',{obj:obj,data:global.store.getClientData(u.id)});
                 io.emit('loginUser',u.id);
                 return true
             }
@@ -228,41 +226,41 @@ class app
 
     }
 
-    login(data)
+    login(data,socket)
     {
         var newUser = data
         for (var user of this.users) {
             if( data.email == user.email && data.password == user.password ){
-                this.logged(user)
+                this.logged(user,socket)
                 newUser = user
             }
         }
         return newUser
     }
 
-    logged(user)
+    logged(user,socket)
     {
-        user.addSocket( this.socket.id )
-        this.userBySocket[this.socket.id] = user
+        user.addSocket(socket.id )
+        this.userBySocket[socket.id] = user
         if( !user.logged ){
             this.usersLogged ++
             user.logged = true
-            this.socket.broadcast.emit('notif',{title:user.firstName + " est en ligne !",body:"Hello World !",icon:user.getImg(),tag:"connect",userId:user.id});
+            socket.broadcast.emit('notif',{title:user.firstName + " est en ligne !",body:"Hello World !",icon:user.getImg(),tag:"connect",userId:user.id});
         }
         //user.saveKey(this.socket)
     }
-    logout(socketId){
-        var user = this.userBySocket[socketId]
+    logout(socket){
+        var user = this.userBySocket[socket.id]
         
         //console.log(user)
         if( user!= undefined && user.logged ){
             
 
-            user.delSocket(socketId)
-            delete this.userBySocket[socketId]
+            user.delSocket(socket.id)
+            delete this.userBySocket[socket.id]
             //console.log(user)
             if( !user.haveSocket() ){
-                this.socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:"deco",userId:user.id});
+                socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:"deco",userId:user.id});
                 this.usersLogged --
                 user.logged = false
                 this.users[user.id].logged = false

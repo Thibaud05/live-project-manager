@@ -84,16 +84,16 @@ io.on('connection', function (socket) {
   console.log("conect")
   var u = null
   app.controller(socket)
-  if(!app.autoLogin()){
+  if(!app.autoLogin(socket)){
     socket.emit('displayLogin',true);
   }else{
     socket.emit('loading',{});
   }
   socket.emit('news', { hello: 'world' });
 
-  socket.on('login', function (data) 
+  socket.on('login', function (data)
   {
-    u = app.login(new user(data))
+    u = app.login(new user(data),socket)
     //console.log(u)
     var html = app.display(u)
     socket.connectUserId = u.id
@@ -107,7 +107,7 @@ io.on('connection', function (socket) {
 
   socket.on('disconnect', function ()
   {
-    app.logout(socket.id)
+    app.logout(socket)
   });
 
   var uploader = new fileUpload();
