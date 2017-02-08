@@ -18,6 +18,7 @@ global.box      = require('./class/box.js');
 global.moment   = require('./js/moment.min.js')
 global.store    = require('./class/store.js'); 
 
+var ejs          = require('ejs')
 var fs           = require("fs");
 var mysql        = require('mysql');
 var connection   = mysql.createConnection(config);
@@ -28,6 +29,24 @@ var io           = require('socket.io')(server);
 var cookieParser = require('socket.io-cookie');
 var fileUpload   = require('socketio-file-upload')
 //var lwip         = require('lwip')
+
+var nodemailer = require('nodemailer');
+
+var transport = nodemailer.createTransport({
+  pool:true,
+  host: 'smtp.livepromanager.com',
+  port: 587,
+  tls: {
+      rejectUnauthorized:false,
+  },
+  auth: {
+      user: 'no-reply@livepromanager.com',
+      pass: 'bz42ab69c'
+  },
+  maxConnections: 3,
+  maxMessages: 300
+});
+
 
 var app = new app()
 
@@ -44,6 +63,15 @@ appExpress.use("/img", express.static(__dirname + '/img'));
 appExpress.use("/files", express.static(__dirname + '/uploads'));
 
 appExpress.use(fileUpload.router)
+
+
+appExpress.get('/forgotPassword', function (req, res) {
+  res.send(app.displayForgotPassword())
+});
+
+appExpress.get('/forgotPassword/:hash', function (req, res) {
+  res.send(app.displaychangePassword(req.param('hash')))
+});
 
 appExpress.get('/', function (req, res) {
   res.send(app.displayLogin())
@@ -109,6 +137,39 @@ io.on('connection', function (socket) {
   {
     app.logout(socket)
   });
+
+  socket.on('forgotPassword', function (email)
+  {
+    var haveAccount = false;
+    var fp_user = app.getUserByEmail(email)
+    if(fp_user){
+      haveAccount = true;
+      var hash = fp_user.startResetPassword()
+      console.log(hash)
+      var emailTemplate = fs.readFileSync(__dirname + '/emails/resetPassword.ejs', 'utf8')
+      var body = ejs.render(emailTemplate,{hash:hash}); 
+      var mail_object = {
+          from: 'no-reply@livepromanager.com',
+          to: email,
+          subject: 'Changer de mots de passe !', 
+          text: 'Suivez le lien http://livepromanager.com/resetPassword/'+ hash +' pour changer votre mots de passe.',
+          html: body
+      };
+
+      transport.sendMail(mail_object, function(error, info){
+          if(error) {
+              console.log(error.response);
+          }
+          console.log(info);
+          socket.emit('forgotPassword',true);
+      });
+    }else{
+      socket.emit('forgotPassword',haveAccount);
+    }
+    
+  });
+
+
 
   var uploader = new fileUpload();
   uploader.dir = __dirname + "/uploads";

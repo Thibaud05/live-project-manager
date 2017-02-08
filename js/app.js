@@ -6,16 +6,34 @@ window.tm = tm
 $(function () {
 
   $('.form-signin').css({ opacity: 0 ,marginTop: "0px"})
-    $('.form-signin').on('submit', function(e) {
-        e.preventDefault();
- 
-        var $this = $(this);
- 
-        var email = $('#inputEmail').val();
-        var password = $('#inputPassword').val();
-        socket.emit('login', { "email":email , "password":password });
-    });
+  // Login form
+  $('#form-signin').on('submit', function(e) {
+      e.preventDefault();
+      var email = $('#inputEmail').val();
+      var password = $('#inputPassword').val();
+      socket.emit('login', { "email":email , "password":password });
+  });
+  // Forgot password form
+  $('#form-forgotPassword').on('submit', function(e) {
+      e.preventDefault();
+      var email = $('#inputEmail').val();
+      socket.emit('forgotPassword', email);
+  });
 });
+
+
+
+socket.on('forgotPassword', function (haveAccount) {
+  if(haveAccount){
+    var html = '<div class="send-message"><span class="glyphicon glyphicon-send" aria-hidden="true"></span>'
+    html += 'Un email vous à été envoyé pour changer votre mots de passe !</div>'
+    $('.form-signin').append(html)
+    $('#form-forgotPassword').remove()
+  }else{
+    $('.form-signin').effect( "shake" );
+    //$("#inputPassword").val('').focus();
+  }
+})
 
 socket.on('notif', function (data) {
   var options = {

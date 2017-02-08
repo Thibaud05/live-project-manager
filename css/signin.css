@@ -79,7 +79,7 @@ body{
   border: 0;
   outline: none;
 }
-.form-signin input[type="password"] {
+.form-signin input[type="password"],#form-forgotPassword input[type="email"] {
   margin-bottom: 10px;
 
   border: 0;
@@ -113,8 +113,27 @@ input:-webkit-autofill:focus {
 .form-control {
   transition: none;
 }
+.forgotPassword{
+  color: #fff;
+  opacity: 0.5;
+}
+.forgotPassword:hover{
+  color: #fff;
+  opacity: 1;
+
+}
 /*
 .form-signin .form-control {
   transition: all 0.5s;
 }
 */
+.send-message {
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+}
+.send-message .glyphicon {
+    font-size: 30px;
+    display: block;
+    margin-bottom: 10px;
+}

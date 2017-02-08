@@ -18,6 +18,7 @@ class user
             this.lastConnexion = data.lastConnexion
             this.autoConnexion = data.autoConnexion
             this.selectedProject = data.selectedProject
+            this.resetPassword = data.resetPassword
             this.logged = false
             this.sockets = {}
         }
@@ -66,6 +67,16 @@ class user
 
     haveSocket(){
         return Object.keys(this.sockets).length > 0
+    }
+
+    startResetPassword(){
+        var key = Math.random() + user.id 
+        this.resetPassword = global.cryptoJs.MD5(key).toString(global.cryptoJs.enc.Base64)
+        var sql = "UPDATE `user` SET `resetPassword` = '" + this.resetPassword + "' " +
+                    " WHERE `id` = " + this.id
+        //console.log(sql)
+        global.connection.query(sql)
+        return this.resetPassword
     }
 }
 module.exports=user;

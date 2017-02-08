@@ -226,6 +226,18 @@ class app
 
     }
 
+    getUserByEmail(email)
+    {
+        var userFinded = false
+        for (var user of this.users) {
+            if( email == user.email ){
+                userFinded = user
+            }
+        }
+        return userFinded
+    }
+
+
     login(data,socket)
     {
         var newUser = data
@@ -282,6 +294,26 @@ class app
             callback( r.statusCode == 200 || r.statusCode == 301);
         });
         req.end();
+    }
+
+    displaychangePassword(hash){
+        var title = 'LPM - Live pro manager';
+        var content =   '<div id="loader">Connexion</div>' +
+        '<div class="container"> ' +
+            '<div class="form-signin"> ' +
+                '<div class="logo"><img src="img/lpm-big.png" /></div> ' +
+                '<form id="form-signin" method="POST" action="" > ' +
+                    '<label for="inputPassword" class="sr-only">Password</label> ' +
+                    '<input name="password" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required=""> ' +
+                    '<label for="inputPasswordConfirmation" class="sr-only">Password</label> ' +
+                    '<input name="passwordConfirmation" type="password" id="inputPasswordConfirmation" class="form-control" placeholder="Mot de passe" required=""> ' +
+                    '<br> ' +
+                    '<button type="submit" id="btn-submit" class="btn btn-lg btn-primary btn-block">Connexion</button> ' +
+                    '<br> ' +
+                '</form> ' +
+            '</div> ' +
+        '</div> <!-- /container --> ';
+        return this.displayPage(title,content);
     }
 
     header(u)
@@ -415,59 +447,75 @@ class app
         '</div>'
     }
 
-    displayLogin()
+    displayForgotPassword(){
+        var title = 'LPM - Live pro manager';
+        var content =   '<div id="loader">Connexion</div>' +
+        '<div class="container"> ' +
+            '<div class="form-signin"> ' +
+                '<div class="logo"><img src="img/lpm-big.png" /></div> ' +
+                '<form id="form-forgotPassword" method="POST" action="" > ' +
+                    '<label for="inputEmail" class="sr-only">Email address</label> ' +
+                    '<input name="email" type="email" id="inputEmail" class="form-control" placeholder="Votre@e-mail.fr" required="" autofocus=""> ' +
+                    '<button type="submit" id="btn-submit" class="btn btn-lg btn-primary btn-block">Envoyer</button> ' +
+                '</form> ' +
+            '</div> ' +
+        '</div> <!-- /container --> ';
+        return this.displayPage(title,content);
+    }
+    displayLogin(){
+        var title = 'LPM - Live pro manager';
+        var content =   '<div id="loader">Connexion</div>' +
+        '<div class="container"> ' +
+            '<div class="form-signin"> ' +
+                '<div class="logo"><img src="img/lpm-big.png" /></div> ' +
+                '<form id="form-signin" method="POST" action="" > ' +
+                    '<label for="inputEmail" class="sr-only">Email address</label> ' +
+                    '<input name="email" type="email" id="inputEmail" class="form-control" placeholder="Votre@e-mail.fr" required="" autofocus=""> ' +
+                    '<label for="inputPassword" class="sr-only">Password</label> ' +
+                    '<input name="password" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required=""> ' +
+                    '<br> ' +
+                    '<button type="submit" id="btn-submit" class="btn btn-lg btn-primary btn-block">Connexion</button> ' +
+                    '<br> ' +
+                    '<div class="text-center"><a class="forgotPassword" href="forgotPassword">Mots de passe oublié ?</a></div>' +
+                '</form> ' +
+            '</div> ' +
+        '</div> <!-- /container --> ';
+        return this.displayPage(title,content);
+    }
+
+    displayPage(title,content)
     {
         return '<html lang="en"> ' +
-  '<head> ' +
-    '<meta charset="utf-8"> ' +
-    '<meta http-equiv="X-UA-Compatible" content="IE=edge"> ' +
-    '<meta name="viewport" content="width=device-width, initial-scale=1"> ' +
-    '<meta name="description" content=""> ' +
-    '<meta name="author" content=""> ' +
-    '<link rel="icon" href="../../favicon.ico"> ' +
-    '<title>LPM - Live pro manager</title> ' +
-    '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> ' +
-    //'<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet"> ' +
-    '<link href="css/signin.css" rel="stylesheet"> ' +
-    '<link href="css/app.css?' + this.ts + '" rel="stylesheet"> ' +
-    '<link href="css/chat.css?' + this.ts + '" rel="stylesheet"> ' +
-    '<link href="css/project.css?' + this.ts + '" rel="stylesheet"> ' +
-    '<script src="/socket.io/socket.io.js"></script> ' +
-    '<script src="/siofu/client.js"></script>' +
+          '<head> ' +
+            '<meta charset="utf-8"> ' +
+            '<meta http-equiv="X-UA-Compatible" content="IE=edge"> ' +
+            '<meta name="viewport" content="width=device-width, initial-scale=1"> ' +
+            '<meta name="description" content=""> ' +
+            '<meta name="author" content=""> ' +
+            '<link rel="icon" href="../../favicon.ico"> ' +
+            '<title>'+ title + '</title> ' +
+            '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> ' +
+            //'<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet"> ' +
+            '<link href="css/signin.css" rel="stylesheet"> ' +
+            '<link href="css/app.css?' + this.ts + '" rel="stylesheet"> ' +
+            '<link href="css/chat.css?' + this.ts + '" rel="stylesheet"> ' +
+            '<link href="css/project.css?' + this.ts + '" rel="stylesheet"> ' +
+            '<script src="/socket.io/socket.io.js"></script> ' +
+            '<script src="/siofu/client.js"></script>' +
 
-    '<!--[if lt IE 9]> ' +
-      '<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script> ' +
-      '<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script> ' +
-    '<![endif]--> ' +
-  '</head> ' +
-  '<div id="loader">Connexion</div>' +
-  '<body> ' +
-    '<div class="container"> ' +
-        '<div class="form-signin"> ' +
-            '<div class="logo"><img src="img/lpm-big.png" /></div> ' +
-            '<form id="form-signin" method="POST" action="login.php" > ' +
-                '<label for="inputEmail" class="sr-only">Email address</label> ' +
-                '<input name="email" type="email" id="inputEmail" class="form-control" placeholder="Votre@e-mail.fr" required="" autofocus=""> ' +
-                '<label for="inputPassword" class="sr-only">Password</label> ' +
-                '<input name="password" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required=""> ' +
-                '<br> ' +
-                '<button type="submit" id="btn-submit" class="btn btn-lg btn-primary btn-block">Connexion</button> ' +
-            '</form> ' +
-        '</div> ' +
-    '</div> <!-- /container --> ' +
-    '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> ' +
-    '<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script> ' +
-    '<script src="js/bootstrap.min.js"></script> ' +
-    '<script src="js/moment.min.js"></script> ' +
-    //'<script src="js/config.js?' + this.ts + '"></script>' +
-    //'<script src="js/taskManager.js?' + this.ts + '"></script>' +
-    //'<script src="js/task.js?' + this.ts + '"></script>' +
-    //'<script src="js/user.js?' + this.ts + '"></script>' +
-    //'<script src="js/file.js?' + this.ts + '"></script>' +
-    '<script src="js/bundle.js?' + this.ts + '"></script> ' +
-    //'<script src="js/ie10-viewport-bug-workaround.js"></script> ' +
-  '</body> ' +
-'</html>';
+            '<!--[if lt IE 9]> ' +
+              '<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script> ' +
+              '<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script> ' +
+            '<![endif]--> ' +
+          '</head> ' +
+          '<body> ' + content + 
+            '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> ' +
+            '<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script> ' +
+            '<script src="js/bootstrap.min.js"></script> ' +
+            '<script src="js/moment.min.js"></script> ' +
+            '<script src="js/bundle.js?' + this.ts + '"></script> ' +
+          '</body> ' +
+        '</html>';
     }
 
 }
