@@ -295,20 +295,19 @@ class app
         });
         req.end();
     }
-
     displaychangePassword(hash){
         var title = 'LPM - Live pro manager';
         var content =   '<div id="loader">Connexion</div>' +
         '<div class="container"> ' +
             '<div class="form-signin"> ' +
-                '<div class="logo"><img src="img/lpm-big.png" /></div> ' +
-                '<form id="form-signin" method="POST" action="" > ' +
+                '<div class="logo"><img src="/img/lpm-big.png" /><p><h1>Changer de mot de passe</h1>Votre mot de passe doit contenir au moin :<ul><li>Une lettre majuscule</li><li>Une lettre minuscule</li><li>Un chiffre</li><li>Un caractère spécial (!@#$%^&\')</li></ul></p></div> ' +
+                '<form id="form-changePassword" method="POST" action="" > ' +
                     '<label for="inputPassword" class="sr-only">Password</label> ' +
                     '<input name="password" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required=""> ' +
-                    '<label for="inputPasswordConfirmation" class="sr-only">Password</label> ' +
-                    '<input name="passwordConfirmation" type="password" id="inputPasswordConfirmation" class="form-control" placeholder="Mot de passe" required=""> ' +
-                    '<br> ' +
-                    '<button type="submit" id="btn-submit" class="btn btn-lg btn-primary btn-block">Connexion</button> ' +
+                    '<label for="inputPasswordConfirmation" class="sr-only">Password Confirmation</label> ' +
+                    '<input name="passwordConfirmation" type="password" id="inputPasswordConfirmation" class="form-control" placeholder="Confirmer votre mot de passe" required=""> ' +
+                    '<br>' +
+                    '<button type="submit" id="btn-submit" class="btn btn-lg btn-primary btn-block">Changer</button> ' +
                     '<br> ' +
                 '</form> ' +
             '</div> ' +
@@ -496,10 +495,10 @@ class app
             '<title>'+ title + '</title> ' +
             '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> ' +
             //'<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet"> ' +
-            '<link href="css/signin.css" rel="stylesheet"> ' +
-            '<link href="css/app.css?' + this.ts + '" rel="stylesheet"> ' +
-            '<link href="css/chat.css?' + this.ts + '" rel="stylesheet"> ' +
-            '<link href="css/project.css?' + this.ts + '" rel="stylesheet"> ' +
+            '<link href="/css/signin.css" rel="stylesheet"> ' +
+            '<link href="/css/app.css?' + this.ts + '" rel="stylesheet"> ' +
+            '<link href="/css/chat.css?' + this.ts + '" rel="stylesheet"> ' +
+            '<link href="/css/project.css?' + this.ts + '" rel="stylesheet"> ' +
             '<script src="/socket.io/socket.io.js"></script> ' +
             '<script src="/siofu/client.js"></script>' +
 
@@ -511,9 +510,9 @@ class app
           '<body> ' + content + 
             '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> ' +
             '<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script> ' +
-            '<script src="js/bootstrap.min.js"></script> ' +
-            '<script src="js/moment.min.js"></script> ' +
-            '<script src="js/bundle.js?' + this.ts + '"></script> ' +
+            '<script src="/js/bootstrap.min.js"></script> ' +
+            '<script src="/js/moment.min.js"></script> ' +
+            '<script src="/js/bundle.js?' + this.ts + '"></script> ' +
           '</body> ' +
         '</html>';
     }

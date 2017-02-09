@@ -467,3 +467,30 @@ function createCookie(name, value, days) {
 String.prototype.contain = function (str) {
     return this.toLowerCase().indexOf(str.toLowerCase()) > -1
 };
+
+
+class CheckPassword 
+{
+  constructor(password)
+  {
+    this.password = password
+
+    var haveNumber = this.check("#check-number","0-9")
+    var haveMinLetter = this.check("#check-min-letter","a-z")
+    var haveMajLetter = this.check("#check-maj-letter","A-Z")
+    var haveSpecialChar = this.check("#check-special-char","@#$%^&+=")
+
+    return haveNumber && haveMinLetter && haveMajLetter && haveSpecialChar
+  }
+
+  check(id,regex)
+  {
+    var match = password.matches("^(?=.*[" + regex + "]).{1,}$")
+    if(match){
+      $(id).show()
+    }else{
+      $(id).hide()
+    }
+    return match
+  }
+}
