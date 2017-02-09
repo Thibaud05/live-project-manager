@@ -294,18 +294,27 @@ class app
             callback( r.statusCode == 200 || r.statusCode == 301);
         });
         req.end();
-    }
+    }  
+
     displaychangePassword(hash){
+        var ok = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>'
         var title = 'LPM - Live pro manager';
         var content =   '<div id="loader">Connexion</div>' +
         '<div class="container"> ' +
             '<div class="form-signin"> ' +
-                '<div class="logo"><img src="/img/lpm-big.png" /><p><h1>Changer de mot de passe</h1>Votre mot de passe doit contenir au moin :<ul><li>Une lettre majuscule</li><li>Une lettre minuscule</li><li>Un chiffre</li><li>Un caractère spécial (!@#$%^&\')</li></ul></p></div> ' +
+                '<div class="logo"><img src="/img/lpm-big.png" />'+
+                '<p><h1>Changer de mot de passe</h1>Votre mot de passe doit contenir au moin :'+
+                '<ul><li>Une lettre majuscule <span id="check-maj-letter" style="display:none;">' + ok + '</span></li>'+
+                '<li>Une lettre minuscule <span id="check-min-letter" style="display:none;">' + ok + '</span></li> '+
+                '<li>Un chiffre <span id="check-number" style="display:none;">' + ok + '</span></li>'+
+                '<li>Un caractère spécial (!@#$%^&\') <span id="check-special-char" style="display:none;">' + ok + '</span></li>'+
+                '</ul>'+
+                '</p></div> ' +
                 '<form id="form-changePassword" method="POST" action="" > ' +
                     '<label for="inputPassword" class="sr-only">Password</label> ' +
-                    '<input name="password" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required=""> ' +
+                    '<input name="password" type="password" id="pw-input" class="form-control" placeholder="Mot de passe" required=""> ' +
                     '<label for="inputPasswordConfirmation" class="sr-only">Password Confirmation</label> ' +
-                    '<input name="passwordConfirmation" type="password" id="inputPasswordConfirmation" class="form-control" placeholder="Confirmer votre mot de passe" required=""> ' +
+                    '<input name="passwordConfirmation" type="password" id="pw-confirmation-input" class="form-control" placeholder="Confirmer votre mot de passe" required=""> ' +
                     '<br>' +
                     '<button type="submit" id="btn-submit" class="btn btn-lg btn-primary btn-block">Changer</button> ' +
                     '<br> ' +

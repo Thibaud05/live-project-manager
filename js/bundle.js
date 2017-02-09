@@ -65,6 +65,9 @@
 	      var email = $('#inputEmail').val();
 	      socket.emit('forgotPassword', email);
 	  });
+
+	  var checkPassword = new CheckPassword()
+
 	});
 
 
@@ -517,27 +520,53 @@
 
 	class CheckPassword 
 	{
-	  constructor(password)
+	  constructor()
 	  {
-	    this.password = password
+	    this.password = ""
+	    this.passwordConfirmation = ""
+	    this.valid = false
+	    this.confirmation = false
+	    $("#pw-input").keyup($.proxy(this.onChangePasssword, this))
+	    $("#pw-confirmation-input").keyup($.proxy(this.onChangePasswordConfirmation, this))
+	  }
 
+	  onChangePasssword(event)
+	  {
+	    console.log("change pw")
+	    this.password = $(event.currentTarget).val()
 	    var haveNumber = this.check("#check-number","0-9")
 	    var haveMinLetter = this.check("#check-min-letter","a-z")
 	    var haveMajLetter = this.check("#check-maj-letter","A-Z")
 	    var haveSpecialChar = this.check("#check-special-char","@#$%^&+=")
+	    this.valid = haveNumber && haveMinLetter && haveMajLetter && haveSpecialChar
+	  }
 
-	    return haveNumber && haveMinLetter && haveMajLetter && haveSpecialChar
+	  onChangePasswordConfirmation(event)
+	  {
+	    this.passwordConfirmation = event.currentTarget
+	    this.confirmation = ( this.passwordConfirmation == this.password )
 	  }
 
 	  check(id,regex)
 	  {
-	    var match = password.matches("^(?=.*[" + regex + "]).{1,}$")
+	    var patt = new RegExp("^(?=.*[" + regex + "]).{1,}$");
+	    var match = patt.test(this.password)
 	    if(match){
 	      $(id).show()
 	    }else{
 	      $(id).hide()
 	    }
 	    return match
+	  }
+
+	  isValid()
+	  {
+	    return this.valid
+	  }
+
+	  get()
+	  {
+	    return this.password
 	  }
 	}
 
