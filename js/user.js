@@ -1,3 +1,4 @@
+'use strict'
 class user{
   constructor(data){
     this.id = data.id;

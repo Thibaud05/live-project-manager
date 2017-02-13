@@ -16,7 +16,7 @@ global.link     = require('./class/link.js');
 global.message  = require('./class/message.js');
 global.box      = require('./class/box.js');
 global.moment   = require('./js/moment.min.js')
-global.store    = require('./class/store.js'); 
+global.store    = require('./class/Store.js'); 
 
 var ejs          = require('ejs')
 var fs           = require("fs");

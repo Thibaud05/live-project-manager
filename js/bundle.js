@@ -590,7 +590,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	var host = 'http://127.0.0.1:3000';
+	var host = 'http://www.koolog.com:3000';
 
 /***/ },
 /* 3 */
@@ -1763,6 +1763,7 @@
 /* 4 */
 /***/ function(module, exports) {
 
+	'use strict'
 	class user{
 	  constructor(data){
 	    this.id = data.id;
