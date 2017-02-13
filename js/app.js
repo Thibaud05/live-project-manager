@@ -20,6 +20,14 @@ $(function () {
       socket.emit('forgotPassword', email);
   });
 
+    // Forgot password form
+  $('#form-changePassword').on('submit', function(e) {
+      e.preventDefault();
+      var password = $('#pw-input').val();
+      var hash = $('#hash').val();
+      socket.emit('changePassword', {password:password,hash:hash});
+  });
+
   var checkPassword = new CheckPassword()
 
 });
@@ -36,6 +44,11 @@ socket.on('forgotPassword', function (haveAccount) {
     $('.form-signin').effect( "shake" );
     //$("#inputPassword").val('').focus();
   }
+})
+
+
+socket.on('changePassword', function () {
+   window.location.href = '/';
 })
 
 socket.on('notif', function (data) {
@@ -486,19 +499,27 @@ class CheckPassword
 
   onChangePasssword(event)
   {
-    console.log("change pw")
     this.password = $(event.currentTarget).val()
     var haveNumber = this.check("#check-number","0-9")
     var haveMinLetter = this.check("#check-min-letter","a-z")
     var haveMajLetter = this.check("#check-maj-letter","A-Z")
     var haveSpecialChar = this.check("#check-special-char","@#$%^&+=")
     this.valid = haveNumber && haveMinLetter && haveMajLetter && haveSpecialChar
+    console.log($(event.currentTarget).parent())
+    $(event.currentTarget).parent().toggleClass('has-feedback',this.valid);
+    this.updateSubmit()
   }
 
   onChangePasswordConfirmation(event)
   {
-    this.passwordConfirmation = event.currentTarget
+    this.passwordConfirmation = $(event.currentTarget).val()
     this.confirmation = ( this.passwordConfirmation == this.password )
+    $(event.currentTarget).parent().toggleClass('has-feedback',this.confirmation && this.valid);
+    this.updateSubmit()
+  }
+
+  updateSubmit(){
+    $("#btn-submit").prop('disabled',!(this.confirmation && this.valid) )
   }
 
   check(id,regex)

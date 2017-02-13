@@ -138,6 +138,20 @@ io.on('connection', function (socket) {
     app.logout(socket)
   });
 
+
+  socket.on('changePassword', function (data)
+  {
+    console.log(data)
+    for (var user of app.users) {
+      if( data.hash == user.resetPassword){
+        user.changePassword(data.password)
+        user.saveKey(socket)
+      }
+    }
+    socket.emit('changePassword');
+  })
+
+
   socket.on('forgotPassword', function (email)
   {
     var haveAccount = false;
@@ -145,7 +159,6 @@ io.on('connection', function (socket) {
     if(fp_user){
       haveAccount = true;
       var hash = fp_user.startResetPassword()
-      console.log(hash)
       var emailTemplate = fs.readFileSync(__dirname + '/emails/resetPassword.ejs', 'utf8')
       var body = ejs.render(emailTemplate,{hash:hash}); 
       var mail_object = {

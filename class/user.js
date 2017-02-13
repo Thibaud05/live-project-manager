@@ -78,5 +78,13 @@ class user
         global.connection.query(sql)
         return this.resetPassword
     }
+
+    changePassword(password){
+        this.password = password
+        var sql = "UPDATE `user` SET `password` = '" + this.password + "' " +
+            " WHERE `id` = " + this.id
+
+        global.connection.query(sql)
+    }
 }
 module.exports=user;

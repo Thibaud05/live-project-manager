@@ -1,6 +1,5 @@
 h1,label{
   color: #fff;
-  text-align: center;
 }
 h1{
   font-size: 24px;
@@ -55,6 +54,7 @@ body{
   max-width: 330px;
   padding: 15px;
   margin: 150px auto 0 auto;
+  color: #fff;
 }
 .form-signin .form-control {
   position: relative;
@@ -136,4 +136,17 @@ input:-webkit-autofill:focus {
     font-size: 30px;
     display: block;
     margin-bottom: 10px;
+}
+
+.form-control-feedback {
+    color: #ffffff;
+    margin-top: 3px;
+    margin-right: 3px;
+    top: -100;
+}
+.form-signin > ul > li > span{
+    position: absolute;
+    display: block;
+    margin-left: -20px;
+    margin-top: -20px;
 }
