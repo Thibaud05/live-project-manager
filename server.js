@@ -162,7 +162,7 @@ io.on('connection', function (socket) {
       var emailTemplate = fs.readFileSync(__dirname + '/emails/resetPassword.ejs', 'utf8')
       var body = ejs.render(emailTemplate,{hash:hash}); 
       var mail_object = {
-          from: 'no-reply@livepromanager.com',
+          from: '“LPM” no-reply@livepromanager.com',
           to: email,
           subject: 'Changer de mots de passe !', 
           text: 'Suivez le lien http://livepromanager.com/resetPassword/'+ hash +' pour changer votre mots de passe.',
