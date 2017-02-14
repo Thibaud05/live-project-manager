@@ -446,7 +446,7 @@ class app
                     '<select class="form-control color">' +
                         '<option>red</option>' +
                         '<option>pink</option>' +
-                        '<option>deepPurple</option>' +
+                        '<option>deepPurpule</option>' +
                         '<option>indigo</option>' +
                         '<option>blue</option>' +
                         '<option>cyan</option>' +
