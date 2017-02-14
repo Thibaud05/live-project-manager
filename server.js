@@ -156,13 +156,14 @@ io.on('connection', function (socket) {
   {
     var haveAccount = false;
     var fp_user = app.getUserByEmail(email)
+    console.log('forgotPassword')
     if(fp_user){
       haveAccount = true;
       var hash = fp_user.startResetPassword()
       var emailTemplate = fs.readFileSync(__dirname + '/emails/resetPassword.ejs', 'utf8')
       var body = ejs.render(emailTemplate,{hash:hash}); 
       var mail_object = {
-          from: '“LPM” no-reply@livepromanager.com',
+          from: 'no-reply@livepromanager.com',
           to: email,
           subject: 'Changer de mots de passe !', 
           text: 'Suivez le lien http://livepromanager.com/resetPassword/'+ hash +' pour changer votre mots de passe.',

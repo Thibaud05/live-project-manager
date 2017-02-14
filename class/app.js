@@ -445,12 +445,19 @@ class app
                     '<input type="text" class="form-control" placeholder="Title">' +
                     '<select class="form-control color">' +
                         '<option>red</option>' +
+                        '<option>pink</option>' +
+                        '<option>deepPurple</option>' +
                         '<option>indigo</option>' +
                         '<option>blue</option>' +
                         '<option>cyan</option>' +
                         '<option>teal</option>' +
                         '<option>green</option>' +
                         '<option>lightGreen</option>' +
+                        '<option>amber</option>' +
+                        '<option>orange</option>' +
+                        '<option>brown</option>' +
+                        '<option>grey</option>' +
+                        '<option>blueGrey</option>' +
                         '<option>yellow200</option>' +
                     '</select>' +
                     '<a href="#" class="btn btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>' +

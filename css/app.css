@@ -268,10 +268,46 @@ body{
     background: #827717;
 }
 .amber{
-    background-color: #FFC107;
+    background-color: #EF6C00;
 }
 .connectedSortable > li.amber.selected {
-    background: #FF6F00;
+    background: #E65100;
+}
+.orange{
+    background-color: #F4511E;
+}
+.connectedSortable > li.orange.selected {
+    background: #BF360C;
+}
+.brown{
+    background-color: #795548;
+}
+.connectedSortable > li.brown.selected {
+    background: #3E2723;
+}
+.grey{
+    background-color: #757575;
+}
+.connectedSortable > li.grey.selected {
+    background: #212121;
+}
+.blueGrey{
+    background-color: #607D8B;
+}
+.connectedSortable > li.blueGrey.selected {
+    background: #263238;
+}
+.deepPurpule{
+    background-color: #673AB7;
+}
+.connectedSortable > li.deepPurpule.selected {
+    background: #311B92;
+}
+.pink{
+    background-color: #E91E63;
+}
+.connectedSortable > li.pink.selected {
+    background: #880E4F;
 }
 .yellow200{
     background-color: #FFF59D;
