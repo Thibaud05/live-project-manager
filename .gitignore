@@ -45,7 +45,7 @@ class/SQL2.class.php
 config.js
 
 config.js
-node_modules/*
+node_modules
 configPRD.js
 js/config-prd.js
 uploads/*
