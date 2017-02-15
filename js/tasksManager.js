@@ -408,11 +408,29 @@ class tasksManager{
       for (var key in this.selectedTasks) {
         var t = this.taskList.tasksById[key]
         this.selectedTasks[key].find( ".ok" ).toggleClass("hidden")
+        this.selectedTasks[key].find( ".refresh" ).toggleClass("hidden",false)
         t.valid = t.valid==1?0:1
         this.taskList.tasksById[key] = t
         validTasks.push(t);
       }
       socket.emit('updateTask', validTasks);
+    }
+    /**
+ *
+ * Progress task
+ *
+ */
+    progressTask(){
+      var progressTasks = [];
+      for (var key in this.selectedTasks) {
+        var t = this.taskList.tasksById[key]
+        this.selectedTasks[key].find( ".refresh" ).toggleClass("hidden")
+        this.selectedTasks[key].find( ".ok" ).toggleClass("hidden",false)
+        t.valid = t.valid==2?0:2
+        this.taskList.tasksById[key] = t
+        progressTasks.push(t);
+      }
+      socket.emit('updateTask', progressTasks);
     }
 /**
  *
@@ -619,6 +637,10 @@ class tasksManager{
       $("#accountable").html(this.renderAccountable());
     }
 
+
+  cleanSocket(listeners){
+
+  }
 /**
  *
  * Sockets
@@ -626,6 +648,15 @@ class tasksManager{
  *
  */
     sockets(){
+
+      var listeners = ["moveTask","setData","setRelease","delTask","addTask","updateTask",
+      "archiveTask","delDataFiles","setDataFiles",
+      "delDataLinks","setDataLinks","setDataMessages","checkUrlExists","updateAvatar",
+      "changeRelease","addRelease","addType"]
+      for (var listener of listeners) {
+        socket.removeAllListeners(listener);
+      }
+
       var self = this
 /*----------  moveTask ----------*/
       socket.on('moveTask', function (data)
@@ -717,8 +748,13 @@ class tasksManager{
         if (selectedTask) {
           if(t.valid == 0){
             selectedTask.find( ".ok" ).addClass("hidden")
-          }else{
+            selectedTask.find( ".progressStatus" ).addClass("hidden")
+          }else if(t.valid == 1){
             selectedTask.find( ".ok" ).removeClass("hidden")
+            selectedTask.find( ".progressStatus" ).addClass("hidden")
+          }else{
+            selectedTask.find( ".progressStatus" ).removeClass("hidden")
+            selectedTask.find( ".ok" ).addClass("hidden")
           }
         }
         self.taskList.tasksById[t.id].valid = t.valid
@@ -784,6 +820,7 @@ class tasksManager{
       /*----------  setDataMessages  ----------*/
       socket.on('setDataMessages',function(data)
       {
+        console.log("add a new message in the dom")
         var m = new message(data)
         var t = self.taskList.tasksById[m.taskId]
         var divMessage = $(".task[tid=" + m.taskId + "] .chat")
@@ -1037,6 +1074,7 @@ class tasksManager{
     disabledTaskBtn($disabled){
       $( "#dropdownAccountable" ).prop( "disabled", $disabled )
       $( "#valid_btn"           ).prop( "disabled", $disabled )
+      $( "#progress_btn"        ).prop( "disabled", $disabled )
       $( "#duplicate_btn"       ).prop( "disabled", $disabled )
       $( "#archive_btn"         ).prop( "disabled", $disabled )
       $( "#del_btn"             ).prop( "disabled", $disabled )

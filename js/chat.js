@@ -32,6 +32,7 @@ class chat{
         "txt" : txt,
         "taskId" : this.taskId
       }
+      console.log("Send chat message")
       socket.emit('setDataMessages', data);
       this.$input.text("")
     }

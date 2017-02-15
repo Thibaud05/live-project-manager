@@ -123,6 +123,7 @@ class app
             var m = new global.message(data);
             m.registerEvent("added")
             m.addEventListener("added", function(e){
+                console.log("Server emit setDataMessages")
                 io.emit('setDataMessages',m);
             }, false); 
             m.add()
@@ -395,8 +396,8 @@ class app
             '<div class="btn-group" >' + this.displayBtn("dropdownAccountable","Modifier le responsable","user",true) +
             '<ul id="accountable" class="dropdown-menu" aria-labelledby="dropdownAccountable">' +
             '</ul></div>' +
-            this.displayBtn("valid_btn","Valider un ticket","ok") +
             this.displayBtn("progress_btn","Ticket en cours","refresh") +
+            this.displayBtn("valid_btn","Valider un ticket","ok") +
             this.displayBtn("duplicate_btn","Copier un ticket","duplicate") + 
             this.displayBtn("archive_btn","Archiver un ticket","folder-open") +
             this.displayBtn("del_btn","Supprimer un ticket","trash") + 

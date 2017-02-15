@@ -1,3 +1,4 @@
+console.log("reinitApp")
 var socket = require("./socket.js");
 var tasksManager = require("./tasksManager.js");
 var tm = new tasksManager();
@@ -89,6 +90,7 @@ socket.on('displayLogin', function (data) {
 })
 
 socket.on('logged', function (json) {
+  console.log('socket logged')
   var data = json.obj
   json.data.connectUserId = json.obj.connectUserId
   json.data.selectedProject = json.obj.selectedProject
@@ -335,6 +337,19 @@ function appInit(data) {
   $( "#valid_btn" ).click(function() {
     $( this ).blur()
   }); 
+
+
+  //////////////////////
+  // valid selected task
+
+   $( "#progress_btn" ).mousedown(function() {
+    tm.progressTask()
+  }); 
+
+  $( "#progress_btn" ).click(function() {
+    $( this ).blur()
+  }); 
+
 
   //////////////////////
   // Add a new task

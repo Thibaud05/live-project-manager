@@ -44,6 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	console.log("reinitApp")
 	var socket = __webpack_require__(1);
 	var tasksManager = __webpack_require__(3);
 	var tm = new tasksManager();
@@ -135,6 +136,7 @@
 	})
 
 	socket.on('logged', function (json) {
+	  console.log('socket logged')
 	  var data = json.obj
 	  json.data.connectUserId = json.obj.connectUserId
 	  json.data.selectedProject = json.obj.selectedProject
@@ -382,6 +384,19 @@
 	    $( this ).blur()
 	  }); 
 
+
+	  //////////////////////
+	  // valid selected task
+
+	   $( "#progress_btn" ).mousedown(function() {
+	    tm.progressTask()
+	  }); 
+
+	  $( "#progress_btn" ).click(function() {
+	    $( this ).blur()
+	  }); 
+
+
 	  //////////////////////
 	  // Add a new task
 
@@ -611,7 +626,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	var host = 'http://www.koolog.com:3000';
+	var host = 'http://127.0.0.1:3000';
 
 /***/ },
 /* 3 */
@@ -1027,11 +1042,29 @@
 	      for (var key in this.selectedTasks) {
 	        var t = this.taskList.tasksById[key]
 	        this.selectedTasks[key].find( ".ok" ).toggleClass("hidden")
+	        this.selectedTasks[key].find( ".refresh" ).toggleClass("hidden",false)
 	        t.valid = t.valid==1?0:1
 	        this.taskList.tasksById[key] = t
 	        validTasks.push(t);
 	      }
 	      socket.emit('updateTask', validTasks);
+	    }
+	    /**
+	 *
+	 * Progress task
+	 *
+	 */
+	    progressTask(){
+	      var progressTasks = [];
+	      for (var key in this.selectedTasks) {
+	        var t = this.taskList.tasksById[key]
+	        this.selectedTasks[key].find( ".refresh" ).toggleClass("hidden")
+	        this.selectedTasks[key].find( ".ok" ).toggleClass("hidden",false)
+	        t.valid = t.valid==2?0:2
+	        this.taskList.tasksById[key] = t
+	        progressTasks.push(t);
+	      }
+	      socket.emit('updateTask', progressTasks);
 	    }
 	/**
 	 *
@@ -1238,6 +1271,10 @@
 	      $("#accountable").html(this.renderAccountable());
 	    }
 
+
+	  cleanSocket(listeners){
+
+	  }
 	/**
 	 *
 	 * Sockets
@@ -1245,6 +1282,15 @@
 	 *
 	 */
 	    sockets(){
+
+	      var listeners = ["moveTask","setData","setRelease","delTask","addTask","updateTask",
+	      "archiveTask","delDataFiles","setDataFiles",
+	      "delDataLinks","setDataLinks","setDataMessages","checkUrlExists","updateAvatar",
+	      "changeRelease","addRelease","addType"]
+	      for (var listener of listeners) {
+	        socket.removeAllListeners(listener);
+	      }
+
 	      var self = this
 	/*----------  moveTask ----------*/
 	      socket.on('moveTask', function (data)
@@ -1336,8 +1382,13 @@
 	        if (selectedTask) {
 	          if(t.valid == 0){
 	            selectedTask.find( ".ok" ).addClass("hidden")
-	          }else{
+	            selectedTask.find( ".progressStatus" ).addClass("hidden")
+	          }else if(t.valid == 1){
 	            selectedTask.find( ".ok" ).removeClass("hidden")
+	            selectedTask.find( ".progressStatus" ).addClass("hidden")
+	          }else{
+	            selectedTask.find( ".progressStatus" ).removeClass("hidden")
+	            selectedTask.find( ".ok" ).addClass("hidden")
 	          }
 	        }
 	        self.taskList.tasksById[t.id].valid = t.valid
@@ -1403,6 +1454,7 @@
 	      /*----------  setDataMessages  ----------*/
 	      socket.on('setDataMessages',function(data)
 	      {
+	        console.log("add a new message in the dom")
 	        var m = new message(data)
 	        var t = self.taskList.tasksById[m.taskId]
 	        var divMessage = $(".task[tid=" + m.taskId + "] .chat")
@@ -1656,6 +1708,7 @@
 	    disabledTaskBtn($disabled){
 	      $( "#dropdownAccountable" ).prop( "disabled", $disabled )
 	      $( "#valid_btn"           ).prop( "disabled", $disabled )
+	      $( "#progress_btn"        ).prop( "disabled", $disabled )
 	      $( "#duplicate_btn"       ).prop( "disabled", $disabled )
 	      $( "#archive_btn"         ).prop( "disabled", $disabled )
 	      $( "#del_btn"             ).prop( "disabled", $disabled )
@@ -2369,6 +2422,7 @@
 	        "txt" : txt,
 	        "taskId" : this.taskId
 	      }
+	      console.log("Send chat message")
 	      socket.emit('setDataMessages', data);
 	      this.$input.text("")
 	    }
@@ -2981,6 +3035,7 @@
 
 	    setTypeData(data){
 	      self = this
+	      this.taskTypeByProject = []
 	      data.map(function(taskType,key) {
 	        self.addType(taskType)
 	      });
@@ -3052,6 +3107,7 @@
 	        if(window.tm.projectsId[task.id_project] && (!inBox || !task.isLocked)){
 	          var color = this.taskTypes[task.typeId].color;
 	          var env = '';
+	          var progressClass = "progressStatus hidden"
 	          var validClass = "ok hidden"
 	          var taskTitle = task.title
 	          if(!task.isLocked){
@@ -3061,13 +3117,17 @@
 	            if(task.valid==1){
 	              validClass = "ok"
 	            }
+	            if(task.valid==2){
+	              progressClass = "progressStatus"
+	            }
 	          }else{
 	            color += " locked"
 	            taskTitle = window.tm.projectById[task.id_project].name
 	          }
 	          html = '<li class="ui-state-default task ' + color + '" tid = "' + task.id + '" >'+ env 
 	          + '<div class="contener"><span class="title">' + taskTitle + '</span>'
-	          + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></div></li>';
+	          + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>'
+	          + '<div class="' + progressClass + '"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></div></div></li>';
 	        }
 	      return html
 	    }

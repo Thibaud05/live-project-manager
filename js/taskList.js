@@ -57,6 +57,7 @@ class TaskList
 
     setTypeData(data){
       self = this
+      this.taskTypeByProject = []
       data.map(function(taskType,key) {
         self.addType(taskType)
       });
@@ -128,6 +129,7 @@ class TaskList
         if(window.tm.projectsId[task.id_project] && (!inBox || !task.isLocked)){
           var color = this.taskTypes[task.typeId].color;
           var env = '';
+          var progressClass = "progressStatus hidden"
           var validClass = "ok hidden"
           var taskTitle = task.title
           if(!task.isLocked){
@@ -137,13 +139,17 @@ class TaskList
             if(task.valid==1){
               validClass = "ok"
             }
+            if(task.valid==2){
+              progressClass = "progressStatus"
+            }
           }else{
             color += " locked"
             taskTitle = window.tm.projectById[task.id_project].name
           }
           html = '<li class="ui-state-default task ' + color + '" tid = "' + task.id + '" >'+ env 
           + '<div class="contener"><span class="title">' + taskTitle + '</span>'
-          + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div></div></li>';
+          + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>'
+          + '<div class="' + progressClass + '"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></div></div></li>';
         }
       return html
     }
