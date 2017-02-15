@@ -309,7 +309,7 @@ class app
         
         var ok = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>'
         var title = 'LPM - Live pro manager';
-        var content =   '<div id="loader">Connexion</div>' +
+        var content =   '<div id="loader"><img src="/img/loading.svg" /></div>' +
         '<div class="container"> ' +
             '<div class="form-signin"> ' +
                 '<div class="logo"><img src="/img/lpm-big.svg" /></div> '+
@@ -485,7 +485,7 @@ class app
 
     displayForgotPassword(){
         var title = 'LPM - Live pro manager';
-        var content =   '<div id="loader">Connexion</div>' +
+        var content =   '<div id="loader"><img src="/img/loading.svg" /></div>' +
         '<div class="container"> ' +
             '<div class="form-signin"> ' +
                 '<div class="logo"><img src="img/lpm-big.svg" /></div> ' +
@@ -500,7 +500,7 @@ class app
     }
     displayLogin(){
         var title = 'LPM - Live pro manager';
-        var content =   '<div id="loader">Connexion</div>' +
+        var content =   '<div id="loader"><img src="/img/loading.svg" /></div>' +
         '<div class="container"> ' +
             '<div class="form-signin"> ' +
                 '<div class="logo"><img src="img/lpm-big.svg" /></div> ' +
