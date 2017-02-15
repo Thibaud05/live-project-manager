@@ -316,6 +316,15 @@ body{
 .connectedSortable > li.yellow200.selected {
     background: #FFEB3B;
 }
+
+#tasksManagerHead .table td.today {
+    background-color: #ddd;
+}
+.table td.today {
+    background-color: #eee;
+}
+
+
 .table td.leftSep{
 	border-left: 4px solid #ccc;
 }

@@ -1208,7 +1208,11 @@
 	      htmlHead += '<tr class="day"><td></td>';
 	      for (var i = 0; i < this.nbdays; i++){
 	        var index = i % this.dayPerWeek;
+	        var day = moment(this.dates[i],'YYYY-MM-DD');
 	        var css = ( index==0 ) ? 'leftSep' : '';
+	        if(moment().isSame(day,'d')){
+	          css += " today"
+	        }
 	        htmlHead += '<td  class="' + css + '">'
 	        htmlHead +=   '<ul class="releaseSlot" di = "' + i + '">' + this.renderReleases(this.dates[i]) + '</ul>'
 	        htmlHead += '</td>'
@@ -1219,9 +1223,13 @@
 	      htmlHead += '<tr class="day"><td></td>';
 	      for (var i = 0; i < this.nbdays; i++){
 	        var index = i % this.dayPerWeek;
-	        var css = ( index==0 ) ? ' class="leftSep"' : '';
 	        var day = moment(this.dates[i],'YYYY-MM-DD');
-	        htmlHead += '<td' + css + ' title="' + day.format('DD-MM-YYYY') + '">' + this.days[index] + '</td>';
+	        var css = ( index==0 ) ? 'leftSep' : '';
+	        if(moment().isSame(day,'d')){
+	          css += " today"
+	        }
+	        
+	        htmlHead += '<td class="' + css + '" title="' + day.format('DD-MM-YYYY') + '">' + this.days[index] + '</td>';
 	      }
 	      htmlHead += "</tr>";
 
@@ -1235,8 +1243,12 @@
 	          line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + user.getFirstName() + '</td>';
 	          for (i = 0; i < self.nbdays; i++){
 	            var index = i % self.dayPerWeek;
-	            var css = ( index==0 ) ? ' class="leftSep"' : '';
-	            line += '<td' + css + '><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
+	            var day = moment(self.dates[i],'YYYY-MM-DD');
+	            var css = ( index==0 ) ? 'leftSep' : '';
+	            if(moment().isSame(day,'d')){
+	              css += " today"
+	            }
+	            line += '<td class="' + css + '"><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
 
 	            var htmlTask = self.taskList.render(user.id + ":" + self.dates[i],false);
 	            if(htmlTask != ""){
@@ -1272,9 +1284,6 @@
 	    }
 
 
-	  cleanSocket(listeners){
-
-	  }
 	/**
 	 *
 	 * Sockets
