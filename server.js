@@ -57,6 +57,8 @@ global.connection = connection
 global.config = config
 server.listen(3000);
 
+appExpress.use('/favicon.ico', express.static('icon/favicon.ico'));
+appExpress.use("/icon", express.static(__dirname + '/icon'));
 appExpress.use("/css", express.static(__dirname + '/css'));
 appExpress.use("/js", express.static(__dirname + '/js'));
 appExpress.use("/img", express.static(__dirname + '/img'));

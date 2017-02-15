@@ -311,7 +311,7 @@ class app
         var content =   '<div id="loader">Connexion</div>' +
         '<div class="container"> ' +
             '<div class="form-signin"> ' +
-                '<div class="logo"><img src="/img/lpm-big.png" /></div> '+
+                '<div class="logo"><img src="/img/lpm-big.svg" /></div> '+
                 '<p><h1>Changer de mot de passe</h1>Votre mot de passe doit contenir au moins :'+
                 '<ul><li><span id="check-maj-letter" style="display:none;">' + ok + '</span> Une lettre majuscule</li>'+
                 '<li><span id="check-min-letter" style="display:none;">' + ok + '</span> Une lettre minuscule</li> '+
@@ -348,7 +348,7 @@ class app
         console.log(u.getFullName())
         return '<div class="bar"><div class="stripHead"></div>' +
                 '<div class="head">' +
-                '<div class="logoLpm"><img src="img/lpm.png" /></div>' + 
+                '<div class="logoLpm"><img src="img/lpm.svg" /></div>' + 
                 '<div id="config">' + this.displayConfig() + '</div>' +
                 this.barContent() + 
                     '<div class="nav navbar-right" id="user"><a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' + 
@@ -395,11 +395,12 @@ class app
             '<div class="btn-group" >' + this.displayBtn("dropdownAccountable","Modifier le responsable","user",true) +
             '<ul id="accountable" class="dropdown-menu" aria-labelledby="dropdownAccountable">' +
             '</ul></div>' +
-            this.displayBtn("valid_btn","Valider une tache","ok") +
-            this.displayBtn("duplicate_btn","Copier une tache","duplicate") + 
-            this.displayBtn("archive_btn","Archiver une tache","folder-open") +
-            this.displayBtn("del_btn","Supprimer une tache","trash") + 
-            this.displayBtn("next","Taches suivantes","chevron-right") + 
+            this.displayBtn("valid_btn","Valider un ticket","ok") +
+            this.displayBtn("progress_btn","Ticket en cours","refresh") +
+            this.displayBtn("duplicate_btn","Copier un ticket","duplicate") + 
+            this.displayBtn("archive_btn","Archiver un ticket","folder-open") +
+            this.displayBtn("del_btn","Supprimer un ticket","trash") + 
+            this.displayBtn("next","Sickets suivantes","chevron-right") + 
         '</div>';
     }
 
@@ -486,7 +487,7 @@ class app
         var content =   '<div id="loader">Connexion</div>' +
         '<div class="container"> ' +
             '<div class="form-signin"> ' +
-                '<div class="logo"><img src="img/lpm-big.png" /></div> ' +
+                '<div class="logo"><img src="img/lpm-big.svg" /></div> ' +
                 '<form id="form-forgotPassword" method="POST" action="" > ' +
                     '<label for="inputEmail" class="sr-only">Email address</label> ' +
                     '<input name="email" type="email" id="inputEmail" class="form-control" placeholder="Votre@e-mail.fr" required="" autofocus=""> ' +
@@ -501,7 +502,7 @@ class app
         var content =   '<div id="loader">Connexion</div>' +
         '<div class="container"> ' +
             '<div class="form-signin"> ' +
-                '<div class="logo"><img src="img/lpm-big.png" /></div> ' +
+                '<div class="logo"><img src="img/lpm-big.svg" /></div> ' +
                 '<form id="form-signin" method="POST" action="" > ' +
                     '<label for="inputEmail" class="sr-only">Email address</label> ' +
                     '<input name="email" type="email" id="inputEmail" class="form-control" placeholder="Votre@e-mail.fr" required="" autofocus=""> ' +
@@ -526,7 +527,7 @@ class app
             '<meta name="viewport" content="width=device-width, initial-scale=1"> ' +
             '<meta name="description" content=""> ' +
             '<meta name="author" content=""> ' +
-            '<link rel="icon" href="../../favicon.ico"> ' +
+            this.getFavicon() + 
             '<title>'+ title + '</title> ' +
             '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> ' +
             //'<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet"> ' +
@@ -550,6 +551,28 @@ class app
             '<script src="/js/bundle.js?' + this.ts + '"></script> ' +
           '</body> ' +
         '</html>';
+    }
+
+    getFavicon(){
+        return (
+            '<link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-icon-57x57.png">' +
+            '<link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-icon-60x60.png">' +
+            '<link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-icon-72x72.png">' +
+            '<link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-icon-76x76.png">' +
+            '<link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-icon-114x114.png">' +
+            '<link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-icon-120x120.png">' +
+            '<link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-icon-144x144.png">' +
+            '<link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-icon-152x152.png">' +
+            '<link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-icon-180x180.png">' +
+            '<link rel="icon" type="image/png" sizes="192x192"  href="/icon/android-icon-192x192.png">' +
+            '<link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">' +
+            '<link rel="icon" type="image/png" sizes="96x96" href="/icon/favicon-96x96.png">' +
+            '<link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">' +
+            '<link rel="manifest" href="/icon/manifest.json">' +
+            '<meta name="msapplication-TileColor" content="#ffffff">' +
+            '<meta name="msapplication-TileImage" content="/icon/ms-icon-144x144.png">' +
+            '<meta name="theme-color" content="#ffffff">'
+        )
     }
 
 }
