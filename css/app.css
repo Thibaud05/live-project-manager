@@ -755,6 +755,19 @@ td.firstCol{
     opacity: 0.3;
 }
 
+.dayHeader .letter{
+    display: inline;
+}
+.dayHeader .number{
+    display: none;
+}
+
+.dayHeader.hover .letter{
+    display: none;
+}
+.dayHeader.hover .number{
+    display: inline;
+}
 
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }

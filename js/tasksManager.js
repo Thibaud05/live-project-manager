@@ -571,7 +571,7 @@ class tasksManager{
       htmlHead += "</tr>";
 
 /*----------  Realeases row  ----------*/
-      htmlHead += '<tr class="day"><td></td>';
+      htmlHead += '<tr class="day colDay"><td></td>';
       for (var i = 0; i < this.nbdays; i++){
         var index = i % this.dayPerWeek;
         var day = moment(this.dates[i],'YYYY-MM-DD');
@@ -586,16 +586,16 @@ class tasksManager{
       htmlHead += "</tr>";
 
 /*----------  Days row  ----------*/
-      htmlHead += '<tr class="day"><td></td>';
+      htmlHead += '<tr class="day colDay"><td></td>';
       for (var i = 0; i < this.nbdays; i++){
         var index = i % this.dayPerWeek;
-        var day = moment(this.dates[i],'YYYY-MM-DD');
-        var css = ( index==0 ) ? 'leftSep' : '';
+        var day = moment(this.dates[i],'YYYY-MM-DD').format('DD-MM-YYYY');
+        var css = ( index==0 ) ? ' leftSep' : '';
         if(moment().isSame(day,'d')){
           css += " today"
         }
         
-        htmlHead += '<td class="' + css + '" title="' + day.format('DD-MM-YYYY') + '">' + this.days[index] + '</td>';
+        htmlHead += '<td class="dayHeader' + css + '" ><span class="letter">' + this.days[index] + '</span><span class="number">' + day + '</span></td>';
       }
       htmlHead += "</tr>";
 
@@ -605,7 +605,7 @@ class tasksManager{
       $.each( this.users, function( key, user ) {
         if(user && user.display){
           var empltyLine = true
-          var line  = "<tr>";
+          var line  = "<tr class='colDay'>";
           line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + user.getFirstName() + '</td>';
           for (i = 0; i < self.nbdays; i++){
             var index = i % self.dayPerWeek;
@@ -952,6 +952,12 @@ class tasksManager{
           var t = self.taskList.tasksById[ui.item.attr("tid")];
           t.isDraging = false;
         },
+        over: function( event, ui ) {
+          $(".dayHeader").eq($(this).parent().index()-1).addClass("hover");
+        },
+        out: function( event, ui ) {
+          $(".dayHeader").eq($(this).parent().index()-1).removeClass("hover");
+        },
         update:function( event, ui ) {
           //log("CLIENT MOVE TASK")
           var tasksToUpdate = $(this).sortable('toArray', {attribute: 'tid'})
@@ -1050,7 +1056,20 @@ class tasksManager{
     $("#accountable").on('click', 'li a', function(){
       $( this ).blur()
     });
-    }
+
+    $("table").delegate('.colDay td','mouseover mouseleave', function(e) {
+        if (e.type == 'mouseover') {
+          $(".dayHeader").eq($(this).index()-1).addClass("hover");
+        }
+        else {
+          $(".dayHeader").eq($(this).index()-1).removeClass("hover");
+        }
+    });
+
+
+
+
+}
 
 
 
