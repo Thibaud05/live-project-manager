@@ -566,7 +566,7 @@ class tasksManager{
 /*----------  Week row  ----------*/
       htmlHead += '<tr class="week"><td class="firstCol"></td>';
       for (i = 0; i < this.nbWeekPerScreen; i++){
-        htmlHead += '<td class="leftSep" colspan="' + this.dayPerWeek + '">W' + (i + this.week) + '</td>';
+        htmlHead += '<td class="leftSep W' + ( i + 1 ) + '" colspan="' + this.dayPerWeek + '">W' + (i + this.week) + '</td>';
       }
       htmlHead += "</tr>";
 
@@ -574,12 +574,13 @@ class tasksManager{
       htmlHead += '<tr class="day colDay"><td></td>';
       for (var i = 0; i < this.nbdays; i++){
         var index = i % this.dayPerWeek;
+        var indexW = Math.ceil((i+1) / self.dayPerWeek);
         var day = moment(this.dates[i],'YYYY-MM-DD');
-        var css = ( index==0 ) ? 'leftSep' : '';
+        var css = ( index==0 ) ? ' leftSep' : '';
         if(moment().isSame(day,'d')){
           css += " today"
         }
-        htmlHead += '<td  class="' + css + '">'
+        htmlHead += '<td  class="W' + indexW + '' + css + '">'
         htmlHead +=   '<ul class="releaseSlot" di = "' + i + '">' + this.renderReleases(this.dates[i]) + '</ul>'
         htmlHead += '</td>'
       }
@@ -589,13 +590,14 @@ class tasksManager{
       htmlHead += '<tr class="day colDay"><td></td>';
       for (var i = 0; i < this.nbdays; i++){
         var index = i % this.dayPerWeek;
+        var indexW = Math.ceil((i+1) / self.dayPerWeek);
         var day = moment(this.dates[i],'YYYY-MM-DD').format('DD-MM-YYYY');
         var css = ( index==0 ) ? ' leftSep' : '';
         if(moment().isSame(day,'d')){
           css += " today"
         }
         
-        htmlHead += '<td class="dayHeader' + css + '" ><span class="letter">' + this.days[index] + '</span><span class="number">' + day + '</span></td>';
+        htmlHead += '<td class="W' + indexW + ' dayHeader' + css + '" ><span class="letter">' + this.days[index] + '</span><span class="number">' + day + '</span></td>';
       }
       htmlHead += "</tr>";
 
@@ -609,12 +611,13 @@ class tasksManager{
           line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + user.getFirstName() + '</td>';
           for (i = 0; i < self.nbdays; i++){
             var index = i % self.dayPerWeek;
+            var indexW = Math.ceil((i+1) / self.dayPerWeek);
             var day = moment(self.dates[i],'YYYY-MM-DD');
             var css = ( index==0 ) ? 'leftSep' : '';
             if(moment().isSame(day,'d')){
               css += " today"
             }
-            line += '<td class="' + css + '"><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
+            line += '<td class="W' + indexW + ' ' + css + '"><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
 
             var htmlTask = self.taskList.render(user.id + ":" + self.dates[i],false);
             if(htmlTask != ""){
