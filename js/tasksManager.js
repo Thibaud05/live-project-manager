@@ -566,36 +566,38 @@ class tasksManager{
 /*----------  Week row  ----------*/
       htmlHead += '<tr class="week"><td class="firstCol"></td>';
       for (i = 0; i < this.nbWeekPerScreen; i++){
-        htmlHead += '<td class="leftSep" colspan="' + this.dayPerWeek + '">W' + (i + this.week) + '</td>';
+        htmlHead += '<td class="leftSep W' + ( i + 1 ) + '" colspan="' + this.dayPerWeek + '">W' + (i + this.week) + '</td>';
       }
       htmlHead += "</tr>";
 
 /*----------  Realeases row  ----------*/
-      htmlHead += '<tr class="day"><td></td>';
+      htmlHead += '<tr class="day colDay"><td></td>';
       for (var i = 0; i < this.nbdays; i++){
         var index = i % this.dayPerWeek;
+        var indexW = Math.ceil((i+1) / self.dayPerWeek);
         var day = moment(this.dates[i],'YYYY-MM-DD');
-        var css = ( index==0 ) ? 'leftSep' : '';
+        var css = ( index==0 ) ? ' leftSep' : '';
         if(moment().isSame(day,'d')){
           css += " today"
         }
-        htmlHead += '<td  class="' + css + '">'
+        htmlHead += '<td  class="W' + indexW + '' + css + '">'
         htmlHead +=   '<ul class="releaseSlot" di = "' + i + '">' + this.renderReleases(this.dates[i]) + '</ul>'
         htmlHead += '</td>'
       }
       htmlHead += "</tr>";
 
 /*----------  Days row  ----------*/
-      htmlHead += '<tr class="day"><td></td>';
+      htmlHead += '<tr class="day colDay"><td></td>';
       for (var i = 0; i < this.nbdays; i++){
         var index = i % this.dayPerWeek;
-        var day = moment(this.dates[i],'YYYY-MM-DD');
-        var css = ( index==0 ) ? 'leftSep' : '';
+        var indexW = Math.ceil((i+1) / self.dayPerWeek);
+        var day = moment(this.dates[i],'YYYY-MM-DD').format('DD-MM-YYYY');
+        var css = ( index==0 ) ? ' leftSep' : '';
         if(moment().isSame(day,'d')){
           css += " today"
         }
         
-        htmlHead += '<td class="' + css + '" title="' + day.format('DD-MM-YYYY') + '">' + this.days[index] + '</td>';
+        htmlHead += '<td class="W' + indexW + ' dayHeader' + css + '" ><span class="letter">' + this.days[index] + '</span><span class="number">' + day + '</span></td>';
       }
       htmlHead += "</tr>";
 
@@ -605,16 +607,17 @@ class tasksManager{
       $.each( this.users, function( key, user ) {
         if(user && user.display){
           var empltyLine = true
-          var line  = "<tr>";
+          var line  = "<tr class='colDay'>";
           line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + user.getFirstName() + '</td>';
           for (i = 0; i < self.nbdays; i++){
             var index = i % self.dayPerWeek;
+            var indexW = Math.ceil((i+1) / self.dayPerWeek);
             var day = moment(self.dates[i],'YYYY-MM-DD');
             var css = ( index==0 ) ? 'leftSep' : '';
             if(moment().isSame(day,'d')){
               css += " today"
             }
-            line += '<td class="' + css + '"><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
+            line += '<td class="W' + indexW + ' ' + css + '"><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
 
             var htmlTask = self.taskList.render(user.id + ":" + self.dates[i],false);
             if(htmlTask != ""){
@@ -952,6 +955,12 @@ class tasksManager{
           var t = self.taskList.tasksById[ui.item.attr("tid")];
           t.isDraging = false;
         },
+        over: function( event, ui ) {
+          $(".dayHeader").eq($(this).parent().index()-1).addClass("hover");
+        },
+        out: function( event, ui ) {
+          $(".dayHeader").eq($(this).parent().index()-1).removeClass("hover");
+        },
         update:function( event, ui ) {
           //log("CLIENT MOVE TASK")
           var tasksToUpdate = $(this).sortable('toArray', {attribute: 'tid'})
@@ -1050,7 +1059,20 @@ class tasksManager{
     $("#accountable").on('click', 'li a', function(){
       $( this ).blur()
     });
-    }
+
+    $("table").delegate('.colDay td','mouseover mouseleave', function(e) {
+        if (e.type == 'mouseover') {
+          $(".dayHeader").eq($(this).index()-1).addClass("hover");
+        }
+        else {
+          $(".dayHeader").eq($(this).index()-1).removeClass("hover");
+        }
+    });
+
+
+
+
+}
 
 
 

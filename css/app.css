@@ -483,7 +483,65 @@ body{
 
 
 @media only screen and (max-width : 1350px) {
+    .table td{ width: 100px;}
+    .draggable { width: 100px; height: 100px;}
+    .droppable { width: 100px; height: 100px;}
+    .connectedSortable {width: 100px;min-height: 100px;}
+    .abs{height: 100px;}
+    .connectedSortable li {width: 100px; height: 100px;}
+    .releaseSlot{width: 100px;}
+    .releaseSlot span {font-size: 12px;}
+    .W3 {
+        display: none;
+    }
+}
 
+@media only screen and (max-width : 1100px) {
+    .table td{ width: 80px;}
+    .draggable { width: 80px; height: 80px;}
+    .droppable { width: 80px; height: 80px;}
+    .connectedSortable {width: 80px;min-height: 80px;}
+    .abs{height: 80px;}
+    .connectedSortable li {width: 80px; height: 80px;}
+    .releaseSlot{width: 80px;}
+    .releaseSlot span {font-size: 9px;}
+
+    .W3 {
+        display: none;
+    }
+}
+
+@media only screen and (max-width : 910px) {
+    .table td{ width: 100px;}
+    .draggable { width: 100px; height: 100px;}
+    .droppable { width: 100px; height: 100px;}
+    .connectedSortable {width: 100px;min-height: 100px;}
+    .abs{height: 100px;}
+    .connectedSortable li {width: 100px; height: 100px;}
+    .releaseSlot{width: 100px;}
+    .releaseSlot span {font-size: 12px;}
+
+    .W3, .W2 {
+        display: none;
+    }
+}
+
+@media only screen and (max-width : 590px) {
+    .table td{ width: 80px;}
+    .draggable { width: 80px; height: 80px;}
+    .droppable { width: 80px; height: 80px;}
+    .connectedSortable {width: 80px;min-height: 80px;}
+    .abs{height: 80px;}
+    .connectedSortable li {width: 80px; height: 80px;}
+    .releaseSlot{width: 80px;}
+    .releaseSlot span {font-size: 9px;}
+
+    .W3, .W2 {
+        display: none;
+    }
+}
+
+@media only screen and (max-width : 480px) {
     .table td{ width: 60px;}
     .draggable { width: 60px; height: 60px;}
     .droppable { width: 60px; height: 60px;}
@@ -492,6 +550,12 @@ body{
     .connectedSortable li {width: 60px; height: 60px;}
     .releaseSlot{width: 60px;}
     .releaseSlot span {font-size: 8px;}
+    .env{
+        display: none;
+    }
+    .W3, .W2 {
+        display: none;
+    }
 }
 td.firstCol{
     width: 100%;
@@ -663,6 +727,7 @@ td.firstCol{
 }
 
 @media (min-width: 768px){
+
     #user .name {
         display: initial;
     }
@@ -755,6 +820,19 @@ td.firstCol{
     opacity: 0.3;
 }
 
+.dayHeader .letter{
+    display: inline;
+}
+.dayHeader .number{
+    display: none;
+}
+
+.dayHeader.hover .letter{
+    display: none;
+}
+.dayHeader.hover .number{
+    display: inline;
+}
 
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
