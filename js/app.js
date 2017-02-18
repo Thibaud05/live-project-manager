@@ -1,4 +1,4 @@
-console.log("reinitApp")
+
 var socket = require("./socket.js");
 var tasksManager = require("./tasksManager.js");
 var tm = new tasksManager();
@@ -90,7 +90,7 @@ socket.on('displayLogin', function (data) {
 })
 
 socket.on('logged', function (json) {
-  console.log('socket logged')
+  console.log("login")
   var data = json.obj
   json.data.connectUserId = json.obj.connectUserId
   json.data.selectedProject = json.obj.selectedProject
@@ -101,11 +101,11 @@ socket.on('logged', function (json) {
             $('body').html(data.html)
             $('.strip').css({ "margin-left": "-200px",opacity:0})
             $('.bar').css({ opacity: 0 ,top:-50})
+            appInit(json.data)
             $('.bar').animate({opacity: 1,top: 0},{
               duration: 500,
               easing: "easeOutCubic",
               complete: function() {
-                appInit(json.data)
               }
             })
       }else{
@@ -133,6 +133,7 @@ socket.on('logged', function (json) {
 })
 
 socket.on('loginUser', function (id_user) {
+  console.log("loginUser")
   if( tm.users[id_user] != undefined){
     tm.users[id_user].logged = true
     var cible = $(".avatar" + id_user).parent().find(".glyphicon")
@@ -227,20 +228,27 @@ function appInit(data) {
   tm.activate()
   tm.sockets()
   tm.disabledTaskBtn(true)
+
+  
+
+
   $('.box').css({"margin-top": "-20px",opacity:0})
-  $('.strip').animate({"margin-left": "0",opacity:1},{duration: 500, easing:"easeOutCubic",
-    complete: function() {
+  $('.strip').animate({"margin-left": "0",opacity:1},{duration: 500, easing:"easeOutCubic"})
+  setTimeout(showTaskManager, 200)
 
+  function showTaskManager(){
       $('#tasksManager').css({"margin-top": "-200px",opacity:0})
-      $('#tasksManager').animate({"margin-top": "0px",opacity:1},{duration: 500, easing:"easeOutCubic",
-        complete: function() {
-          
-          $('.box').animate({"margin-top": "0px",opacity:1},{duration: 500, easing:"easeOutCubic"})
+      $('#tasksManager').animate({"margin-top": "0px",opacity:1},{duration: 500, easing:"easeOutCubic"})
+      setTimeout(showBox, 200)
+  }
 
-        }
-      })
-    }
-  })
+  function showBox(){
+    $('.box').animate({"margin-top": "0px",opacity:1},{duration: 500, easing:"easeOutCubic"})
+  }
+
+
+
+
 
 
   //////////////////////
