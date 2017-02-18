@@ -51,3 +51,7 @@ js/config-prd.js
 uploads/*
 img/user/*
 js/bundle.js
+js/config-local-home.js
+config-local.js
+npm-debug.log
+js/bundle.js
