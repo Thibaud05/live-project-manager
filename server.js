@@ -1,3 +1,4 @@
+'use strict'
 serverStart()
 var app         = require('./class/app.js');
 var user        = require('./class/user.js');
