@@ -133,8 +133,9 @@ class TaskList
           var validClass = "ok hidden"
           var taskTitle = task.title
           if(!task.isLocked){
-            if(task.typeId!=5 && task.typeId!=6){
-               env = '<div class="env">' + window.tm.getLastRelease(task.typeId) + '</div>'
+            var releaseName = window.tm.getLastRelease(task.typeId)
+            if(task.typeId!=5 && task.typeId!=6 && releaseName){
+               env = '<div class="env">' + releaseName + '</div>'
             }
             if(task.valid==1){
               validClass = "ok"

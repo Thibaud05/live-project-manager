@@ -261,10 +261,10 @@ class tasksManager{
  */
   getLastRelease(typeId){
     var r = this.lastRelease[typeId]
-    if(r != undefined && r.name != "α") {
+    if(r != undefined) {
       return r.name;
     }else{
-      return "ALPHA";
+      return false;
     }
   }
 /**
