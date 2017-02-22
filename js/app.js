@@ -153,7 +153,7 @@ socket.on('logoutUser', function (id_user) {
 moment.locale('fr', {
     months : "janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre".split("_"),
     monthsShort : "janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.".split("_"),
-    weekdays : "dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi".split("_"),
+    weekdays : "Dimanche_Lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi".split("_"),
     weekdaysShort : "dim._lun._mar._mer._jeu._ven._sam.".split("_"),
     weekdaysMin : "Di_Lu_Ma_Me_Je_Ve_Sa".split("_"),
     longDateFormat : {
@@ -165,12 +165,12 @@ moment.locale('fr', {
         LLLL : "dddd D MMMM YYYY LT"
     },
     calendar : {
-        sameDay: "[Aujourd'hui à] LT",
-        nextDay: '[Demain à] LT',
-        nextWeek: 'dddd [à] LT',
-        lastDay: '[Hier à] LT',
-        lastWeek: 'dddd [dernier à] LT',
-        sameElse: 'L'
+        sameDay: "[Aujourd'hui]",
+        nextDay: '[Demain]',
+        nextWeek: 'dddd []',
+        lastDay: '[Hier]',
+        lastWeek: 'dddd',
+        sameElse: 'dddd L'
     },
     relativeTime : {
         future : "dans %s",

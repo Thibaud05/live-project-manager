@@ -58,7 +58,12 @@ class chat{
   displayMessages()
   {
     var html = ""
+    var days = {}
     this.messages.map(function(m,key){
+      if(days[m.getDay()] == undefined){
+        days[m.getDay()] = true
+        html += m.dispayDay()
+      }
       html += m.display()
     })
     this.$messages.html(html)

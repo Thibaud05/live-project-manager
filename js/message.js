@@ -31,5 +31,15 @@ class message{
   getTime(){
     return this.moment.format("HH:mm")
   }
+
+  getDay()
+  {
+    return this.moment.format("DD/MM/YYYY")
+  }
+
+  dispayDay()
+  {
+    return '<div class="messageDay">' + this.moment.calendar() +'</div>'
+  }
 }
 module.exports = message;

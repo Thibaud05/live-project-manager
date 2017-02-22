@@ -155,6 +155,34 @@
     width: 100%;
 }
 
+.chat .messageDay {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 10px;
+ }
+
+.chat .messageDay:before, 
+.chat .messageDay:after {
+  flex-grow: 1;
+  height: 1px;
+  content: '\a0';
+  background-color: #fff;
+  position: relative;
+  top: 0.5em;
+}
+
+.chat .messageDay:before {
+  margin-right:10px;
+}
+
+.chat .messageDay:after {
+  margin-left:10px;
+}
+
+
+
 [contenteditable=true]:empty:before {
   content: attr(placeholder);
   display: block; /* For Firefox */

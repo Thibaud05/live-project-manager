@@ -45,46 +45,67 @@ class Store
 
     getClientData(idUser)
     {
-        var projects = {}
+        var projects = []
         var tasks = []
-        var types = {}
+        var tasks_links = []
+        var types = []
+        var typesId = {}
+        var boxs = []
+        var releases = []
 
 
         for (var project_user of this.projects_user){
             if(project_user.id_user == idUser){
-                projects[project_user.id_project] = true
+                projects[project_user.id_project] = this.projects[project_user.id_project]
             }
         }
 
+		//project filter
         for (var type of this.taskTypes){
             if(projects[type.id_project]){
-                types[type.id] = true
+                types.push(type)
+                typesId[type.id] = true
             }
         }
 
+        for (var boxId in this.box){
+        	var box = this.box[boxId]
+            if(projects[box.id_project]){
+                boxs[box.id] = this.box[box.id]
+            }
+        }
 
+		// type filter
         for (var taskId in this.tasks){
             var task = this.tasks[taskId]
-            if(types[task.typeId]){
+            if(typesId[task.typeId]){
                 tasks[taskId] = task
             }
         }
 
+        for (var releaseId in this.releases){
+            var release = this.releases[releaseId]
+            if(typesId[release.typeId]){
+                releases[releaseId] = release
+            }
+        }
+
         return {
-            taskTypes       : this.taskTypes,
-            releases        : this.releases,
+            taskTypes       : types,
+            releases        : releases,
             users           : this.getClientUsers(),
             tasks           : tasks,
-            tasks_files     : this.tasks_files,
-            tasks_links     : this.tasks_links,
-            tasks_messages  : this.tasks_messages,
-            projects        : this.projects,
+            tasks_files     : this.getClientTaskData(tasks,this.tasks_files),
+            tasks_links     : this.getClientTaskData(tasks,this.tasks_links),
+            tasks_messages  : this.getClientTaskData(tasks,this.tasks_messages),
+            projects        : projects,
             projects_user   : this.projects_user,
-            box             : this.box
+            box             : boxs
         }
     }
 
-    getClientUsers(){
+    getClientUsers()
+    {
         var users = []
         for (var dataUser of this.users) {
             if(dataUser){
@@ -95,6 +116,17 @@ class Store
         return users
     }
 
+    getClientTaskData(tasks,data)
+    {
+    	var clientData = []
+    	for (var id in data){
+            var obj = data[id]
+            if(tasks[obj.taskId]){
+                clientData[id] = obj
+            }
+        }
+        return clientData
+    }
 
 
     getSql()
