@@ -1103,6 +1103,7 @@ class tasksManager{
     }
 
     disabledTaskBtn($disabled){
+      $( "#taskMenu" ).toggleClass( "closed", $disabled )
       $( "#dropdownAccountable" ).prop( "disabled", $disabled )
       $( "#valid_btn"           ).prop( "disabled", $disabled )
       $( "#progress_btn"        ).prop( "disabled", $disabled )
@@ -1110,6 +1111,30 @@ class tasksManager{
       $( "#archive_btn"         ).prop( "disabled", $disabled )
       $( "#del_btn"             ).prop( "disabled", $disabled )
     }
+
+
+
+    getTaskMenu(){
+
+      return '<div id="taskMenu" class="closed">'+
+        '<div class="head">1 ticket sélectionner <span>X</span></div>'+
+        '<ul>'+
+//          '<li><button id="dropdownAccountable" type="button" class="btn"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>Modifier le responsable</button></li>'+
+          '<li><button id="progress_btn" type="button" class="btn"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>Commencer</button></li>'+
+          '<li><button id="valid_btn" type="button" class="btn"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Terminer</button></li>'+
+          '<li><button id="duplicate_btn" type="button" class="btn"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>Copier</span></button></li>'+
+          '<li><button id="archive_btn" type="button" class="btn"><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>Archiver</button></li>'+
+          '<li><button id="del_btn" type="button" class="btn"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>Supprimer</button></li>'+
+        '<ul>'+
+      '</div>'
+
+
+
+
+
+    }
+
+
 
 
 

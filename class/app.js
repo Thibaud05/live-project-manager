@@ -396,11 +396,11 @@ class app
             '<div class="btn-group" >' + this.displayBtn("dropdownAccountable","Modifier le responsable","user",true) +
             '<ul id="accountable" class="dropdown-menu" aria-labelledby="dropdownAccountable">' +
             '</ul></div>' +
-            this.displayBtn("progress_btn","Ticket en cours","refresh") +
-            this.displayBtn("valid_btn","Valider un ticket","ok") +
-            this.displayBtn("duplicate_btn","Copier un ticket","duplicate") + 
-            this.displayBtn("archive_btn","Archiver un ticket","folder-open") +
-            this.displayBtn("del_btn","Supprimer un ticket","trash") + 
+            //this.displayBtn("progress_btn","Ticket en cours","refresh") +
+            //this.displayBtn("valid_btn","Valider un ticket","ok") +
+            //this.displayBtn("duplicate_btn","Copier un ticket","duplicate") + 
+            //this.displayBtn("archive_btn","Archiver un ticket","folder-open") +
+            //this.displayBtn("del_btn","Supprimer un ticket","trash") + 
             this.displayBtn("next","Sickets suivantes","chevron-right") + 
         '</div>';
     }

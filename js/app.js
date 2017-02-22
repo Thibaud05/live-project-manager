@@ -306,7 +306,7 @@ function appInit(data) {
   }) 
 
   $( "#next" ).after( tm.getProjects());
-
+  $( "body" ).prepend(tm.getTaskMenu());
   tm.btnProjectHandler();
 
 /*
