@@ -608,7 +608,7 @@ class tasksManager{
         if(user && user.display){
           var empltyLine = true
           var line  = "<tr class='colDay'>";
-          line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + user.getFirstName() + '</td>';
+          line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + '</br>'  + user.getFirstName() + '</td>';
           for (i = 0; i < self.nbdays; i++){
             var index = i % self.dayPerWeek;
             var indexW = Math.ceil((i+1) / self.dayPerWeek);

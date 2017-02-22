@@ -565,9 +565,6 @@ td.firstCol{
     width: 100%;
     z-index: 2;
 }
-.page{
-    padding-top:91px;
-}
 .barContent {
     margin-left: 0px;
     left: 50%;
@@ -639,7 +636,6 @@ td.firstCol{
     margin-top: 4px;
 }
 .glyphicon-ok-sign , .glyphicon-remove-sign{
-    margin-right: 15px;
     font-size: 10px;
     color: #4CAF50;
     top: 0;
@@ -702,7 +698,7 @@ td.firstCol{
 }
 .firstCol .glyphicon {
     top: 11px;
-    left: -1px;
+    left: -5px;
 }
 #config .panel {
     border: 0;
@@ -719,11 +715,17 @@ td.firstCol{
     -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
     box-shadow: 0 6px 12px rgba(0,0,0,.175);
 }
+.barContent {
+    margin-left: -50px;
+}
 .barContent .btn {
     display: none;
 }
-.barContent #prev, .barContent #next{
+.barContent #prev, .barContent #next, .barContent #btnProject{
     display: block;
+}
+.page {
+    padding-top: 0;
 }
 
 @media (min-width: 768px){
@@ -736,6 +738,9 @@ td.firstCol{
     }
     .barContent .btn{
         display: block;
+    }
+    .page{
+        padding-top:91px;
     }
 }
 
