@@ -988,11 +988,13 @@ class tasksManager{
         //log("down");
         //e.stopPropagation();
         self.select = true;
-        self.disabledTaskBtn(false)
         var id = $(this).attr("tid");
         var t =  self.taskList.tasksById[id];
         if(! t.isOpen && !t.isLocked){
+          self.disabledTaskBtn(false)
           if(!e.ctrlKey){
+            // Déselection des tickets
+            
             $.each(self.selectedTasks, function( key, t ) {
               t.removeClass('selected');
               delete self.selectedTasks[t.attr("tid")];
@@ -1002,6 +1004,7 @@ class tasksManager{
           var selectedTask = $(this);
           selectedTask.addClass('selected');
           self.selectedTasks[selectedTask.attr("tid")] = selectedTask;
+          self.majNbSelectedTickets()
         }
       });
 
@@ -1012,6 +1015,8 @@ class tasksManager{
         var t =  self.taskList.tasksById[id];
         if(!t.isDraging){
         $(this).removeClass('selected');
+        self.disabledTaskBtn(true)
+        self.select = false;
         if(! t.isOpen && !t.isLocked){
           t.open($(this));
         }
@@ -1117,7 +1122,7 @@ class tasksManager{
     getTaskMenu(){
 
       return '<div id="taskMenu" class="closed">'+
-        '<div class="head">1 ticket sélectionner <span>X</span></div>'+
+        '<div class="head"><span id="nbTicketSelected">1 ticket sélectionné</span> <span>X</span></div>'+
         '<ul>'+
 //          '<li><button id="dropdownAccountable" type="button" class="btn"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>Modifier le responsable</button></li>'+
           '<li><button id="progress_btn" type="button" class="btn"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>Commencer</button></li>'+
@@ -1127,14 +1132,18 @@ class tasksManager{
           '<li><button id="del_btn" type="button" class="btn"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>Supprimer</button></li>'+
         '<ul>'+
       '</div>'
-
-
-
-
-
     }
 
-
+    majNbSelectedTickets()
+    {
+      var nb = 0;
+      var nbTicketSelected = "1 ticket sélectionné"
+      for (var key in this.selectedTasks) {nb++}
+      if(nb>1){
+        nbTicketSelected = nb + " tickets sélectionnés"
+      }
+      $("#nbTicketSelected").html(nbTicketSelected)
+    }
 
 
 
