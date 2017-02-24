@@ -58,6 +58,7 @@ class user
     }
 
     addSocket(socketId){
+        global.connection.query("UPDATE `user` SET `lastconnexion` ='" + global.moment().format("YYYY-MM-DD") + "' WHERE `id` = " + this.id )
         this.sockets[socketId] = 1
     }
 
