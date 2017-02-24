@@ -766,10 +766,10 @@ td.firstCol{
 .barContent #prev, .barContent #next, .barContent #btnProject{
     display: block;
 }
-.page {
-    padding-top: 0;
-}
 
+.page{
+    padding-top:91px;
+}
 @media (min-width: 768px){
 
     #user .name {
@@ -781,9 +781,7 @@ td.firstCol{
     .barContent .btn{
         display: block;
     }
-    .page{
-        padding-top:91px;
-    }
+
 }
 
 #shifting_next,#shifting_prev{
