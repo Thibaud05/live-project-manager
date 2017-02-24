@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	console.log("reinitApp")
+	
 	var socket = __webpack_require__(1);
 	var tasksManager = __webpack_require__(3);
 	var tm = new tasksManager();
@@ -136,7 +136,7 @@
 	})
 
 	socket.on('logged', function (json) {
-	  console.log('socket logged')
+	  console.log("login")
 	  var data = json.obj
 	  json.data.connectUserId = json.obj.connectUserId
 	  json.data.selectedProject = json.obj.selectedProject
@@ -147,11 +147,11 @@
 	            $('body').html(data.html)
 	            $('.strip').css({ "margin-left": "-200px",opacity:0})
 	            $('.bar').css({ opacity: 0 ,top:-50})
+	            appInit(json.data)
 	            $('.bar').animate({opacity: 1,top: 0},{
 	              duration: 500,
 	              easing: "easeOutCubic",
 	              complete: function() {
-	                appInit(json.data)
 	              }
 	            })
 	      }else{
@@ -179,6 +179,7 @@
 	})
 
 	socket.on('loginUser', function (id_user) {
+	  console.log("loginUser")
 	  if( tm.users[id_user] != undefined){
 	    tm.users[id_user].logged = true
 	    var cible = $(".avatar" + id_user).parent().find(".glyphicon")
@@ -198,7 +199,7 @@
 	moment.locale('fr', {
 	    months : "janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre".split("_"),
 	    monthsShort : "janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.".split("_"),
-	    weekdays : "dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi".split("_"),
+	    weekdays : "Dimanche_Lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi".split("_"),
 	    weekdaysShort : "dim._lun._mar._mer._jeu._ven._sam.".split("_"),
 	    weekdaysMin : "Di_Lu_Ma_Me_Je_Ve_Sa".split("_"),
 	    longDateFormat : {
@@ -210,12 +211,12 @@
 	        LLLL : "dddd D MMMM YYYY LT"
 	    },
 	    calendar : {
-	        sameDay: "[Aujourd'hui à] LT",
-	        nextDay: '[Demain à] LT',
-	        nextWeek: 'dddd [à] LT',
-	        lastDay: '[Hier à] LT',
-	        lastWeek: 'dddd [dernier à] LT',
-	        sameElse: 'L'
+	        sameDay: "[Aujourd'hui]",
+	        nextDay: '[Demain]',
+	        nextWeek: 'dddd []',
+	        lastDay: '[Hier]',
+	        lastWeek: 'dddd',
+	        sameElse: 'dddd L'
 	    },
 	    relativeTime : {
 	        future : "dans %s",
@@ -273,20 +274,27 @@
 	  tm.activate()
 	  tm.sockets()
 	  tm.disabledTaskBtn(true)
+
+	  
+
+
 	  $('.box').css({"margin-top": "-20px",opacity:0})
-	  $('.strip').animate({"margin-left": "0",opacity:1},{duration: 500, easing:"easeOutCubic",
-	    complete: function() {
+	  $('.strip').animate({"margin-left": "0",opacity:1},{duration: 500, easing:"easeOutCubic"})
+	  setTimeout(showTaskManager, 200)
 
+	  function showTaskManager(){
 	      $('#tasksManager').css({"margin-top": "-200px",opacity:0})
-	      $('#tasksManager').animate({"margin-top": "0px",opacity:1},{duration: 500, easing:"easeOutCubic",
-	        complete: function() {
-	          
-	          $('.box').animate({"margin-top": "0px",opacity:1},{duration: 500, easing:"easeOutCubic"})
+	      $('#tasksManager').animate({"margin-top": "0px",opacity:1},{duration: 500, easing:"easeOutCubic"})
+	      setTimeout(showBox, 200)
+	  }
 
-	        }
-	      })
-	    }
-	  })
+	  function showBox(){
+	    $('.box').animate({"margin-top": "0px",opacity:1},{duration: 500, easing:"easeOutCubic"})
+	  }
+
+
+
+
 
 
 	  //////////////////////
@@ -344,7 +352,7 @@
 	  }) 
 
 	  $( "#next" ).after( tm.getProjects());
-
+	  $( "body" ).prepend(tm.getTaskMenu());
 	  tm.btnProjectHandler();
 
 	/*
@@ -626,7 +634,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	var host = 'http://127.0.0.1:3000';
+	var host = 'http://app.livepromanager.com';
 
 /***/ },
 /* 3 */
@@ -895,10 +903,10 @@
 	 */
 	  getLastRelease(typeId){
 	    var r = this.lastRelease[typeId]
-	    if(r != undefined && r.name != "α") {
+	    if(r != undefined) {
 	      return r.name;
 	    }else{
-	      return "ALPHA";
+	      return false;
 	    }
 	  }
 	/**
@@ -1200,36 +1208,38 @@
 	/*----------  Week row  ----------*/
 	      htmlHead += '<tr class="week"><td class="firstCol"></td>';
 	      for (i = 0; i < this.nbWeekPerScreen; i++){
-	        htmlHead += '<td class="leftSep" colspan="' + this.dayPerWeek + '">W' + (i + this.week) + '</td>';
+	        htmlHead += '<td class="leftSep W' + ( i + 1 ) + '" colspan="' + this.dayPerWeek + '">W' + (i + this.week) + '</td>';
 	      }
 	      htmlHead += "</tr>";
 
 	/*----------  Realeases row  ----------*/
-	      htmlHead += '<tr class="day"><td></td>';
+	      htmlHead += '<tr class="day colDay"><td></td>';
 	      for (var i = 0; i < this.nbdays; i++){
 	        var index = i % this.dayPerWeek;
+	        var indexW = Math.ceil((i+1) / self.dayPerWeek);
 	        var day = moment(this.dates[i],'YYYY-MM-DD');
-	        var css = ( index==0 ) ? 'leftSep' : '';
+	        var css = ( index==0 ) ? ' leftSep' : '';
 	        if(moment().isSame(day,'d')){
 	          css += " today"
 	        }
-	        htmlHead += '<td  class="' + css + '">'
+	        htmlHead += '<td  class="W' + indexW + '' + css + '">'
 	        htmlHead +=   '<ul class="releaseSlot" di = "' + i + '">' + this.renderReleases(this.dates[i]) + '</ul>'
 	        htmlHead += '</td>'
 	      }
 	      htmlHead += "</tr>";
 
 	/*----------  Days row  ----------*/
-	      htmlHead += '<tr class="day"><td></td>';
+	      htmlHead += '<tr class="day colDay"><td></td>';
 	      for (var i = 0; i < this.nbdays; i++){
 	        var index = i % this.dayPerWeek;
-	        var day = moment(this.dates[i],'YYYY-MM-DD');
-	        var css = ( index==0 ) ? 'leftSep' : '';
+	        var indexW = Math.ceil((i+1) / self.dayPerWeek);
+	        var day = moment(this.dates[i],'YYYY-MM-DD').format('DD-MM-YYYY');
+	        var css = ( index==0 ) ? ' leftSep' : '';
 	        if(moment().isSame(day,'d')){
 	          css += " today"
 	        }
 	        
-	        htmlHead += '<td class="' + css + '" title="' + day.format('DD-MM-YYYY') + '">' + this.days[index] + '</td>';
+	        htmlHead += '<td class="W' + indexW + ' dayHeader' + css + '" ><span class="letter">' + this.days[index] + '</span><span class="number">' + day + '</span></td>';
 	      }
 	      htmlHead += "</tr>";
 
@@ -1239,16 +1249,17 @@
 	      $.each( this.users, function( key, user ) {
 	        if(user && user.display){
 	          var empltyLine = true
-	          var line  = "<tr>";
-	          line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + user.getFirstName() + '</td>';
+	          var line  = "<tr class='colDay'>";
+	          line += '<td class="firstCol" >' + user.getAvatar(32) + user.getStatus() + '</br>'  + user.getFirstName() + '</td>';
 	          for (i = 0; i < self.nbdays; i++){
 	            var index = i % self.dayPerWeek;
+	            var indexW = Math.ceil((i+1) / self.dayPerWeek);
 	            var day = moment(self.dates[i],'YYYY-MM-DD');
 	            var css = ( index==0 ) ? 'leftSep' : '';
 	            if(moment().isSame(day,'d')){
 	              css += " today"
 	            }
-	            line += '<td class="' + css + '"><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
+	            line += '<td class="W' + indexW + ' ' + css + '"><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
 
 	            var htmlTask = self.taskList.render(user.id + ":" + self.dates[i],false);
 	            if(htmlTask != ""){
@@ -1586,6 +1597,12 @@
 	          var t = self.taskList.tasksById[ui.item.attr("tid")];
 	          t.isDraging = false;
 	        },
+	        over: function( event, ui ) {
+	          $(".dayHeader").eq($(this).parent().index()-1).addClass("hover");
+	        },
+	        out: function( event, ui ) {
+	          $(".dayHeader").eq($(this).parent().index()-1).removeClass("hover");
+	        },
 	        update:function( event, ui ) {
 	          //log("CLIENT MOVE TASK")
 	          var tasksToUpdate = $(this).sortable('toArray', {attribute: 'tid'})
@@ -1613,11 +1630,13 @@
 	        //log("down");
 	        //e.stopPropagation();
 	        self.select = true;
-	        self.disabledTaskBtn(false)
 	        var id = $(this).attr("tid");
 	        var t =  self.taskList.tasksById[id];
 	        if(! t.isOpen && !t.isLocked){
+	          self.disabledTaskBtn(false)
 	          if(!e.ctrlKey){
+	            // Déselection des tickets
+	            
 	            $.each(self.selectedTasks, function( key, t ) {
 	              t.removeClass('selected');
 	              delete self.selectedTasks[t.attr("tid")];
@@ -1627,6 +1646,7 @@
 	          var selectedTask = $(this);
 	          selectedTask.addClass('selected');
 	          self.selectedTasks[selectedTask.attr("tid")] = selectedTask;
+	          self.majNbSelectedTickets()
 	        }
 	      });
 
@@ -1637,6 +1657,8 @@
 	        var t =  self.taskList.tasksById[id];
 	        if(!t.isDraging){
 	        $(this).removeClass('selected');
+	        self.disabledTaskBtn(true)
+	        self.select = false;
 	        if(! t.isOpen && !t.isLocked){
 	          t.open($(this));
 	        }
@@ -1684,7 +1706,20 @@
 	    $("#accountable").on('click', 'li a', function(){
 	      $( this ).blur()
 	    });
-	    }
+
+	    $("table").delegate('.colDay td','mouseover mouseleave', function(e) {
+	        if (e.type == 'mouseover') {
+	          $(".dayHeader").eq($(this).index()-1).addClass("hover");
+	        }
+	        else {
+	          $(".dayHeader").eq($(this).index()-1).removeClass("hover");
+	        }
+	    });
+
+
+
+
+	}
 
 
 
@@ -1715,12 +1750,41 @@
 	    }
 
 	    disabledTaskBtn($disabled){
+	      $( "#taskMenu" ).toggleClass( "closed", $disabled )
 	      $( "#dropdownAccountable" ).prop( "disabled", $disabled )
 	      $( "#valid_btn"           ).prop( "disabled", $disabled )
 	      $( "#progress_btn"        ).prop( "disabled", $disabled )
 	      $( "#duplicate_btn"       ).prop( "disabled", $disabled )
 	      $( "#archive_btn"         ).prop( "disabled", $disabled )
 	      $( "#del_btn"             ).prop( "disabled", $disabled )
+	    }
+
+
+
+	    getTaskMenu(){
+
+	      return '<div id="taskMenu" class="closed">'+
+	        '<div class="head"><span id="nbTicketSelected">1 ticket sélectionné</span> <span>X</span></div>'+
+	        '<ul>'+
+	//          '<li><button id="dropdownAccountable" type="button" class="btn"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>Modifier le responsable</button></li>'+
+	          '<li><button id="progress_btn" type="button" class="btn"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>Commencer</button></li>'+
+	          '<li><button id="valid_btn" type="button" class="btn"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Terminer</button></li>'+
+	          '<li><button id="duplicate_btn" type="button" class="btn"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>Copier</span></button></li>'+
+	          '<li><button id="archive_btn" type="button" class="btn"><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>Archiver</button></li>'+
+	          '<li><button id="del_btn" type="button" class="btn"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>Supprimer</button></li>'+
+	        '<ul>'+
+	      '</div>'
+	    }
+
+	    majNbSelectedTickets()
+	    {
+	      var nb = 0;
+	      var nbTicketSelected = "1 ticket sélectionné"
+	      for (var key in this.selectedTasks) {nb++}
+	      if(nb>1){
+	        nbTicketSelected = nb + " tickets sélectionnés"
+	      }
+	      $("#nbTicketSelected").html(nbTicketSelected)
 	    }
 
 
@@ -2457,7 +2521,12 @@
 	  displayMessages()
 	  {
 	    var html = ""
+	    var days = {}
 	    this.messages.map(function(m,key){
+	      if(days[m.getDay()] == undefined){
+	        days[m.getDay()] = true
+	        html += m.dispayDay()
+	      }
 	      html += m.display()
 	    })
 	    this.$messages.html(html)
@@ -2541,6 +2610,16 @@
 
 	  getTime(){
 	    return this.moment.format("HH:mm")
+	  }
+
+	  getDay()
+	  {
+	    return this.moment.format("DD/MM/YYYY")
+	  }
+
+	  dispayDay()
+	  {
+	    return '<div class="messageDay">' + this.moment.calendar() +'</div>'
 	  }
 	}
 	module.exports = message;
@@ -3120,8 +3199,9 @@
 	          var validClass = "ok hidden"
 	          var taskTitle = task.title
 	          if(!task.isLocked){
-	            if(task.typeId!=5 && task.typeId!=6){
-	               env = '<div class="env">' + window.tm.getLastRelease(task.typeId) + '</div>'
+	            var releaseName = window.tm.getLastRelease(task.typeId)
+	            if(task.typeId!=5 && task.typeId!=6 && releaseName){
+	               env = '<div class="env">' + releaseName + '</div>'
 	            }
 	            if(task.valid==1){
 	              validClass = "ok"
