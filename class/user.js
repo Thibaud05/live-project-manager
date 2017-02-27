@@ -71,7 +71,7 @@ class user
     }
 
     startResetPassword(){
-        var key = global.moment() + user.id 
+        var key = global.moment() + "%$" + this.id 
         this.resetPassword = global.cryptoJs.MD5(key).toString(global.cryptoJs.enc.Base64)
         var sql = "UPDATE `user` SET `resetPassword` = '" + this.resetPassword + "' " +
                     " WHERE `id` = " + this.id

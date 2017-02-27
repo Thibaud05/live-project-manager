@@ -83,8 +83,7 @@
 
 	socket.on('forgotPassword', function (haveAccount) {
 	  if(haveAccount){
-	    var html = '<div class="send-message"><span class="glyphicon glyphicon-send" aria-hidden="true"></span>'
-	    html += 'Un email vous à été envoyé pour changer votre mots de passe !</div>'
+	    var html = '<div id="loader"></div>'
 	    $('.form-signin').append(html)
 	    $('#form-forgotPassword').remove()
 	  }else{
@@ -93,8 +92,18 @@
 	  }
 	})
 
+	socket.on('forgotPasswordMail', function () {
+	    var html = '<div class="send-message"><span class="glyphicon glyphicon-send" aria-hidden="true"></span>'
+	    html += 'Un email vous a été envoyé pour changer votre mot de passe !</div>'
+	    $('.form-signin').append(html)
+	});
 
-	socket.on('changePassword', function () {
+
+
+
+
+	socket.on('changePassword', function (hash) {
+	   createCookie("key", hash,30)
 	   window.location.href = '/';
 	})
 

@@ -512,7 +512,7 @@ class app
                     '<br> ' +
                     '<button type="submit" id="btn-submit" class="btn btn-lg btn-primary btn-block">Connexion</button> ' +
                     '<br> ' +
-                    '<div class="text-center"><a class="forgotPassword" href="forgotPassword">Mots de passe oublié ?</a></div>' +
+                    '<div class="text-center"><a class="forgotPassword" href="forgotPassword">Mot de passe oublié ?</a></div>' +
                 '</form> ' +
             '</div> ' +
         '</div> <!-- /container --> ';

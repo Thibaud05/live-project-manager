@@ -66,12 +66,11 @@ appExpress.use("/files", express.static(__dirname + '/uploads'));
 
 appExpress.use(fileUpload.router)
 
-
 appExpress.get('/forgotPassword', function (req, res) {
   res.send(app.displayForgotPassword())
 });
 
-appExpress.get('/forgotPassword/:hash', function (req, res) {
+appExpress.get('/resetPasword/:hash', function (req, res) {
   res.send(app.displaychangePassword(req.param('hash')))
 });
 
@@ -144,13 +143,16 @@ io.on('connection', function (socket) {
   socket.on('changePassword', function (data)
   {
     console.log(data)
+    var hash = ""
     for (var user of app.users) {
       if( data.hash == user.resetPassword){
         user.changePassword(data.password)
         user.saveKey(socket)
+        hash = user.getKey()
+        app.usersKey[u.getKey()] = user
       }
     }
-    socket.emit('changePassword');
+    socket.emit('changePassword',hash);
   })
 
 
@@ -158,29 +160,29 @@ io.on('connection', function (socket) {
   {
     var haveAccount = false;
     var fp_user = app.getUserByEmail(email)
-    console.log('forgotPassword')
+    
     if(fp_user){
       haveAccount = true;
+      socket.emit('forgotPassword',true);
       var hash = fp_user.startResetPassword()
       var emailTemplate = fs.readFileSync(__dirname + '/emails/resetPassword.ejs', 'utf8')
       var body = ejs.render(emailTemplate,{hash:hash}); 
       var mail_object = {
-          from: 'no-reply@livepromanager.com',
+          from: '"LPM" no-reply@livepromanager.com',
           to: email,
-          subject: 'Changer de mots de passe !', 
-          text: 'Suivez le lien http://livepromanager.com/resetPassword/'+ hash +' pour changer votre mots de passe.',
+          subject: 'Changer de mot de passe !', 
+          text: 'Suivez le lien http://livepromanager.com/resetPassword/'+ hash +' pour changer votre mot de passe.',
           html: body
       };
-
+      
       transport.sendMail(mail_object, function(error, info){
           if(error) {
               console.log(error.response);
           }
-          console.log(info);
-          socket.emit('forgotPassword',true);
+          socket.emit('forgotPasswordMail');
       });
     }else{
-      socket.emit('forgotPassword',haveAccount);
+      socket.emit('forgotPassword',false);
     }
     
   });
