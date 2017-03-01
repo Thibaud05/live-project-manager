@@ -100,7 +100,7 @@ class tasksManager{
       data.releases.map(function(data,key) {
         if(data!=undefined){
           var r = data
-          r.day = moment(data.day).format('YYYY-MM-DD');
+          r.day = moment(data.day,'YYYY-MM-DD').format('YYYY-MM-DD');
           r.id_project = self.taskList.taskTypes[r.typeId].id_project;
 
           if (self.releases[r.day] == undefined){
@@ -110,11 +110,11 @@ class tasksManager{
           self.releasesById[r.id] = r;
 
           if(self.lastRelease[r.typeId]!=undefined){
-            if(moment(r.day)>moment(self.lastRelease[r.typeId].day) && moment(r.day)<moment()){
+            if(r.day>moment(self.lastRelease[r.typeId].day,'YYYY-MM-DD') && r.day<moment()){
                self.lastRelease[r.typeId] = r;
             }
           }else{
-            if(moment(r.day)<moment()){
+            if(r.day<moment()){
               self.lastRelease[r.typeId] = r;
             }
           }
@@ -163,16 +163,16 @@ class tasksManager{
     for (var id in maxRelease) {
       var releaseDate = maxRelease[id]
       if(getPrev){
-        if(moment(releaseDate)<moment(actualReleaseDate)){
+        if(moment(releaseDate,'YYYY-MM-DD')<moment(actualReleaseDate,'YYYY-MM-DD')){
               //console.log(releaseDate)
-          if(nextRelease.id == undefined || moment(releaseDate)>moment(nextRelease.day)){
+          if(nextRelease.id == undefined || moment(releaseDate,'YYYY-MM-DD')>moment(nextRelease.day,'YYYY-MM-DD')){
             nextRelease = {"id":id,"day":releaseDate}
           }
         }
       }else{
-        if(moment(releaseDate)>moment(actualReleaseDate)){
+        if(moment(releaseDate,'YYYY-MM-DD')>moment(actualReleaseDate,'YYYY-MM-DD')){
               //console.log(releaseDate)
-          if(nextRelease.id == undefined || moment(releaseDate)<moment(nextRelease.day)){
+          if(nextRelease.id == undefined || moment(releaseDate,'YYYY-MM-DD')<moment(nextRelease.day,'YYYY-MM-DD')){
             nextRelease = {"id":id,"day":releaseDate}
           }
         }

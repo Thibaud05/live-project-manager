@@ -8,7 +8,7 @@ class task{
     this.typeId = data.typeId;
     this.userId = data.userId;
     if(data.day != "0000-00-00"){
-      this.day = moment(data.day).format('YYYY-MM-DD');
+      this.day = moment(data.day,'YYYY-MM-DD').format('YYYY-MM-DD');
     }else{
       this.day = data.day
     }
@@ -93,7 +93,7 @@ class task{
       html += ' <button id="shifting_next" type="button" class="btn btn-default" title="Repousser à la prochaine release">' +
       '<span  class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button></p>';
       html += '<p>ID : ' + self.id + '</p>';
-      html += '<p>Responsable : ' + self.getCreationUser() + ", créé "+ moment(self.creationDate).fromNow() + '</p>';
+      html += '<p>Responsable : ' + self.getCreationUser() + ", créé "+ moment(self.creationDate,'YYYY-MM-DD').fromNow() + '</p>';
       html += '<p>Attribué à ' + self.getEditUser() + '</p>';
       html += self.displayLinks();
       html += '<p class="desc">' + description + '</p>';
@@ -365,7 +365,7 @@ class task{
         this.typeId = data.typeId;
         this.userId = data.userId;
         if(data.day != "0000-00-00"){
-          this.day = moment(data.day).format('YYYY-MM-DD');
+          this.day = moment(data.day,'YYYY-MM-DD').format('YYYY-MM-DD');
         }else{
           this.day = data.day
         }
