@@ -295,7 +295,7 @@ function appInit(data) {
   $( "body" ).prepend(tm.getTaskMenu());
   tm.btnProjectHandler();
 
-  
+
   $("#del_btn").mousedown(function() {
       tm.delSelectedTasks();
   });
@@ -537,9 +537,8 @@ class CheckPassword
     var haveNumber = this.check("#check-number","0-9")
     var haveMinLetter = this.check("#check-min-letter","a-z")
     var haveMajLetter = this.check("#check-maj-letter","A-Z")
-    var haveSpecialChar = this.check("#check-special-char","@#$%^&+=")
+    var haveSpecialChar = this.check("#check-special-char","!@#$%&+=")
     this.valid = haveNumber && haveMinLetter && haveMajLetter && haveSpecialChar
-    console.log($(event.currentTarget).parent())
     $(event.currentTarget).parent().toggleClass('has-feedback',this.valid);
     this.updateSubmit()
   }

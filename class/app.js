@@ -317,7 +317,7 @@ class app
                 '<ul><li><span id="check-maj-letter" style="display:none;">' + ok + '</span> Une lettre majuscule</li>'+
                 '<li><span id="check-min-letter" style="display:none;">' + ok + '</span> Une lettre minuscule</li> '+
                 '<li><span id="check-number" style="display:none;">' + ok + '</span> Un chiffre</li>'+
-                '<li><span id="check-special-char" style="display:none;">' + ok + '</span> Un caractère spécial (!@#$%^&\')</li>'+
+                '<li><span id="check-special-char" style="display:none;">' + ok + '</span> Un caractère spécial (!@#$%&+=)</li>'+
                 '</ul>'+
                 '</p>' +
                 '<form id="form-changePassword" method="POST" action="" > ' +

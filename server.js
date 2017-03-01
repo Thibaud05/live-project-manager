@@ -147,7 +147,7 @@ io.on('connection', function (socket) {
     for (var user of app.users) {
       if( data.hash == user.resetPassword){
         user.changePassword(data.password)
-        user.saveKey(socket)
+        //user.saveKey(socket)
         hash = user.getKey()
         app.usersKey[u.getKey()] = user
       }
