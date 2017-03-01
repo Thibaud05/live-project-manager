@@ -291,7 +291,11 @@ function appInit(data) {
 
   //////////////////////
   // Remove selected task
+  $( "#next" ).after( tm.getProjects());
+  $( "body" ).prepend(tm.getTaskMenu());
+  tm.btnProjectHandler();
 
+  
   $("#del_btn").mousedown(function() {
       tm.delSelectedTasks();
   });
@@ -314,9 +318,7 @@ function appInit(data) {
       }
   }) 
 
-  $( "#next" ).after( tm.getProjects());
-  $( "body" ).prepend(tm.getTaskMenu());
-  tm.btnProjectHandler();
+
 
 /*
   $("#projects").on('mousedown', 'li a', function(){
