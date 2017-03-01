@@ -1,10 +1,10 @@
 var chai = require('chai');
 var expect = chai.expect;
-var Store = require('./../../class/store.js');
+var store = require('./../../class/Store.js');
 
 describe('Store', function() {
   it('setData', function() {
-    var store = new Store();
+    /*
     store.taskTypes      = []
     store.releases       = []
     store.users          = []
@@ -15,8 +15,8 @@ describe('Store', function() {
     store.projects       = []
     store.projects_user  = []
     store.box            = []
-
+*/
    // expect(box.id).to.equal(7);
-    expect(box.id_project).to.equal(3);
+    expect(store.box).to.be.empty;
   });
 });
