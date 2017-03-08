@@ -22,6 +22,7 @@ class task{
     this.files = [];
     this.links = [];
     this.messages = [];
+    this.notifications = [];
     this.priority = data.priority
     this.w = 0
     this.h = 0
@@ -49,8 +50,17 @@ class task{
     }
   }
 
+  removeNotifications(htmlTask){
+    if(this.notifications.length>0){
+      htmlTask.find(".notif").remove();
+      socket.emit('removeNotifications', this.notifications);
+      this.notifications = []
+    }
+  }
+
   open(htmlTask){
     var self = this
+    this.removeNotifications(htmlTask)
     var htmlTitle = htmlTask.children(".contener").children("span")
     htmlTask.find("#taskDetail").remove();
     var description = this.description;

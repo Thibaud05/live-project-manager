@@ -2088,6 +2088,7 @@
 	    this.files = [];
 	    this.links = [];
 	    this.messages = [];
+	    this.notifications = [];
 	    this.priority = data.priority
 	    this.w = 0
 	    this.h = 0
@@ -2115,8 +2116,17 @@
 	    }
 	  }
 
+	  removeNotifications(htmlTask){
+	    if(this.notifications.length>0){
+	      htmlTask.find(".notif").remove();
+	      socket.emit('removeNotifications', this.notifications);
+	      this.notifications = []
+	    }
+	  }
+
 	  open(htmlTask){
 	    var self = this
+	    this.removeNotifications(htmlTask)
 	    var htmlTitle = htmlTask.children(".contener").children("span")
 	    htmlTask.find("#taskDetail").remove();
 	    var description = this.description;
@@ -3104,6 +3114,7 @@
 	      this.files = {};
 	      this.links = {};
 	      this.messages = {};
+	      this.notifications = {};
 	      this.taskTypes = [];
 	      this.taskTypeByProject = [];
 	    }
@@ -3112,6 +3123,7 @@
 	    	this.setFilesData(data.tasks_files)
 	    	this.setLinksData(data.tasks_links)
 	    	this.setMessagesData(data.tasks_messages)
+	      this.setNotificationsData(data.notification)
 	    	this.setTypeData(data.taskTypes)
 	    	this.setTaskData(data.tasks)
 	    }
@@ -3135,6 +3147,10 @@
 		          if(self.messages[t.id] != undefined ){
 		            t.messages = self.messages[t.id];
 		          }
+
+	            if(self.notifications[t.id] != undefined ){
+	              t.notifications = self.notifications[t.id];
+	            }
 		          
 		          var k = t.userId + ":" + t.day;
 		          if(self.tasks[k] == undefined ){
@@ -3201,6 +3217,19 @@
 	      });
 	    }
 
+	    setNotificationsData(data){
+	      self = this
+	      data.map(function(data,key ) {
+	        if(data!=undefined){
+	          if(self.notifications[data.taskId] == undefined ){
+	            self.notifications[data.taskId] = [];
+	          }
+	          self.notifications[data.taskId][data.id] = data;
+	        }
+	      });
+	    }
+
+
 	    getTasks(id,date){
 	      var key = ""
 	      if(date){
@@ -3248,6 +3277,7 @@
 	          var progressClass = "progressStatus hidden"
 	          var validClass = "ok hidden"
 	          var taskTitle = task.title
+	          var nbNotif = task.notifications.length
 	          if(!task.isLocked){
 	            var releaseName = window.tm.getLastRelease(task.typeId)
 	            if(task.typeId!=5 && task.typeId!=6 && releaseName){
@@ -3259,12 +3289,18 @@
 	            if(task.valid==2){
 	              progressClass = "progressStatus"
 	            }
+	            
+	            if(nbNotif > 0){
+	              taskTitle = '<span class="notif">' + nbNotif + '</span>' + taskTitle;
+	            }
+
+
 	          }else{
 	            color += " locked"
 	            taskTitle = window.tm.projectById[task.id_project].name
 	          }
 	          html = '<li class="ui-state-default task ' + color + '" tid = "' + task.id + '" >'+ env 
-	          + '<div class="contener"><span class="title">' + taskTitle + '</span>'
+	          + '<div class="contener"><span class="title">' + taskTitle + '</span>' 
 	          + '<div class="' + validClass + '"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>'
 	          + '<div class="' + progressClass + '"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></div></div></li>';
 	        }

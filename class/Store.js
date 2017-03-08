@@ -14,7 +14,8 @@ class Store
           "SELECT * FROM `project_user`",
           "SELECT * FROM `task_link`",
           "SELECT * FROM `task_message`",
-          "SELECT * FROM `box`"
+          "SELECT * FROM `box`",
+          "SELECT * FROM `notification`"
         ]
         this.taskTypes      = []
         this.releases       = []
@@ -26,6 +27,7 @@ class Store
         this.projects       = []
         this.projects_user  = []
         this.box            = []
+        this.notification   = []
     }
 
     setData(data)
@@ -40,10 +42,11 @@ class Store
         this.tasks_links    = this.indexById(data[7])
         this.tasks_messages = this.indexById(data[8])
         this.box            = this.indexById(data[9])
+        this.notification   = this.indexById(data[10])
         
     }
 
-    getClientData(idUser)
+    getClientData(userId)
     {
         var projects = []
         var tasks = []
@@ -52,10 +55,11 @@ class Store
         var typesId = {}
         var boxs = []
         var releases = []
+        var notifications = []
 
 
         for (var project_user of this.projects_user){
-            if(project_user.id_user == idUser){
+            if(project_user.id_user == userId){
                 projects[project_user.id_project] = this.projects[project_user.id_project]
             }
         }
@@ -71,7 +75,7 @@ class Store
         for (var boxId in this.box){
         	var box = this.box[boxId]
             if(projects[box.id_project]){
-                boxs[box.id] = this.box[box.id]
+                boxs[box.id] = box
             }
         }
 
@@ -90,6 +94,13 @@ class Store
             }
         }
 
+        for (var notifId in this.notification){
+            var notif = this.notification[notifId]
+            if(notif.userId == userId){
+                notifications[notif.id] = notif
+            }
+        }
+
         return {
             taskTypes       : types,
             releases        : releases,
@@ -100,7 +111,8 @@ class Store
             tasks_messages  : this.getClientTaskData(tasks,this.tasks_messages),
             projects        : projects,
             projects_user   : this.projects_user,
-            box             : boxs
+            box             : boxs,
+            notification    : notifications
         }
     }
 

@@ -129,6 +129,17 @@ class app
             m.add()
         })
 
+        socket.on('removeNotifications',function(datas){
+            for(var i= 0; i < datas.length; i++)
+            {
+                var data = datas[i]
+                if(data != undefined){
+                    var sql = "DELETE FROM `notification` WHERE id = " + data.id;
+                    global.connection.query(sql)
+                    delete global.store.notification[data.id]
+                }
+            }
+        })
 
         socket.on('addTask', function (data)
         {
