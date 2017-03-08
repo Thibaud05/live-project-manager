@@ -337,6 +337,10 @@
 
 	  //////////////////////
 	  // Remove selected task
+	  $( "#next" ).after( tm.getProjects());
+	  $( "body" ).prepend(tm.getTaskMenu());
+	  tm.btnProjectHandler();
+
 
 	  $("#del_btn").mousedown(function() {
 	      tm.delSelectedTasks();
@@ -360,9 +364,7 @@
 	      }
 	  }) 
 
-	  $( "#next" ).after( tm.getProjects());
-	  $( "body" ).prepend(tm.getTaskMenu());
-	  tm.btnProjectHandler();
+
 
 	/*
 	  $("#projects").on('mousedown', 'li a', function(){
@@ -581,9 +583,8 @@
 	    var haveNumber = this.check("#check-number","0-9")
 	    var haveMinLetter = this.check("#check-min-letter","a-z")
 	    var haveMajLetter = this.check("#check-maj-letter","A-Z")
-	    var haveSpecialChar = this.check("#check-special-char","@#$%^&+=")
+	    var haveSpecialChar = this.check("#check-special-char","!@#$%&+=")
 	    this.valid = haveNumber && haveMinLetter && haveMajLetter && haveSpecialChar
-	    console.log($(event.currentTarget).parent())
 	    $(event.currentTarget).parent().toggleClass('has-feedback',this.valid);
 	    this.updateSubmit()
 	  }
@@ -751,7 +752,7 @@
 	      data.releases.map(function(data,key) {
 	        if(data!=undefined){
 	          var r = data
-	          r.day = moment(data.day).format('YYYY-MM-DD');
+	          r.day = moment(data.day,'YYYY-MM-DD').format('YYYY-MM-DD');
 	          r.id_project = self.taskList.taskTypes[r.typeId].id_project;
 
 	          if (self.releases[r.day] == undefined){
@@ -761,11 +762,11 @@
 	          self.releasesById[r.id] = r;
 
 	          if(self.lastRelease[r.typeId]!=undefined){
-	            if(moment(r.day)>moment(self.lastRelease[r.typeId].day) && moment(r.day)<moment()){
+	            if(r.day>moment(self.lastRelease[r.typeId].day,'YYYY-MM-DD') && r.day<moment()){
 	               self.lastRelease[r.typeId] = r;
 	            }
 	          }else{
-	            if(moment(r.day)<moment()){
+	            if(r.day<moment()){
 	              self.lastRelease[r.typeId] = r;
 	            }
 	          }
@@ -814,16 +815,16 @@
 	    for (var id in maxRelease) {
 	      var releaseDate = maxRelease[id]
 	      if(getPrev){
-	        if(moment(releaseDate)<moment(actualReleaseDate)){
+	        if(moment(releaseDate,'YYYY-MM-DD')<moment(actualReleaseDate,'YYYY-MM-DD')){
 	              //console.log(releaseDate)
-	          if(nextRelease.id == undefined || moment(releaseDate)>moment(nextRelease.day)){
+	          if(nextRelease.id == undefined || moment(releaseDate,'YYYY-MM-DD')>moment(nextRelease.day,'YYYY-MM-DD')){
 	            nextRelease = {"id":id,"day":releaseDate}
 	          }
 	        }
 	      }else{
-	        if(moment(releaseDate)>moment(actualReleaseDate)){
+	        if(moment(releaseDate,'YYYY-MM-DD')>moment(actualReleaseDate,'YYYY-MM-DD')){
 	              //console.log(releaseDate)
-	          if(nextRelease.id == undefined || moment(releaseDate)<moment(nextRelease.day)){
+	          if(nextRelease.id == undefined || moment(releaseDate,'YYYY-MM-DD')<moment(nextRelease.day,'YYYY-MM-DD')){
 	            nextRelease = {"id":id,"day":releaseDate}
 	          }
 	        }
@@ -866,14 +867,14 @@
 	    this.taskList.tasksById.map(function(t,key) {
 	      if (t){
 	        t.isLocked = (self.selectedProject != t.id_project)
-	        var display = true;
+	        t.display = true;
 	        if(self.searchValue != ""){
-	          display = false;
+	          t.display = false;
 	          if((t.title.contain(self.searchValue))||(t.description.contain(self.searchValue))||(t.id == self.searchValue)){
-	            display = true;
+	            t.display = true;
 	          }
 	        }
-	        if(display){
+	        if(t.display){
 	          var k = t.userId + ":" + t.day;
 	          if(self.taskList.tasks[k] == undefined ){
 	            self.taskList.tasks[k] = new Array();
@@ -1270,10 +1271,10 @@
 	            }
 	            line += '<td class="W' + indexW + ' ' + css + '"><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
 
-	            var htmlTask = self.taskList.render(user.id + ":" + self.dates[i],false);
-	            if(htmlTask != ""){
+	            var tasks = self.taskList.getTasks(user.id,self.dates[i])
+	            if( tasks.length > 0 ){
 	              empltyLine = false
-	              line += htmlTask;
+	              line += self.taskList.render(tasks,false);
 	            }
 	            line += '</div></td>';
 	          }
@@ -1298,6 +1299,13 @@
 	      if(this.searchValue!=""){
 	          var b = new box({id:5,name:"ARCHIVE"})
 	          htmlBox += b.render()
+
+	          var b2 = new box({name:"PAST"})
+	          b2.tasks = this.taskList.getPastTasks()
+	          htmlBox += b2.render()
+
+
+
 	       }
 	      $("#box").html(htmlBox);
 	      $("#accountable").html(this.renderAccountable());
@@ -1382,7 +1390,6 @@
 	        delete self.taskList.tasksById[id];
 	        delete self.selectedTasks[id];
 
-	        log("taskRemoved");
 	      })
 
 	/*----------  duplicateTask ----------*/
@@ -1629,8 +1636,11 @@
 	          var t = self.taskList.tasksById[ui.item.attr("tid")];
 	          t.day = self.dates[$(this).attr("di")];
 	          t.userId = $(this).attr("uid");
+	          if(t.userId != undefined){
+	            socket.emit('setData', t);
+	          }
 	          //t.creationUserId = self.connectUserId;
-	          socket.emit('setData', t);
+	          
 	        }
 	      }).disableSelection();
 
@@ -2058,13 +2068,14 @@
 	var chat = __webpack_require__(8);
 	class task{
 	  constructor(data){
+	    this.display = true;
 	    this.isOpen = false;
 	    this.isDraging = false;
 	    this.id = data.id;
 	    this.typeId = data.typeId;
 	    this.userId = data.userId;
 	    if(data.day != "0000-00-00"){
-	      this.day = moment(data.day).format('YYYY-MM-DD');
+	      this.day = moment(data.day,'YYYY-MM-DD').format('YYYY-MM-DD');
 	    }else{
 	      this.day = data.day
 	    }
@@ -2149,7 +2160,7 @@
 	      html += ' <button id="shifting_next" type="button" class="btn btn-default" title="Repousser à la prochaine release">' +
 	      '<span  class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button></p>';
 	      html += '<p>ID : ' + self.id + '</p>';
-	      html += '<p>Responsable : ' + self.getCreationUser() + ", créé "+ moment(self.creationDate).fromNow() + '</p>';
+	      html += '<p>Responsable : ' + self.getCreationUser() + ", créé "+ moment(self.creationDate,'YYYY-MM-DD').fromNow() + '</p>';
 	      html += '<p>Attribué à ' + self.getEditUser() + '</p>';
 	      html += self.displayLinks();
 	      html += '<p class="desc">' + description + '</p>';
@@ -2421,7 +2432,7 @@
 	        this.typeId = data.typeId;
 	        this.userId = data.userId;
 	        if(data.day != "0000-00-00"){
-	          this.day = moment(data.day).format('YYYY-MM-DD');
+	          this.day = moment(data.day,'YYYY-MM-DD').format('YYYY-MM-DD');
 	        }else{
 	          this.day = data.day
 	        }
@@ -3050,16 +3061,23 @@
 	    this.id_project = data.id_project;
 	    this.name = data.name;
 	    this.order = data.order;
+	    this.tasks = [];
 	  }
 	  render(){ 
+	  	if(this.id){
+	    	this.tasks = window.tm.taskList.getTasks(this.id)
+	    }
 		  var html = ''
-		  var htmlTasks = window.tm.taskList.render(this.id + ":0000-00-00",true)
-		  if(window.tm.searchValue == "" || htmlTasks != ""){
+		  var uid = ''
+		  if(this.id){
+		  	uid = '" uid ="' + this.id + '"'
+		  }
+		  if(window.tm.searchValue == "" || this.tasks.length > 0){
 		    html = '<div class="panel panel-default box">';
 		    html += '<div class="panel-heading">' + this.name + '</div>';
 		    html +=   '<div class="panel-body">';
-		    html +=     '<ul class="connectedSortable" di = "-1" uid ="' + this.id + '">' 
-		    html +=       window.tm.taskList.render(this.id + ":0000-00-00",true)
+		    html +=     '<ul class="connectedSortable" di = "-1"' + uid + '>' 
+		    html +=       window.tm.taskList.render(this.tasks,true)
 		    html +=     '</ul>'
 		    html +=   '</div>';
 		    html += '</div>';
@@ -3183,13 +3201,36 @@
 	      });
 	    }
 
-	    render(key,inBox){
+	    getTasks(id,date){
+	      var key = ""
+	      if(date){
+	        key = id + ":" + date
+	      }else{
+	        key = id + ":0000-00-00"
+	      }
+	      var tabTask = this.tasks[key]
+	      if(!tabTask){
+	        tabTask = []
+	      }
+	      return tabTask
+	    }
+
+	    getPastTasks(){
+	      var pastTasks = []
+	      this.tasksById.map(function(t,key) {
+	        if(moment(t.day,'YYYY-MM-DD') < moment() && t.display && t.day != "0000-00-00"){
+	            pastTasks.unshift(t)
+	        }
+	      })
+	      return pastTasks
+	    }
+
+	    render(tasks,inBox){
 	      var html = ''
-	      var tabTask = this.tasks[key];
-	      if(tabTask){
-	        for (var i = 0; i < tabTask.length; i++){
-	          var t = tabTask[i];
-	          if(t!=undefined){
+	      if(tasks.length > 0){
+	        for (var i = 0; i < tasks.length; i++){
+	          var t = tasks[i];
+	          if(t){
 	             if(inBox){
 	              }
 	              html += this.renderTask(t,inBox)

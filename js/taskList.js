@@ -108,13 +108,36 @@ class TaskList
       });
     }
 
-    render(key,inBox){
+    getTasks(id,date){
+      var key = ""
+      if(date){
+        key = id + ":" + date
+      }else{
+        key = id + ":0000-00-00"
+      }
+      var tabTask = this.tasks[key]
+      if(!tabTask){
+        tabTask = []
+      }
+      return tabTask
+    }
+
+    getPastTasks(){
+      var pastTasks = []
+      this.tasksById.map(function(t,key) {
+        if(moment(t.day,'YYYY-MM-DD') < moment() && t.display && t.day != "0000-00-00"){
+            pastTasks.unshift(t)
+        }
+      })
+      return pastTasks
+    }
+
+    render(tasks,inBox){
       var html = ''
-      var tabTask = this.tasks[key];
-      if(tabTask){
-        for (var i = 0; i < tabTask.length; i++){
-          var t = tabTask[i];
-          if(t!=undefined){
+      if(tasks.length > 0){
+        for (var i = 0; i < tasks.length; i++){
+          var t = tasks[i];
+          if(t){
              if(inBox){
               }
               html += this.renderTask(t,inBox)

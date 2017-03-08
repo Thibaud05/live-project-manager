@@ -2,6 +2,7 @@ var socket = window.socket
 var chat = require("./chat.js");
 class task{
   constructor(data){
+    this.display = true;
     this.isOpen = false;
     this.isDraging = false;
     this.id = data.id;

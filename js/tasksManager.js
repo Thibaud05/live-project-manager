@@ -215,14 +215,14 @@ class tasksManager{
     this.taskList.tasksById.map(function(t,key) {
       if (t){
         t.isLocked = (self.selectedProject != t.id_project)
-        var display = true;
+        t.display = true;
         if(self.searchValue != ""){
-          display = false;
+          t.display = false;
           if((t.title.contain(self.searchValue))||(t.description.contain(self.searchValue))||(t.id == self.searchValue)){
-            display = true;
+            t.display = true;
           }
         }
-        if(display){
+        if(t.display){
           var k = t.userId + ":" + t.day;
           if(self.taskList.tasks[k] == undefined ){
             self.taskList.tasks[k] = new Array();
@@ -619,10 +619,10 @@ class tasksManager{
             }
             line += '<td class="W' + indexW + ' ' + css + '"><ul class="connectedSortable" di = "' + i + '" uid ="'+ user.id +'">';
 
-            var htmlTask = self.taskList.render(user.id + ":" + self.dates[i],false);
-            if(htmlTask != ""){
+            var tasks = self.taskList.getTasks(user.id,self.dates[i])
+            if( tasks.length > 0 ){
               empltyLine = false
-              line += htmlTask;
+              line += self.taskList.render(tasks,false);
             }
             line += '</div></td>';
           }
@@ -647,6 +647,13 @@ class tasksManager{
       if(this.searchValue!=""){
           var b = new box({id:5,name:"ARCHIVE"})
           htmlBox += b.render()
+
+          var b2 = new box({name:"PAST"})
+          b2.tasks = this.taskList.getPastTasks()
+          htmlBox += b2.render()
+
+
+
        }
       $("#box").html(htmlBox);
       $("#accountable").html(this.renderAccountable());
@@ -731,7 +738,6 @@ class tasksManager{
         delete self.taskList.tasksById[id];
         delete self.selectedTasks[id];
 
-        log("taskRemoved");
       })
 
 /*----------  duplicateTask ----------*/
@@ -978,8 +984,11 @@ class tasksManager{
           var t = self.taskList.tasksById[ui.item.attr("tid")];
           t.day = self.dates[$(this).attr("di")];
           t.userId = $(this).attr("uid");
+          if(t.userId != undefined){
+            socket.emit('setData', t);
+          }
           //t.creationUserId = self.connectUserId;
-          socket.emit('setData', t);
+          
         }
       }).disableSelection();
 
