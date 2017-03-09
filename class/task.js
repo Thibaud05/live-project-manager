@@ -33,7 +33,7 @@ class task
 					"`typeId` = '" + this.typeId + "'," +
 					"`day` = '" + this.day + "'," +
 					"`updateDate` = '" + this.updateDate + "'," +
-					"`creationDate` = '" + this.creationDate + "'," +
+					"`creationDate` = '" + moment(this.creationDate).format("YYYY-MM-DD HH:mm:ss") + "'," +
 					"`priority` = '" + this.priority + "'," +
 					"`valid` = '" + this.valid + "'," +
 					"`description` = '" + global.escapeQuote(this.description) + "'" +

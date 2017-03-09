@@ -996,7 +996,7 @@
 	      "priority"          : lowPriority,
 	      "accountableUserId" : userId,
 	      "creationDate"      : "",
-	      "valid"             : false
+	      "valid"             : 0
 	    };
 	    socket.emit('addTask', newTask);
 	  }
@@ -1045,7 +1045,7 @@
 	          "priority"          : lowPriority,
 	          "accountableUserId" : t.userId,
 	          "creationDate"      : "",
-	          "valid"             : false
+	          "valid"             : 0
 	        });
 	      }
 	      socket.emit('duplicateTask', duplicatedTasksId);
@@ -2075,7 +2075,7 @@
 	    this.typeId = data.typeId;
 	    this.userId = data.userId;
 	    if(data.day != "0000-00-00"){
-	      this.day = moment(data.day,'YYYY-MM-DD').format('YYYY-MM-DD');
+	      this.day = moment(data.day).format('YYYY-MM-DD');
 	    }else{
 	      this.day = data.day
 	    }

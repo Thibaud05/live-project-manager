@@ -9,7 +9,7 @@ class task{
     this.typeId = data.typeId;
     this.userId = data.userId;
     if(data.day != "0000-00-00"){
-      this.day = moment(data.day,'YYYY-MM-DD').format('YYYY-MM-DD');
+      this.day = moment(data.day).format('YYYY-MM-DD');
     }else{
       this.day = data.day
     }

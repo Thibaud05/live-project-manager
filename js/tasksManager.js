@@ -344,7 +344,7 @@ class tasksManager{
       "priority"          : lowPriority,
       "accountableUserId" : userId,
       "creationDate"      : "",
-      "valid"             : false
+      "valid"             : 0
     };
     socket.emit('addTask', newTask);
   }
@@ -393,7 +393,7 @@ class tasksManager{
           "priority"          : lowPriority,
           "accountableUserId" : t.userId,
           "creationDate"      : "",
-          "valid"             : false
+          "valid"             : 0
         });
       }
       socket.emit('duplicateTask', duplicatedTasksId);
