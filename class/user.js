@@ -57,8 +57,8 @@ class user
         socket.handshake.headers.cookie = "key="+this.getKey()+expires+"; path=/";
     }
 
-    addSocket(socketId){
-        this.sockets[socketId] = 1
+    addSocket(socket){
+        this.sockets[socket.id] = socket
         if(global.connection){
             global.connection.query("UPDATE `user` SET `lastconnexion` ='" + global.moment().format("YYYY-MM-DD") + "' WHERE `id` = " + this.id )
         }

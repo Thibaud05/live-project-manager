@@ -1570,6 +1570,13 @@
 	          self.taskList.addType(taskType)
 	      })
 
+	      socket.on('addTaskNotification',function(notif)
+	      {
+	        console.log("youpi")
+	        console.log(notif)
+	        self.taskList.tasksById[notif.taskId].addNotification(notif) 
+	      })
+	      
 
 
 	    }
@@ -2122,6 +2129,16 @@
 	      socket.emit('removeNotifications', this.notifications);
 	      this.notifications = []
 	    }
+	  }
+
+	  addNotification(notif){
+	    this.notifications.push(notif)
+	    var selectedTask = $(".task[tid="+ notif.taskId +"]")
+	    if(selectedTask){
+	       selectedTask.find(".notif").remove();
+	       selectedTask.find(".title").prepend('<span class="notif">' + this.notifications.length + '</span>')
+	    }
+	   
 	  }
 
 	  open(htmlTask){
@@ -3224,7 +3241,7 @@
 	          if(self.notifications[data.taskId] == undefined ){
 	            self.notifications[data.taskId] = [];
 	          }
-	          self.notifications[data.taskId][data.id] = data;
+	          self.notifications[data.taskId].push(data);
 	        }
 	      });
 	    }

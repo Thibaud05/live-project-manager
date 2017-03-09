@@ -918,6 +918,13 @@ class tasksManager{
           self.taskList.addType(taskType)
       })
 
+      socket.on('addTaskNotification',function(notif)
+      {
+        console.log("youpi")
+        console.log(notif)
+        self.taskList.tasksById[notif.taskId].addNotification(notif) 
+      })
+      
 
 
     }

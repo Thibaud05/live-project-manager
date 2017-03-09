@@ -123,8 +123,42 @@ class app
             var m = new global.message(data);
             m.registerEvent("added")
             m.addEventListener("added", function(e){
-                console.log("Server emit setDataMessages")
                 io.emit('setDataMessages',m);
+                var usersList = {}
+                var t = global.store.tasks[m.taskId]
+                var taskList = {}
+                taskList[m.taskId] = 1
+                var messages = global.store.getClientTaskData(taskList,global.store.tasks_messages)
+                // Ajout des utilisateurs qui ont créé un message sur ce ticket
+                for (var message of messages) {
+                    if(message){
+                        usersList[message.userId] = 1
+                    }
+                }
+                // Ajout de l'executant du ticket
+                usersList[t.userId] = 1
+                // Ajout du créateur du ticket
+                usersList[t.creationUserId] = 1
+                // Ajout de l'utilisateur responsable
+                usersList[t.accountableUserId] = 1
+                // Suppression de l'utilisateur ayant créé le nouveau message
+                delete usersList[m.userId]
+                //récupération des sockets
+                for (var userId in usersList) {
+                    
+                    var notif = new global.notification({userId:userId,taskId:m.taskId})
+
+                    notif.onUpdateCompleted = function(){ 
+                        var u = self.users[userId]
+                         for (var socketId in u.sockets) {
+                            var socketCible = u.sockets[socketId]
+                            console.log(socketCible)
+                            socketCible.emit('addTaskNotification',this);
+                        }
+                    }
+                    notif.save()
+                }
+
             }, false); 
             m.add()
         })
@@ -264,7 +298,7 @@ class app
 
     logged(user,socket)
     {
-        user.addSocket(socket.id )
+        user.addSocket(socket)
         this.userBySocket[socket.id] = user
         if( !user.logged ){
             this.usersLogged ++

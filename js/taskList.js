@@ -121,7 +121,7 @@ class TaskList
           if(self.notifications[data.taskId] == undefined ){
             self.notifications[data.taskId] = [];
           }
-          self.notifications[data.taskId][data.id] = data;
+          self.notifications[data.taskId].push(data);
         }
       });
     }

@@ -58,6 +58,16 @@ class task{
     }
   }
 
+  addNotification(notif){
+    this.notifications.push(notif)
+    var selectedTask = $(".task[tid="+ notif.taskId +"]")
+    if(selectedTask){
+       selectedTask.find(".notif").remove();
+       selectedTask.find(".title").prepend('<span class="notif">' + this.notifications.length + '</span>')
+    }
+   
+  }
+
   open(htmlTask){
     var self = this
     this.removeNotifications(htmlTask)

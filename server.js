@@ -16,6 +16,7 @@ global.file     = require('./class/file.js');
 global.link     = require('./class/link.js');
 global.message  = require('./class/message.js');
 global.box      = require('./class/box.js');
+global.notification = require('./class/notification.js');
 global.moment   = require('./js/moment.min.js')
 global.store    = require('./class/Store.js'); 
 
