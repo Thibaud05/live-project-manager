@@ -121,6 +121,7 @@ class app
         {
             data.id = 0
             var m = new global.message(data);
+            var senderUser = self.users[m.userId]
             m.registerEvent("added")
             m.addEventListener("added", function(e){
                 io.emit('setDataMessages',m);
@@ -152,8 +153,8 @@ class app
                         var u = self.users[userId]
                          for (var socketId in u.sockets) {
                             var socketCible = u.sockets[socketId]
-                            console.log(socketCible)
                             socketCible.emit('addTaskNotification',this);
+                            socketCible.emit('notif',{title:"Nouveau message de " + senderUser.firstName,body:m.txt,icon:senderUser.getImg(),tag:"chat"});
                         }
                     }
                     notif.save()
@@ -303,7 +304,7 @@ class app
         if( !user.logged ){
             this.usersLogged ++
             user.logged = true
-            socket.broadcast.emit('notif',{title:user.firstName + " est en ligne !",body:"Hello World !",icon:user.getImg(),tag:"connect",userId:user.id});
+            //socket.broadcast.emit('notif',{title:user.firstName + " est en ligne !",body:"Hello World !",icon:user.getImg(),tag:"connect",userId:user.id});
         }
         //user.saveKey(this.socket)
     }
@@ -318,7 +319,7 @@ class app
             delete this.userBySocket[socket.id]
             //console.log(user)
             if( !user.haveSocket() ){
-                socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:"deco",userId:user.id});
+                //socket.broadcast.emit('notif',{title:user.firstName + " est hors ligne !",body:"Bye bye !",icon:user.getImg(),tag:"deco",userId:user.id});
                 this.usersLogged --
                 user.logged = false
                 this.users[user.id].logged = false

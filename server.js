@@ -107,7 +107,7 @@ connection.query(global.store.getSql(), function(err, data, fields) {
       app.users.push(u)
       app.usersKey[u.getKey()] = u
   }
-  console.log("-- Mysql data Loaded")
+  console.log('\x1b[1;32m%s\x1b[0m ', "-- Mysql data Loaded")
 });  
 
 io.on('connection', function (socket) {

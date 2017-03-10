@@ -1,5 +1,6 @@
 
 var socket = require("./socket.js");
+var config = require("./config.js");
 var tasksManager = require("./tasksManager.js");
 var tm = new tasksManager();
 window.tm = tm
@@ -67,7 +68,6 @@ socket.on('notif', function (data) {
       icon: data.icon,
       tag: data.tag
   }
-  if(tm.isUserDisplay(data.userId)){
     if (!("Notification" in window)) {
       alert("Ce navigateur ne supporte pas les notifications desktop");
     }
@@ -84,7 +84,11 @@ socket.on('notif', function (data) {
         }
       });
     }
-  }
+    
+    notification.onclick = function(event) {
+      window.focus();
+    }
+
 });
 socket.on('displayLogin', function (data) {
   $('.form-signin').animate({opacity: 1,marginTop: "150px"},{
