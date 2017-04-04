@@ -23,7 +23,7 @@ global.store    = require('./class/Store.js');
 var ejs          = require('ejs')
 var fs           = require("fs");
 var mysql        = require('mysql');
-var connection   = mysql.createConnection(config);
+var connection   = mysql.createConnection(config.mysql);
 var express      = require('express')
 var appExpress   = express();
 var server       = require('http').Server(appExpress);
@@ -33,20 +33,7 @@ var fileUpload   = require('socketio-file-upload')
 
 var nodemailer = require('nodemailer');
 
-var transport = nodemailer.createTransport({
-  pool:true,
-  host: 'smtp.livepromanager.com',
-  port: 587,
-  tls: {
-      rejectUnauthorized:false,
-  },
-  auth: {
-      user: 'no-reply@livepromanager.com',
-      pass: 'bz42ab69c'
-  },
-  maxConnections: 3,
-  maxMessages: 300
-});
+var transport = nodemailer.createTransport(config.smtp);
 
 
 var app = new app()
@@ -55,7 +42,6 @@ io.use(cookieParser);
 global.io = io
 connection.connect();
 global.connection = connection
-global.config = config
 server.listen(3000);
 
 appExpress.use('/favicon.ico', express.static('icon/favicon.ico'));

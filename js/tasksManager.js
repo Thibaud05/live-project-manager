@@ -100,7 +100,7 @@ class tasksManager{
       data.releases.map(function(data,key) {
         if(data!=undefined){
           var r = data
-          r.day = moment(data.day,'YYYY-MM-DD').format('YYYY-MM-DD');
+          r.day = moment(data.day).format('YYYY-MM-DD');
           r.id_project = self.taskList.taskTypes[r.typeId].id_project;
 
           if (self.releases[r.day] == undefined){

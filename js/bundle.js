@@ -46,6 +46,7 @@
 
 	
 	var socket = __webpack_require__(1);
+	var config = __webpack_require__(2);
 	var tasksManager = __webpack_require__(3);
 	var tm = new tasksManager();
 	window.tm = tm
@@ -113,7 +114,6 @@
 	      icon: data.icon,
 	      tag: data.tag
 	  }
-	  if(tm.isUserDisplay(data.userId)){
 	    if (!("Notification" in window)) {
 	      alert("Ce navigateur ne supporte pas les notifications desktop");
 	    }
@@ -130,7 +130,11 @@
 	        }
 	      });
 	    }
-	  }
+	    
+	    notification.onclick = function(event) {
+	      window.focus();
+	    }
+
 	});
 	socket.on('displayLogin', function (data) {
 	  $('.form-signin').animate({opacity: 1,marginTop: "150px"},{
@@ -752,7 +756,7 @@
 	      data.releases.map(function(data,key) {
 	        if(data!=undefined){
 	          var r = data
-	          r.day = moment(data.day,'YYYY-MM-DD').format('YYYY-MM-DD');
+	          r.day = moment(data.day).format('YYYY-MM-DD');
 	          r.id_project = self.taskList.taskTypes[r.typeId].id_project;
 
 	          if (self.releases[r.day] == undefined){
