@@ -842,7 +842,7 @@ class tasksManager{
         var m = new message(data)
         var t = self.taskList.tasksById[m.taskId]
         var divMessage = $(".task[tid=" + m.taskId + "] .chat")
-        if(divMessage){
+        if(divMessage && t.chat){
           t.chat.messages.push(m)
           t.chat.$messages.append(m.display())
           t.chat.checkForChanges()
