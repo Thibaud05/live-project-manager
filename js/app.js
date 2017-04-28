@@ -1,4 +1,3 @@
-
 var socket = require("./socket.js");
 var config = require("./config.js");
 var tasksManager = require("./tasksManager.js");

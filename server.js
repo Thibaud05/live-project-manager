@@ -97,7 +97,8 @@ connection.query(global.store.getSql(), function(err, data, fields) {
 });  
 
 io.on('connection', function (socket) {
-  console.log("conect")
+  var now = global.moment().format('MM/DD/YY hh:mm:ss');
+  console.log(now + " - Connect")
   var u = null
   app.controller(socket)
   if(!app.autoLogin(socket)){

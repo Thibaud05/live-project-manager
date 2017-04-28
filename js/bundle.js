@@ -44,7 +44,6 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
 	var socket = __webpack_require__(1);
 	var config = __webpack_require__(2);
 	var tasksManager = __webpack_require__(3);
@@ -1498,7 +1497,7 @@
 	        var m = new message(data)
 	        var t = self.taskList.tasksById[m.taskId]
 	        var divMessage = $(".task[tid=" + m.taskId + "] .chat")
-	        if(divMessage){
+	        if(divMessage && t.chat){
 	          t.chat.messages.push(m)
 	          t.chat.$messages.append(m.display())
 	          t.chat.checkForChanges()
@@ -2179,6 +2178,7 @@
 	      htmlTask.css({"text-align":"left"});
 	      htmlTitle.css({"display":"block"});
 	      $("body").css("overflow","hidden");
+	      $("html").css("overflow-y","hidden");
 	      var html =  '<div id="taskDetail"><div class="chat"></div>';
 	      html +='<div id="closeTask"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>';
 
@@ -2250,6 +2250,7 @@
 	      $("#closeTask").click(function() {
 	        self.close(htmlTask);
 	        $("body").css("overflow","auto");
+	        $("html").css("overflow-y","scroll");
 	      });
 
 	       // Edition du descriptif
@@ -2262,7 +2263,11 @@
 	            $(this).children("textarea").focus();
 	            $(this).children("textarea").select();
 	            this.editMode = true;
+	            $(this).children("textarea").keyup(function() {
+	              console.log("keyUp")
+	            })
 	            $(this).children("textarea").blur(function() {
+	              $(this).unbind('keyup')
 	              content = $(this).val().replace(/\n\r?/g, '<br>');
 	              parent.editMode = false;
 	              self.description = content;
